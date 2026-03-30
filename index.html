@@ -11,26 +11,21 @@
 <body>
 <div id="app">
 
-<!-- ══════════ SCREEN: ONBOARDING ══════════ -->
+<!-- ══════════ ONBOARDING ══════════ -->
 <div id="screen-onboarding" class="screen active">
 <div class="ob-wrap">
-  <div class="ob-logo">
-    <div class="ob-logo-mark">🌿</div>
-    <div class="ob-logo-name">Ambrosia</div>
-  </div>
+  <div class="ob-logo"><div class="ob-logo-mark">🌿</div><div class="ob-logo-name">Ambrosia</div></div>
   <div class="ob-steps">
-    <div class="ob-dot active" id="ob-d0"></div>
-    <div class="ob-dot" id="ob-d1"></div>
-    <div class="ob-dot" id="ob-d2"></div>
+    <div class="ob-dot active" id="ob-d0"></div><div class="ob-dot" id="ob-d1"></div><div class="ob-dot" id="ob-d2"></div>
   </div>
   <div id="ob-slide-0">
     <div class="ob-icon">🩺</div>
     <h1 class="ob-title">Your personal <em>health chronicle</em></h1>
     <p class="ob-desc">Track symptoms, discover patterns, and arrive at your doctor's appointment fully prepared — with months of detailed health data.</p>
     <div class="ob-features">
-      <div class="ob-feat"><div class="ob-feat-icon">📋</div><div class="ob-feat-text"><strong>Symptom Logging</strong><span>Record any symptom with intensity, triggers, and notes in seconds.</span></div></div>
+      <div class="ob-feat"><div class="ob-feat-icon">📋</div><div class="ob-feat-text"><strong>Symptom Logging</strong><span>Record any symptom in seconds with intensity, triggers, and notes.</span></div></div>
       <div class="ob-feat"><div class="ob-feat-icon">🔗</div><div class="ob-feat-text"><strong>Correlation Engine</strong><span>AI discovers hidden links between your symptoms over time.</span></div></div>
-      <div class="ob-feat"><div class="ob-feat-icon">🤖</div><div class="ob-feat-text"><strong>AI Health Assistant</strong><span>Get intelligent insights, pattern analysis, and doctor-ready reports.</span></div></div>
+      <div class="ob-feat"><div class="ob-feat-icon">🏥</div><div class="ob-feat-text"><strong>Doctor Visit Briefing</strong><span>AI prepares the perfect summary before every appointment.</span></div></div>
     </div>
   </div>
   <div id="ob-slide-1" style="display:none">
@@ -40,7 +35,7 @@
     <div class="ob-features">
       <div class="ob-feat"><div class="ob-feat-icon">📈</div><div class="ob-feat-text"><strong>Trend Visualization</strong><span>See how symptoms evolve day by day with intuitive charts.</span></div></div>
       <div class="ob-feat"><div class="ob-feat-icon">⚡</div><div class="ob-feat-text"><strong>Trigger Tracking</strong><span>Identify what triggers your symptoms: stress, food, sleep, weather.</span></div></div>
-      <div class="ob-feat"><div class="ob-feat-icon">📄</div><div class="ob-feat-text"><strong>Doctor Reports</strong><span>AI generates a comprehensive health summary for your appointment.</span></div></div>
+      <div class="ob-feat"><div class="ob-feat-icon">📄</div><div class="ob-feat-text"><strong>Doctor Reports</strong><span>AI generates a comprehensive health summary for your appointments.</span></div></div>
     </div>
   </div>
   <div id="ob-slide-2" style="display:none">
@@ -50,7 +45,7 @@
     <div class="ob-features">
       <div class="ob-feat"><div class="ob-feat-icon">🔒</div><div class="ob-feat-text"><strong>Local Storage</strong><span>All data lives on your device. Nothing sent to servers.</span></div></div>
       <div class="ob-feat"><div class="ob-feat-icon">🌍</div><div class="ob-feat-text"><strong>3 Languages</strong><span>English, Русский, Українська — switch anytime.</span></div></div>
-      <div class="ob-feat"><div class="ob-feat-icon">🩻</div><div class="ob-feat-text"><strong>Not a diagnosis tool</strong><span>Ambrosia helps you track — always consult a doctor for medical advice.</span></div></div>
+      <div class="ob-feat"><div class="ob-feat-icon">💰</div><div class="ob-feat-text"><strong>Premium for $2.5/mo</strong><span>AI analysis, unlimited history, and doctor visit briefings.</span></div></div>
     </div>
   </div>
   <div class="ob-actions">
@@ -60,7 +55,7 @@
 </div>
 </div>
 
-<!-- ══════════ SCREEN: HOME ══════════ -->
+<!-- ══════════ HOME ══════════ -->
 <div id="screen-home" class="screen">
   <div class="home-top">
     <div class="home-greeting" id="home-greeting">GOOD MORNING</div>
@@ -85,6 +80,14 @@
     <div class="ai-card-label">🤖 AI INSIGHT</div>
     <div class="ai-card-text" id="home-ai-insight">Tap to analyze your symptom patterns →</div>
   </div>
+  <!-- Doctor visit CTA — killer feature entry point -->
+  <div class="doctor-visit-card" onclick="goTo('ai')">
+    <div class="dv-card-icon">🏥</div>
+    <div class="dv-card-body">
+      <div class="dv-card-title">Before your next appointment</div>
+      <div class="dv-card-sub">AI prepares a briefing your doctor will love →</div>
+    </div>
+  </div>
   <div class="mini-chart">
     <div class="mini-chart-title" id="chart-title">7-DAY SYMPTOM INTENSITY</div>
     <div class="chart-bars" id="home-chart"></div>
@@ -96,17 +99,15 @@
   <div id="home-recent" style="padding:0 24px;padding-bottom:96px"></div>
 </div>
 
-<!-- ══════════ SCREEN: LOG ══════════ -->
+<!-- ══════════ LOG ══════════ -->
 <div id="screen-log" class="screen">
   <div class="log-header">
     <div class="back-btn" onclick="goTo('home')">←</div>
     <div class="log-title" id="log-screen-title">Log Symptom</div>
   </div>
   <div class="log-step-indicator">
-    <div class="log-step-dot active" id="lsd0"></div>
-    <div class="log-step-dot" id="lsd1"></div>
-    <div class="log-step-dot" id="lsd2"></div>
-    <div class="log-step-dot" id="lsd3"></div>
+    <div class="log-step-dot active" id="lsd0"></div><div class="log-step-dot" id="lsd1"></div>
+    <div class="log-step-dot" id="lsd2"></div><div class="log-step-dot" id="lsd3"></div>
   </div>
   <div class="log-step active" id="log-step-0">
     <div class="log-step-title" id="lst0">Select category</div>
@@ -138,7 +139,7 @@
   </div>
 </div>
 
-<!-- ══════════ SCREEN: HISTORY ══════════ -->
+<!-- ══════════ HISTORY ══════════ -->
 <div id="screen-history" class="screen">
   <div class="screen-header">
     <div class="screen-title" id="hist-title">Health History</div>
@@ -148,34 +149,54 @@
   <div class="history-entries pb80" id="history-list"></div>
 </div>
 
-<!-- ══════════ SCREEN: AI ══════════ -->
+<!-- ══════════ AI ══════════ -->
 <div id="screen-ai" class="screen">
   <div class="ai-top">
     <div class="ai-tagline" id="ai-tag">AI HEALTH ASSISTANT</div>
-    <div class="ai-headline" id="ai-headline">What does your body <em style="font-style:italic;color:var(--gold)">tell us?</em></div>
+    <div class="ai-headline">What does your body <em style="font-style:italic;color:var(--gold)">tell us?</em></div>
+
+    <!-- Doctor Visit Briefing — KILLER FEATURE -->
+    <div class="dv-feature-card">
+      <div class="dv-feature-header">
+        <div class="dv-feature-icon">🏥</div>
+        <div>
+          <div class="dv-feature-title">Before Your Doctor Visit</div>
+          <div class="dv-feature-sub">AI prepares everything your doctor needs to know</div>
+        </div>
+        <span class="premium-badge">PRO</span>
+      </div>
+      <div id="dv-form"></div>
+    </div>
+
+    <div class="ai-divider">OTHER AI TOOLS</div>
+
     <div class="ai-action-btns">
       <button class="ai-action-btn primary-action" onclick="runAI('analyze')">
         <div class="ai-action-icon">🔬</div>
         <div class="ai-action-info"><div class="ai-action-title" id="ai-btn1t">Analyze My Symptoms</div><div class="ai-action-desc" id="ai-btn1d">Get AI insights on patterns and possible conditions</div></div>
+        <span class="premium-badge">PRO</span>
       </button>
       <button class="ai-action-btn" onclick="runAI('correlations')">
         <div class="ai-action-icon">🔗</div>
         <div class="ai-action-info"><div class="ai-action-title" id="ai-btn2t">Find Correlations</div><div class="ai-action-desc" id="ai-btn2d">Discover hidden connections between your symptoms</div></div>
+        <span class="premium-badge">PRO</span>
       </button>
       <button class="ai-action-btn" onclick="runAI('report')">
         <div class="ai-action-icon">📋</div>
         <div class="ai-action-info"><div class="ai-action-title" id="ai-btn3t">Generate Doctor Report</div><div class="ai-action-desc" id="ai-btn3d">Create a comprehensive summary for your appointment</div></div>
+        <span class="premium-badge">PRO</span>
       </button>
       <button class="ai-action-btn" onclick="runAI('recommend')">
         <div class="ai-action-icon">💊</div>
         <div class="ai-action-info"><div class="ai-action-title" id="ai-btn4t">Get Recommendations</div><div class="ai-action-desc" id="ai-btn4d">What to do now and which doctor to see</div></div>
+        <span class="premium-badge">PRO</span>
       </button>
     </div>
   </div>
   <div id="ai-result-area" style="padding-bottom:96px"></div>
 </div>
 
-<!-- ══════════ SCREEN: SETTINGS ══════════ -->
+<!-- ══════════ SETTINGS ══════════ -->
 <div id="screen-settings" class="screen">
   <div class="screen-header">
     <div class="screen-title" id="set-title">Profile & Settings</div>
@@ -184,7 +205,8 @@
     <div class="profile-avatar">🌿</div>
     <div class="profile-name" id="prof-name">Health Tracker</div>
     <div class="profile-sub" id="prof-sub">Tracking since March 2026</div>
-    <div class="stat-row">
+    <div id="set-premium-badge"></div>
+    <div class="stat-row" style="margin-top:16px">
       <div class="stat-card"><div class="stat-num" id="stat-entries">0</div><div class="stat-lbl" id="stat-lbl1">Entries</div></div>
       <div class="stat-card"><div class="stat-num" id="stat-days">0</div><div class="stat-lbl" id="stat-lbl2">Days tracked</div></div>
       <div class="stat-card"><div class="stat-num" id="stat-syms">0</div><div class="stat-lbl" id="stat-lbl3">Symptoms</div></div>
@@ -202,7 +224,19 @@
     <div class="settings-section-title" id="set-pref-title">PREFERENCES</div>
     <div class="setting-row"><div class="setting-row-left"><div class="setting-icon">🔔</div><div class="setting-label" id="set-notif">Reminders</div></div><div class="setting-value">Daily 20:00</div></div>
     <div class="setting-row"><div class="setting-row-left"><div class="setting-icon">🎨</div><div class="setting-label" id="set-theme">Theme</div></div><div class="setting-value">Dark Forest</div></div>
-    <div class="setting-row"><div class="setting-row-left"><div class="setting-icon">🤖</div><div class="setting-label" id="set-ai">AI Provider</div></div><div class="setting-value" id="set-ai-val">Claude AI</div></div>
+    <!-- AI PROVIDER / GROQ KEY -->
+    <div class="setting-row" style="flex-direction:column;align-items:stretch;gap:10px;cursor:default">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div class="setting-row-left"><div class="setting-icon">🤖</div><div class="setting-label" id="set-ai">AI Provider</div></div>
+        <div class="setting-value" id="set-ai-val">Groq</div>
+      </div>
+      <input type="text" id="groq-key-input" class="groq-input" placeholder="Paste your free Groq API key...">
+      <div style="display:flex;gap:8px">
+        <button class="groq-save-btn" onclick="saveGroqKeyFromSettings()">Save Key</button>
+        <a href="https://console.groq.com" target="_blank" class="groq-link-btn">Get free key ↗</a>
+      </div>
+      <div id="groq-key-msg" style="font-size:12px;color:var(--mint)"></div>
+    </div>
   </div>
   <div class="settings-section">
     <div class="settings-section-title" id="set-data-title">DATA</div>
@@ -210,36 +244,40 @@
     <div class="setting-row" onclick="clearData()"><div class="setting-row-left"><div class="setting-icon">🗑️</div><div class="setting-label" id="set-clear" style="color:var(--coral)">Clear All Data</div></div><div style="color:var(--cream30)">→</div></div>
   </div>
   <div style="padding:0 24px 100px;text-align:center">
-    <div style="font-size:13px;color:var(--cream30);line-height:1.6">Ambrosia v1.0 · <em>Not a medical device</em><br>Always consult a qualified healthcare professional.</div>
+    <div style="font-size:13px;color:var(--cream30);line-height:1.6">Ambrosia v1.1 · <em>Not a medical device</em><br>Always consult a qualified healthcare professional.</div>
   </div>
+</div>
+
+<!-- ══════════ UPGRADE / PAYWALL ══════════ -->
+<div id="screen-upgrade" class="screen">
+  <div class="upgrade-header">
+    <div class="back-btn" onclick="goTo('home')">←</div>
+  </div>
+  <div id="upgrade-content" class="pb80"></div>
 </div>
 
 <!-- ══════════ BOTTOM NAV ══════════ -->
 <nav id="bottom-nav">
   <div class="nav-tabs">
     <div class="nav-tab active" id="nav-home" onclick="goTo('home')">
-      <div class="nav-icon">🏠</div>
-      <div class="nav-label" id="nav-l-home">Home</div>
+      <div class="nav-icon">🏠</div><div class="nav-label" id="nav-l-home">Home</div>
     </div>
     <div class="nav-tab" id="nav-history" onclick="goTo('history')">
-      <div class="nav-icon">📊</div>
-      <div class="nav-label" id="nav-l-hist">History</div>
+      <div class="nav-icon">📊</div><div class="nav-label" id="nav-l-hist">History</div>
     </div>
     <div class="nav-tab-log-wrap">
       <div class="nav-tab-log" onclick="goTo('log')">➕</div>
     </div>
     <div class="nav-tab" id="nav-ai" onclick="goTo('ai')">
-      <div class="nav-icon">🤖</div>
-      <div class="nav-label" id="nav-l-ai">AI</div>
+      <div class="nav-icon">🤖</div><div class="nav-label" id="nav-l-ai">AI</div>
     </div>
     <div class="nav-tab" id="nav-settings" onclick="goTo('settings')">
-      <div class="nav-icon">👤</div>
-      <div class="nav-label" id="nav-l-set">Profile</div>
+      <div class="nav-icon">👤</div><div class="nav-label" id="nav-l-set">Profile</div>
     </div>
   </div>
 </nav>
 
-</div><!-- #app -->
+</div>
 <script type="module" src="js/app.js"></script>
 </body>
 </html>
