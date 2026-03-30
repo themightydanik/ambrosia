@@ -219,3 +219,82 @@ input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:26px; h
 .lang-options { display:flex; gap:8px; }
 .lang-btn { flex:1; padding:12px; background:var(--surface); border:1px solid var(--border); border-radius:var(--r-sm); cursor:pointer; text-align:center; font-size:13px; font-weight:500; color:var(--cream60); transition:all .2s; font-family:'DM Sans',sans-serif; }
 .lang-btn.active { border-color:var(--gold); background:var(--gold-dim); color:var(--cream); }
+
+/* ═══════════════════════════════════════
+   PREMIUM BADGES & BANNERS
+═══════════════════════════════════════ */
+.premium-badge { display:inline-block; font-size:9px; font-weight:700; letter-spacing:.6px; padding:3px 7px; background:linear-gradient(135deg,var(--gold),#c49540); color:#0D1F1A; border-radius:50px; margin-left:auto; flex-shrink:0; }
+.premium-status { text-align:center; font-size:13px; padding:10px 16px; border-radius:var(--r-sm); margin-bottom:4px; }
+.premium-status--active { background:linear-gradient(135deg,rgba(212,168,83,0.2),rgba(212,168,83,0.08)); color:var(--gold); font-weight:600; border:1px solid var(--border); }
+.premium-status--free { background:var(--surface); color:var(--cream60); border:1px solid var(--border); }
+.limit-banner { margin:0 24px 12px; padding:12px 16px; background:var(--gold-dim); border:1px solid var(--border); border-radius:var(--r-sm); font-size:13px; color:var(--cream60); }
+.limit-banner--red { background:var(--coral-dim); border-color:rgba(224,117,96,0.3); }
+
+/* ═══════════════════════════════════════
+   DOCTOR VISIT — HOME CARD
+═══════════════════════════════════════ */
+.doctor-visit-card { margin:0 24px 16px; padding:16px 20px; background:linear-gradient(135deg,rgba(91,191,160,0.12),rgba(91,191,160,0.04)); border:1px solid rgba(91,191,160,0.25); border-radius:var(--r); display:flex; align-items:center; gap:14px; cursor:pointer; transition:all .2s; }
+.doctor-visit-card:active { transform:scale(.98); }
+.dv-card-icon { font-size:28px; }
+.dv-card-title { font-size:15px; font-weight:600; color:var(--cream); margin-bottom:2px; }
+.dv-card-sub { font-size:13px; color:var(--mint); }
+
+/* ═══════════════════════════════════════
+   DOCTOR VISIT — AI SCREEN FEATURE CARD
+═══════════════════════════════════════ */
+.dv-feature-card { background:linear-gradient(135deg,rgba(91,191,160,0.1),rgba(27,56,48,0.6)); border:1px solid rgba(91,191,160,0.25); border-radius:var(--r); padding:20px; margin-bottom:20px; }
+.dv-feature-header { display:flex; align-items:center; gap:12px; margin-bottom:16px; }
+.dv-feature-icon { font-size:28px; }
+.dv-feature-title { font-size:17px; font-weight:600; color:var(--cream); }
+.dv-feature-sub { font-size:13px; color:var(--mint); margin-top:2px; }
+.dv-row { display:flex; gap:10px; margin-bottom:12px; }
+.dv-field { flex:1; }
+.dv-label { font-size:12px; color:var(--cream30); letter-spacing:.3px; margin-bottom:6px; }
+.dv-input { width:100%; background:var(--surface2); border:1px solid var(--border); border-radius:var(--r-sm); color:var(--cream); font-family:'DM Sans',sans-serif; font-size:14px; padding:10px 12px; outline:none; transition:border-color .2s; -webkit-appearance:none; }
+.dv-input:focus { border-color:rgba(91,191,160,0.4); }
+.dv-input option { background:var(--surface2); color:var(--cream); }
+.dv-btn { width:100%; padding:15px 20px; background:linear-gradient(135deg,var(--mint),#3da88a); color:#0a1f19; font-family:'DM Sans',sans-serif; font-size:15px; font-weight:700; border:none; border-radius:var(--r); cursor:pointer; transition:all .2s; }
+.dv-btn:active { transform:scale(.98); }
+.dv-btn--locked { background:var(--surface2); color:var(--cream30); cursor:pointer; border:1px solid var(--border); font-weight:500; }
+.ai-divider { font-size:11px; color:var(--cream30); letter-spacing:.8px; text-align:center; padding:4px 0 16px; position:relative; }
+.ai-divider::before,.ai-divider::after { content:''; position:absolute; top:50%; width:30%; height:1px; background:var(--border); }
+.ai-divider::before { left:0; } .ai-divider::after { right:0; }
+
+/* ═══════════════════════════════════════
+   GROQ API KEY INPUT (Settings)
+═══════════════════════════════════════ */
+.groq-input { width:100%; background:var(--surface2); border:1px solid var(--border); border-radius:var(--r-sm); color:var(--cream); font-family:'DM Sans',sans-serif; font-size:13px; padding:11px 14px; outline:none; transition:border-color .2s; }
+.groq-input:focus { border-color:rgba(212,168,83,0.4); }
+.groq-input::placeholder { color:var(--cream30); }
+.groq-save-btn { flex:1; padding:10px; background:var(--gold-dim); border:1px solid var(--border); border-radius:var(--r-sm); color:var(--gold); font-family:'DM Sans',sans-serif; font-size:13px; font-weight:600; cursor:pointer; transition:all .2s; }
+.groq-save-btn:active { background:rgba(212,168,83,0.25); }
+.groq-link-btn { flex:1; padding:10px; background:transparent; border:1px solid var(--border); border-radius:var(--r-sm); color:var(--cream60); font-family:'DM Sans',sans-serif; font-size:13px; cursor:pointer; text-decoration:none; text-align:center; display:flex; align-items:center; justify-content:center; }
+
+/* ═══════════════════════════════════════
+   UPGRADE / PAYWALL SCREEN
+═══════════════════════════════════════ */
+.upgrade-header { padding:52px 24px 0; }
+.upgrade-hero { padding:24px 24px 0; text-align:center; }
+.upgrade-emoji { font-size:56px; margin-bottom:16px; line-height:1; }
+.upgrade-title { font-family:'Playfair Display',serif; font-size:26px; color:var(--cream); line-height:1.3; margin-bottom:10px; }
+.upgrade-sub { font-size:15px; color:var(--cream60); line-height:1.5; margin-bottom:24px; }
+.upgrade-price-card { margin:0 24px 20px; padding:20px 24px; background:linear-gradient(135deg,rgba(212,168,83,0.15),rgba(212,168,83,0.05)); border:1px solid var(--border); border-radius:var(--r); text-align:center; position:relative; overflow:hidden; }
+.upgrade-price-card::before { content:''; position:absolute; top:-20px; right:-20px; width:100px; height:100px; background:radial-gradient(circle,var(--gold-dim) 0%,transparent 70%); }
+.upgrade-price-label { font-size:11px; color:var(--gold); letter-spacing:.8px; font-weight:700; margin-bottom:8px; }
+.upgrade-price-row { display:flex; align-items:baseline; justify-content:center; gap:4px; margin-bottom:6px; }
+.upgrade-price { font-family:'Playfair Display',serif; font-size:48px; color:var(--gold); line-height:1; }
+.upgrade-price-period { font-size:18px; color:var(--cream60); }
+.upgrade-price-note { font-size:13px; color:var(--cream30); }
+.upgrade-features { margin:0 24px 20px; background:var(--surface); border:1px solid var(--border); border-radius:var(--r); overflow:hidden; }
+.upgrade-feat-row { display:grid; grid-template-columns:1.8fr 1fr 1fr; padding:10px 16px; border-bottom:1px solid var(--border); align-items:center; }
+.upgrade-feat-row:last-child { border-bottom:none; }
+.upgrade-feat-col { font-size:13px; color:var(--cream60); }
+.upgrade-feat-col--header { font-size:11px; font-weight:700; letter-spacing:.4px; color:var(--cream30); text-transform:uppercase; padding:8px 0; }
+.upgrade-cta-btn { display:block; margin:0 24px 16px; width:calc(100% - 48px); padding:18px 24px; background:linear-gradient(135deg,var(--gold),#c49540); color:#0D1F1A; font-family:'DM Sans',sans-serif; font-size:17px; font-weight:700; border:none; border-radius:var(--r); cursor:pointer; letter-spacing:.3px; transition:all .2s; }
+.upgrade-cta-btn:active { transform:scale(.98); }
+.upgrade-unlock-section { margin:0 24px; padding:16px; background:var(--surface); border:1px solid var(--border); border-radius:var(--r); }
+.upgrade-unlock-label { font-size:12px; color:var(--cream30); margin-bottom:10px; text-align:center; letter-spacing:.3px; }
+.upgrade-unlock-row { display:flex; gap:8px; }
+.upgrade-code-input { flex:1; background:var(--surface2); border:1px solid var(--border); border-radius:var(--r-sm); color:var(--cream); font-family:'DM Sans',sans-serif; font-size:14px; padding:10px 12px; outline:none; transition:border-color .2s; text-transform:uppercase; letter-spacing:.5px; }
+.upgrade-code-input:focus { border-color:rgba(212,168,83,0.4); }
+.upgrade-code-btn { padding:10px 18px; background:var(--gold-dim); border:1px solid var(--border); border-radius:var(--r-sm); color:var(--gold); font-family:'DM Sans',sans-serif; font-size:14px; font-weight:600; cursor:pointer; white-space:nowrap; }
