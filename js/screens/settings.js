@@ -1,11 +1,14 @@
-import { state, saveLang, clearAllData, saveGroqKey, activatePremium } from '../state.js';
+import { state, saveLang, clearAllData, activatePremium } from '../state.js';
 import { applyLang } from '../i18n.js';
-import { registerScreen } from '../navigation.js';
+import { registerScreen, goTo } from '../navigation.js';
 import { renderHome } from './home.js';
 import { renderHistory } from './history.js';
-import { isPremium, FREE_ENTRY_LIMIT, FREE_HISTORY_DAYS } from '../premium.js';
-import { goTo } from '../navigation.js';
+import { isPremium } from '../premium.js';
+import { PAYMENT_LINK, PROMO_CODES } from '../config.js';
 
+// ─────────────────────────────────────────────
+// RENDER SETTINGS / PROFILE
+// ─────────────────────────────────────────────
 export function renderSettings() {
   const totalSyms  = state.entries.reduce((acc, e) => acc + e.symptoms.length, 0);
   const uniqueDays = new Set(state.entries.map(e => e.date)).size;
@@ -20,39 +23,12 @@ export function renderSettings() {
   // Premium badge
   const premBadgeEl = document.getElementById('set-premium-badge');
   if (premBadgeEl) {
-    if (isPremium()) {
-      premBadgeEl.innerHTML = `<div class="premium-status premium-status--active">✦ PREMIUM ACTIVE</div>`;
-    } else {
-      premBadgeEl.innerHTML = `<div class="premium-status premium-status--free">
-        Free plan · <span onclick="goTo('upgrade')" style="color:var(--gold);cursor:pointer;font-weight:600">Upgrade $2.5/mo →</span>
-      </div>`;
-    }
+    premBadgeEl.innerHTML = isPremium()
+      ? `<div class="premium-status premium-status--active">✦ PREMIUM ACTIVE</div>`
+      : `<div class="premium-status premium-status--free">
+          Free plan · <span onclick="goTo('upgrade')" style="color:var(--gold);cursor:pointer;font-weight:600">Upgrade $2.5/mo →</span>
+        </div>`;
   }
-
-  // AI provider row
-  const aiValEl = document.getElementById('set-ai-val');
-  if (aiValEl) aiValEl.textContent = state.groqKey ? 'Groq (connected)' : 'Groq (key needed)';
-
-  // Groq key input
-  const groqInput = document.getElementById('groq-key-input');
-  if (groqInput) groqInput.value = state.groqKey || '';
-}
-
-// ─────────────────────────────────────────────
-// SAVE GROQ KEY FROM SETTINGS
-// ─────────────────────────────────────────────
-export function saveGroqKeyFromSettings() {
-  const input = document.getElementById('groq-key-input');
-  if (!input) return;
-  const key = input.value.trim();
-  saveGroqKey(key);
-  const msg = document.getElementById('groq-key-msg');
-  if (msg) {
-    msg.style.color   = key ? 'var(--mint)' : 'var(--cream30)';
-    msg.textContent   = key ? '✓ Key saved — AI features are now active.' : 'Key cleared.';
-    setTimeout(() => { if (msg) msg.textContent = ''; }, 3000);
-  }
-  renderSettings();
 }
 
 // ─────────────────────────────────────────────
@@ -68,7 +44,7 @@ export function setLang(lang) {
 }
 
 // ─────────────────────────────────────────────
-// DATA EXPORT
+// DATA EXPORT (premium only)
 // ─────────────────────────────────────────────
 export function exportData() {
   if (state.entries.length === 0) { alert('No data to export yet.'); return; }
