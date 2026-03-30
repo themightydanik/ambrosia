@@ -1,13 +1,25 @@
 import { state, activatePremium } from '../state.js';
 import { registerScreen, goTo } from '../navigation.js';
 import { FREE_ENTRY_LIMIT, FREE_HISTORY_DAYS } from '../premium.js';
-import { PAYMENT_LINK, PROMO_CODES } from '../config.js';
+import { IAP_PRODUCT_IDS, PROMO_CODES } from '../config.js';
 
 // ─────────────────────────────────────────────
-// PAYWALL REASON COPY
+// NOTE ON IN-APP PURCHASES
 // ─────────────────────────────────────────────
+// When this app is wrapped in Capacitor and published to
+// Google Play / App Store, purchases are handled natively
+// via the @capacitor-community/in-app-purchases plugin.
+//
+// The handleUpgrade() function below will be replaced
+// with a native IAP call in the Capacitor build.
+//
+// For now (web preview):
+//  - The upgrade button shows a message
+//  - Promo codes let you test the premium flow
+// ─────────────────────────────────────────────
+
 const REASON_COPY = {
-  ai:           { emoji: '🤖', title: 'AI Analysis is a Premium feature', sub: 'Unlock AI symptom analysis, correlations, and more.' },
+  ai:           { emoji: '🤖', title: 'AI Analysis is a Premium feature', sub: 'Unlock AI symptom analysis, correlations, and doctor reports.' },
   correlations: { emoji: '🔗', title: 'Correlations are a Premium feature', sub: 'See hidden connections between your symptoms over time.' },
   report:       { emoji: '📋', title: 'Doctor Reports are a Premium feature', sub: 'Generate structured health summaries for your appointments.' },
   recommend:    { emoji: '💊', title: 'Recommendations are a Premium feature', sub: 'Get personalized advice on what to do and who to see.' },
@@ -18,9 +30,6 @@ const REASON_COPY = {
   general:      { emoji: '🌿', title: 'Upgrade to Ambrosia Premium', sub: 'Unlock everything and take full control of your health.' },
 };
 
-// ─────────────────────────────────────────────
-// RENDER UPGRADE SCREEN
-// ─────────────────────────────────────────────
 export function renderUpgrade() {
   const reason = state.upgradeReason || 'general';
   const copy   = REASON_COPY[reason] || REASON_COPY.general;
@@ -87,23 +96,19 @@ function featureRow(name, free, premium) {
 }
 
 // ─────────────────────────────────────────────
-// PAYMENT CTA
+// HANDLE UPGRADE BUTTON
+// In web preview: shows message + promo code hint
+// In Capacitor native build: replaced with IAP call:
+//   Purchases.purchaseProduct({ productIdentifier: IAP_PRODUCT_IDS.monthly })
 // ─────────────────────────────────────────────
 export function handleUpgrade() {
-  if (!PAYMENT_LINK) {
-    const msg = document.getElementById('upgrade-code-msg');
-    if (msg) {
-      msg.style.color = 'var(--gold)';
-      msg.textContent = 'Payment coming soon! Use code AMBROSIA25 to unlock for testing.';
-    }
-    return;
+  const msg = document.getElementById('upgrade-code-msg');
+  if (msg) {
+    msg.style.color = 'var(--gold)';
+    msg.textContent = 'Available in the mobile app. Use code AMBROSIA25 to test premium now.';
   }
-  window.open(PAYMENT_LINK, '_blank');
 }
 
-// ─────────────────────────────────────────────
-// PROMO CODE REDEEM
-// ─────────────────────────────────────────────
 export function redeemCode() {
   const input = document.getElementById('upgrade-code-input');
   const msg   = document.getElementById('upgrade-code-msg');
@@ -116,7 +121,7 @@ export function redeemCode() {
     setTimeout(() => goTo('home'), 1500);
   } else {
     msg.style.color = 'var(--coral)';
-    msg.textContent = '✗ Invalid code. Try again or start a free trial.';
+    msg.textContent = '✗ Invalid code. Try again.';
   }
 }
 
