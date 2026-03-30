@@ -2,6 +2,7 @@ import { state } from '../state.js';
 import { t } from '../i18n.js';
 import { SYMPTOM_COLORS } from '../data.js';
 import { registerScreen } from '../navigation.js';
+import { isLocked, showPaywall, getVisibleEntries, premiumBadge, FREE_HISTORY_DAYS } from '../premium.js';
 import { entryCardHTML } from './home.js';
 
 // ─────────────────────────────────────────────
@@ -82,6 +83,7 @@ function renderEntryList() {
 // SET FILTER (called from onclick in HTML)
 // ─────────────────────────────────────────────
 export function historySetFilter(symptom) {
+  if (symptom export function historySetFilter(symptom) {export function historySetFilter(symptom) { isLocked('filter')) { showPaywall('filter'); return; }
   state.historyFilter = symptom;
   renderHistory();
 }
