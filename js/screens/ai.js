@@ -1,20 +1,17 @@
 import { state } from '../state.js';
 import { registerScreen } from '../navigation.js';
-import { isLocked, showPaywall, premiumBadge } from '../premium.js';
-import { t } from '../i18n.js';
+import { isLocked, showPaywall } from '../premium.js';
+import { GROQ_API_KEY, GROQ_MODEL } from '../config.js';
 
 // ─────────────────────────────────────────────
-// GROQ API CONFIG
-// Get your FREE key at: https://console.groq.com
-// Add it in Profile → Settings → AI Provider
+// GROQ API — centralized key (yours, not the user's)
+// Users don't need their own key.
 // ─────────────────────────────────────────────
-const GROQ_URL   = 'https://api.groq.com/openai/v1/chat/completions';
-const GROQ_MODEL = 'llama-3.3-70b-versatile';
+const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
 
 async function callGroq(prompt) {
-  const key = state.groqKey;
+  const key = GROQ_API_KEY;
   if (!key) throw new Error('NO_KEY');
-
   const res = await fetch(GROQ_URL, {
     method: 'POST',
     headers: {
@@ -34,7 +31,7 @@ async function callGroq(prompt) {
 }
 
 // ─────────────────────────────────────────────
-// BUILD HISTORY TEXT FOR PROMPTS
+// BUILD HISTORY TEXT
 // ─────────────────────────────────────────────
 export function buildHistoryText() {
   if (state.entries.length === 0) return 'No symptom entries recorded yet.';
@@ -53,14 +50,14 @@ export function buildHistoryText() {
 const PROMPTS = {
   analyze: h => `You are a health analysis AI (NOT a doctor). User symptom history:\n\n${h}\n\nAnalyze the pattern. Identify the most likely general condition. Note progression trends and most concerning symptoms. Friendly language, brief summary first then details. Under 300 words. Remind them to see a real doctor.`,
 
-  correlations: h => `You are a health data analyst. User symptom history:\n\n${h}\n\nFind 3–4 meaningful correlations: what appears together, what worsens over time, which triggers seem linked. Numbered list. Under 250 words.`,
+  correlations: h => `You are a health data analyst. User symptom history:\n\n${h}\n\nFind 3-4 meaningful correlations: what appears together, what worsens over time, which triggers seem linked. Numbered list. Under 250 words.`,
 
   report: h => `Generate a structured medical summary for a patient to show their doctor.\n\nSymptom history:\n${h}\n\nSections:\n1. Timeline Summary\n2. Primary Symptoms & Progression\n3. Intensity Trends\n4. Identified Triggers\n5. Key Points for the Doctor\n\nProfessional tone. Under 350 words.`,
 
-  recommend: h => `You are a health guidance AI. Symptom history:\n\n${h}\n\nProvide:\n1. 2–3 immediate self-care actions\n2. Which type of doctor to see and when\n3. Warning signs requiring urgent care\n4. Helpful lifestyle adjustments\n\nPractical and specific. Under 300 words. Emphasize consulting a real doctor.`,
+  recommend: h => `You are a health guidance AI. Symptom history:\n\n${h}\n\nProvide:\n1. 2-3 immediate self-care actions\n2. Which type of doctor to see and when\n3. Warning signs requiring urgent care\n4. Helpful lifestyle adjustments\n\nPractical and specific. Under 300 words. Emphasize consulting a real doctor.`,
 
   doctor_visit: (h, appointmentDate, doctorType) =>
-    `You are preparing a patient for a medical appointment on ${appointmentDate} with a ${doctorType}.\n\nTheir symptom history:\n${h}\n\nCreate a structured pre-appointment briefing with:\n1. CHIEF COMPLAINT (1-2 sentences: main reason for the visit)\n2. SYMPTOM TIMELINE (chronological, key dates and changes)\n3. TOP 3 CONCERNS TO DISCUSS (most important for this appointment)\n4. QUESTIONS TO ASK THE DOCTOR (5 specific, practical questions)\n5. RELEVANT CONTEXT (triggers, patterns, what helped or worsened symptoms)\n\nClear, concise, doctor-friendly. This is what the patient will show/read to the doctor. Under 400 words.`
+    `You are preparing a patient for a medical appointment on ${appointmentDate} with a ${doctorType}.\n\nTheir symptom history:\n${h}\n\nCreate a structured pre-appointment briefing:\n1. CHIEF COMPLAINT (1-2 sentences)\n2. SYMPTOM TIMELINE (chronological)\n3. TOP 3 CONCERNS TO DISCUSS\n4. QUESTIONS TO ASK THE DOCTOR (5 specific questions)\n5. RELEVANT CONTEXT (triggers, patterns)\n\nClear, doctor-friendly. Under 400 words.`
 };
 
 const UI = {
@@ -75,7 +72,6 @@ const UI = {
 // RUN AI
 // ─────────────────────────────────────────────
 export async function runAI(type) {
-  // Premium gate for all AI features
   if (isLocked('ai')) { showPaywall(type); return; }
 
   const area = document.getElementById('ai-result-area');
@@ -89,45 +85,36 @@ export async function runAI(type) {
 
   try {
     const history = buildHistoryText();
-    let   text;
+    let text;
 
     if (type === 'doctor_visit') {
-      // Read values from the doctor visit form
-      const dateEl   = document.getElementById('dv-date');
-      const doctorEl = document.getElementById('dv-doctor');
-      const apptDate = dateEl?.value   || 'upcoming appointment';
-      const docType  = doctorEl?.value || 'General Practitioner';
+      const apptDate = document.getElementById('dv-date')?.value || 'upcoming appointment';
+      const docType  = document.getElementById('dv-doctor')?.value || 'General Practitioner';
       text = await callGroq(PROMPTS.doctor_visit(history, apptDate, docType));
       renderDoctorVisitResult(area, text, apptDate, docType);
       return;
     }
 
     text = await callGroq(PROMPTS[type](history));
+    if (type === 'report') { renderReport(area, text); return; }
 
-    if (type === 'report') {
-      renderReport(area, text);
-    } else {
-      area.innerHTML = `<div class="ai-result-box">
-        <div class="ai-result-label">${ui.label}</div>
-        <div class="ai-result-content">${text}</div>
-      </div>`;
-    }
+    area.innerHTML = `<div class="ai-result-box">
+      <div class="ai-result-label">${ui.label}</div>
+      <div class="ai-result-content">${text}</div>
+    </div>`;
+
   } catch (err) {
-    if (err.message === 'NO_KEY') {
-      area.innerHTML = `<div class="ai-result-box">
-        <div class="ai-result-label" style="color:var(--gold)">⚙️ GROQ API KEY REQUIRED</div>
-        <div class="ai-result-content" style="color:var(--cream60)">
-To use AI features, add your free Groq API key:\n\n1. Go to <strong style="color:var(--gold)">console.groq.com</strong> → Sign up free\n2. Create an API key\n3. Paste it in <strong style="color:var(--gold)">Profile → AI Provider → Add Key</strong>
-
-Groq is free and runs fast. No credit card needed.
-        </div>
-      </div>`;
-    } else {
-      area.innerHTML = `<div class="ai-result-box">
-        <div class="ai-result-label">⚠️ ERROR</div>
-        <div class="ai-result-content" style="color:var(--coral)">Could not reach Groq AI.\n\n${err.message}</div>
-      </div>`;
-    }
+    const isKeyMissing = err.message === 'NO_KEY';
+    area.innerHTML = `<div class="ai-result-box">
+      <div class="ai-result-label" style="color:var(--gold)">
+        ${isKeyMissing ? '⚙️ AI NOT CONFIGURED YET' : '⚠️ ERROR'}
+      </div>
+      <div class="ai-result-content" style="color:var(--cream60)">
+        ${isKeyMissing
+          ? 'AI features are being set up. Check back soon!'
+          : `Could not reach Groq AI.\n\n${err.message}`}
+      </div>
+    </div>`;
   }
 }
 
@@ -163,19 +150,18 @@ function renderDoctorVisitResult(area, text, apptDate, docType) {
 }
 
 // ─────────────────────────────────────────────
-// RENDER AI SCREEN with Doctor Visit form
+// RENDER DOCTOR VISIT FORM
 // ─────────────────────────────────────────────
-function renderAIScreen() {
-  const locked = isLocked('ai');
-  // Update AI provider label in result area
+export function initAI() {
   const area = document.getElementById('ai-result-area');
   if (area) area.innerHTML = '';
 
-  // Render doctor visit form
   const dvForm = document.getElementById('dv-form');
   if (!dvForm) return;
 
-  const today = new Date().toISOString().split('T')[0];
+  const locked = isLocked('ai');
+  const today  = new Date().toISOString().split('T')[0];
+
   dvForm.innerHTML = `
     <div class="dv-row">
       <div class="dv-field">
@@ -200,12 +186,8 @@ function renderAIScreen() {
     </div>
     <button class="dv-btn ${locked ? 'dv-btn--locked' : ''}"
       onclick="${locked ? "showPaywall('doctor_visit')" : "runAI('doctor_visit')"}">
-      ${locked ? '🔒 Premium feature — Upgrade to unlock' : '🏥 Generate Visit Briefing'}
+      ${locked ? '🔒 Premium — Upgrade to unlock' : '🏥 Generate Visit Briefing'}
     </button>`;
-}
-
-export function initAI() {
-  renderAIScreen();
 }
 
 registerScreen('ai', initAI);
