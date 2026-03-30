@@ -1,14 +1,7 @@
 import { state, activatePremium } from '../state.js';
-import { registerScreen } from '../navigation.js';
-import { goTo } from '../navigation.js';
-import { t } from '../i18n.js';
+import { registerScreen, goTo } from '../navigation.js';
 import { FREE_ENTRY_LIMIT, FREE_HISTORY_DAYS } from '../premium.js';
-
-// ─────────────────────────────────────────────
-// STRIPE PAYMENT LINK — replace with your real link
-// Get it from: stripe.com → Products → Payment Links
-// ─────────────────────────────────────────────
-const STRIPE_LINK = 'https://buy.stripe.com/YOUR_LINK_HERE';
+import { PAYMENT_LINK, PROMO_CODES } from '../config.js';
 
 // ─────────────────────────────────────────────
 // PAYWALL REASON COPY
@@ -31,8 +24,7 @@ const REASON_COPY = {
 export function renderUpgrade() {
   const reason = state.upgradeReason || 'general';
   const copy   = REASON_COPY[reason] || REASON_COPY.general;
-
-  const el = document.getElementById('upgrade-content');
+  const el     = document.getElementById('upgrade-content');
   if (!el) return;
 
   el.innerHTML = `
@@ -57,8 +49,8 @@ export function renderUpgrade() {
         <div class="upgrade-feat-col upgrade-feat-col--header">Free</div>
         <div class="upgrade-feat-col upgrade-feat-col--header" style="color:var(--gold)">Premium</div>
       </div>
-      ${featureRow('Symptom logging', `Up to ${FREE_ENTRY_LIMIT}`, 'Unlimited')}
-      ${featureRow('History access', `Last ${FREE_HISTORY_DAYS} days`, 'All time')}
+      ${featureRow('Symptom logging', 'Up to ' + FREE_ENTRY_LIMIT, 'Unlimited')}
+      ${featureRow('History access', 'Last ' + FREE_HISTORY_DAYS + ' days', 'All time')}
       ${featureRow('AI Analysis', '✗', '✓')}
       ${featureRow('Correlations', '✗', '✓')}
       ${featureRow('Doctor Report', '✗', '✓')}
@@ -95,11 +87,10 @@ function featureRow(name, free, premium) {
 }
 
 // ─────────────────────────────────────────────
-// STRIPE CTA
+// PAYMENT CTA
 // ─────────────────────────────────────────────
 export function handleUpgrade() {
-  if (STRIPE_LINK.includes('YOUR_LINK_HERE')) {
-    // Dev mode: show code unlock instead
+  if (!PAYMENT_LINK) {
     const msg = document.getElementById('upgrade-code-msg');
     if (msg) {
       msg.style.color = 'var(--gold)';
@@ -107,21 +98,18 @@ export function handleUpgrade() {
     }
     return;
   }
-  window.open(STRIPE_LINK, '_blank');
+  window.open(PAYMENT_LINK, '_blank');
 }
 
 // ─────────────────────────────────────────────
-// ACCESS CODE UNLOCK (for testing / promo)
+// PROMO CODE REDEEM
 // ─────────────────────────────────────────────
 export function redeemCode() {
   const input = document.getElementById('upgrade-code-input');
   const msg   = document.getElementById('upgrade-code-msg');
   if (!input || !msg) return;
-
-  const VALID_CODES = ['AMBROSIA25', 'EARLYBIRD', 'HEALTHPRO'];
   const code = input.value.trim().toUpperCase();
-
-  if (VALID_CODES.includes(code)) {
+  if (PROMO_CODES.includes(code)) {
     activatePremium();
     msg.style.color = 'var(--mint)';
     msg.textContent = '✓ Premium activated! Welcome to Ambrosia Premium.';
