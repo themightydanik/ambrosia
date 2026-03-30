@@ -1,89 +1,209 @@
+import { state } from '../state.js';
+import { registerScreen } from '../navigation.js';
+import { isLocked, showPaywall } from '../premium.js';
+import { AI_PROXY_URL } from '../config.js';
+
 // ─────────────────────────────────────────────
-// VERCEL SERVERLESS PROXY FOR GROQ API
+// AI CALL — goes through your Vercel proxy
+// The Groq key never touches the frontend.
 // ─────────────────────────────────────────────
-// Deploy this project to Vercel (free).
-// Add GROQ_API_KEY in Vercel Dashboard → Settings → Environment Variables.
-// The key NEVER touches your repo or your frontend code.
-//
-// Endpoint: POST /api/ai
-// Body: { prompt: string, type: string }
-// Returns: { text: string }
+async function callAI(prompt) {
+  if (!AI_PROXY_URL) throw new Error('NO_PROXY');
+  const res = await fetch(AI_PROXY_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ prompt })
+  });
+  const data = await res.json();
+  if (!res.ok || data.error) throw new Error(data.error || 'AI error');
+  return data.text;
+}
+
 // ─────────────────────────────────────────────
+// BUILD HISTORY TEXT FOR PROMPTS
+// ─────────────────────────────────────────────
+export function buildHistoryText() {
+  if (state.entries.length === 0) return 'No symptom entries recorded yet.';
+  return [...state.entries]
+    .sort((a, b) => a.date.localeCompare(b.date))
+    .map(e =>
+      `Date: ${e.date} | Symptoms: ${e.symptoms.join(', ')} | Intensity: ${e.intensity}/10` +
+      `${e.triggers.length ? ' | Triggers: ' + e.triggers.join(', ') : ''}` +
+      `${e.notes ? ` | Notes: "${e.notes}"` : ''}`
+    ).join('\n');
+}
 
-const GROQ_URL   = 'https://api.groq.com/openai/v1/chat/completions';
-const GROQ_MODEL = 'llama-3.3-70b-versatile';
+// ─────────────────────────────────────────────
+// PROMPTS
+// ─────────────────────────────────────────────
+const PROMPTS = {
+  analyze: h =>
+    `You are a health analysis AI (NOT a doctor). User symptom history:\n\n${h}\n\n` +
+    `Analyze the pattern. Identify the most likely general condition. Note progression trends ` +
+    `and most concerning symptoms. Friendly language, brief summary first then details. ` +
+    `Under 300 words. Remind them to see a real doctor.`,
 
-// CORS origins — add your GitHub Pages URL and any other domains
-const ALLOWED_ORIGINS = [
-  'http://localhost:8080',
-  'http://localhost:3000',
-  'https://localhost',
-  // Add your real domain when you have it, e.g.:
-  // 'https://yourusername.github.io',
-  // 'https://ambrosia-app.com',
-];
+  correlations: h =>
+    `You are a health data analyst. User symptom history:\n\n${h}\n\n` +
+    `Find 3-4 meaningful correlations: what appears together, what worsens over time, ` +
+    `which triggers seem linked. Numbered list. Under 250 words.`,
 
-export default async function handler(req, res) {
-  // Handle CORS preflight
-  const origin = req.headers.origin;
-  if (ALLOWED_ORIGINS.includes(origin)) {
-    res.setHeader('Access-Control-Allow-Origin', origin);
-  }
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  report: h =>
+    `Generate a structured medical summary for a patient to show their doctor.\n\n` +
+    `Symptom history:\n${h}\n\n` +
+    `Sections:\n1. Timeline Summary\n2. Primary Symptoms & Progression\n` +
+    `3. Intensity Trends\n4. Identified Triggers\n5. Key Points for the Doctor\n\n` +
+    `Professional tone. Under 350 words.`,
 
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
-  }
+  recommend: h =>
+    `You are a health guidance AI. Symptom history:\n\n${h}\n\n` +
+    `Provide:\n1. 2-3 immediate self-care actions\n2. Which type of doctor to see and when\n` +
+    `3. Warning signs requiring urgent care\n4. Helpful lifestyle adjustments\n\n` +
+    `Practical and specific. Under 300 words. Emphasize consulting a real doctor.`,
 
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
+  doctor_visit: (h, appointmentDate, doctorType) =>
+    `You are preparing a patient for a medical appointment on ${appointmentDate} with a ${doctorType}.\n\n` +
+    `Their symptom history:\n${h}\n\n` +
+    `Create a structured pre-appointment briefing:\n` +
+    `1. CHIEF COMPLAINT (1-2 sentences)\n` +
+    `2. SYMPTOM TIMELINE (chronological)\n` +
+    `3. TOP 3 CONCERNS TO DISCUSS\n` +
+    `4. QUESTIONS TO ASK THE DOCTOR (5 specific questions)\n` +
+    `5. RELEVANT CONTEXT (triggers, patterns)\n\n` +
+    `Clear, doctor-friendly. Under 400 words.`
+};
 
-  const apiKey = process.env.GROQ_API_KEY;
-  if (!apiKey) {
-    return res.status(500).json({ error: 'AI service not configured' });
-  }
+const UI = {
+  analyze:      { label: '🔬 AI ANALYSIS',     loading: 'Analyzing your symptom patterns...' },
+  correlations: { label: '🔗 CORRELATIONS',    loading: 'Finding hidden connections...' },
+  report:       { label: '📋 DOCTOR REPORT',   loading: 'Generating your health report...' },
+  recommend:    { label: '💊 RECOMMENDATIONS', loading: 'Building recommendations...' },
+  doctor_visit: { label: '🏥 VISIT BRIEFING',  loading: 'Preparing your appointment briefing...' }
+};
 
-  const { prompt } = req.body;
-  if (!prompt || typeof prompt !== 'string') {
-    return res.status(400).json({ error: 'Invalid request: prompt required' });
-  }
+// ─────────────────────────────────────────────
+// RUN AI
+// ─────────────────────────────────────────────
+export async function runAI(type) {
+  if (isLocked('ai')) { showPaywall(type); return; }
 
-  // Basic rate limit hint (Vercel handles real rate limiting)
-  if (prompt.length > 8000) {
-    return res.status(400).json({ error: 'Prompt too long' });
-  }
+  const area = document.getElementById('ai-result-area');
+  if (!area) return;
+  const ui = UI[type] || UI.analyze;
+
+  area.innerHTML = `<div class="ai-result-box">
+    <div class="ai-result-label">${ui.label}</div>
+    <div class="ai-loading"><div class="ai-spinner"></div>${ui.loading}</div>
+  </div>`;
 
   try {
-    const groqRes = await fetch(GROQ_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type':  'application/json',
-        'Authorization': `Bearer ${apiKey}`
-      },
-      body: JSON.stringify({
-        model:       GROQ_MODEL,
-        max_tokens:  1000,
-        temperature: 0.4,
-        messages:    [{ role: 'user', content: prompt }]
-      })
-    });
+    const history = buildHistoryText();
+    let text, apptDate, docType;
 
-    const data = await groqRes.json();
-    if (data.error) {
-      return res.status(502).json({ error: data.error.message });
+    if (type === 'doctor_visit') {
+      apptDate = document.getElementById('dv-date')?.value || 'upcoming appointment';
+      docType  = document.getElementById('dv-doctor')?.value || 'General Practitioner';
+      text = await callAI(PROMPTS.doctor_visit(history, apptDate, docType));
+      renderDoctorVisitResult(area, text, apptDate, docType);
+      return;
     }
 
-    const text = data.choices?.[0]?.message?.content;
-    if (!text) {
-      return res.status(502).json({ error: 'Empty response from AI' });
-    }
+    text = await callAI(PROMPTS[type](history));
+    if (type === 'report') { renderReport(area, text); return; }
 
-    return res.status(200).json({ text });
+    area.innerHTML = `<div class="ai-result-box">
+      <div class="ai-result-label">${ui.label}</div>
+      <div class="ai-result-content">${text}</div>
+    </div>`;
 
   } catch (err) {
-    console.error('Groq proxy error:', err);
-    return res.status(500).json({ error: 'AI service temporarily unavailable' });
+    const isNoProxy = err.message === 'NO_PROXY';
+    area.innerHTML = `<div class="ai-result-box">
+      <div class="ai-result-label" style="color:var(--gold)">
+        ${isNoProxy ? '⚙️ AI COMING SOON' : '⚠️ ERROR'}
+      </div>
+      <div class="ai-result-content" style="color:var(--cream60)">
+        ${isNoProxy
+          ? 'AI features are being configured. Check back in a moment!'
+          : `Could not reach AI service.\n\n${err.message}`}
+      </div>
+    </div>`;
   }
 }
+
+// ─────────────────────────────────────────────
+// RESULT RENDERERS
+// ─────────────────────────────────────────────
+function renderReport(area, text) {
+  const today = new Date().toLocaleDateString('en', { year:'numeric', month:'long', day:'numeric' });
+  area.innerHTML = `<div class="ai-result-box">
+    <div class="ai-result-label">📋 DOCTOR REPORT</div>
+    <div class="report-meta">
+      <div><div class="report-meta-label">Generated</div><div class="report-meta-value">${today}</div></div>
+      <div><div class="report-meta-label">Entries</div><div class="report-meta-value">${state.entries.length}</div></div>
+      <div><div class="report-meta-label">Powered by</div><div class="report-meta-value">Groq AI</div></div>
+    </div>
+    <div class="ai-result-content">${text}</div>
+    <div style="margin-top:16px;font-size:12px;color:var(--coral);font-style:italic">
+      ⚠️ For informational purposes only. Always consult a qualified medical professional.
+    </div>
+  </div>`;
+}
+
+function renderDoctorVisitResult(area, text, apptDate, docType) {
+  area.innerHTML = `<div class="ai-result-box">
+    <div class="ai-result-label">🏥 APPOINTMENT BRIEFING</div>
+    <div class="report-meta">
+      <div><div class="report-meta-label">Appointment</div><div class="report-meta-value">${apptDate}</div></div>
+      <div><div class="report-meta-label">Doctor</div><div class="report-meta-value">${docType}</div></div>
+    </div>
+    <div class="ai-result-content">${text}</div>
+    <div style="margin-top:16px;padding:14px 16px;background:var(--mint-dim);border-radius:var(--r-sm);display:flex;gap:10px;align-items:center">
+      <div style="font-size:20px">💡</div>
+      <div style="font-size:13px;color:var(--cream60)">Show this briefing to your doctor at the start of your appointment.</div>
+    </div>
+  </div>`;
+}
+
+// ─────────────────────────────────────────────
+// RENDER AI SCREEN — includes Doctor Visit form
+// ─────────────────────────────────────────────
+export function initAI() {
+  const area = document.getElementById('ai-result-area');
+  if (area) area.innerHTML = '';
+
+  const dvForm = document.getElementById('dv-form');
+  if (!dvForm) return;
+
+  const locked = isLocked('ai');
+  const today  = new Date().toISOString().split('T')[0];
+
+  dvForm.innerHTML = `
+    <div class="dv-row">
+      <div class="dv-field">
+        <div class="dv-label">📅 Appointment date</div>
+        <input type="date" id="dv-date" class="dv-input" value="${today}" min="${today}">
+      </div>
+      <div class="dv-field">
+        <div class="dv-label">🩺 Doctor type</div>
+        <select id="dv-doctor" class="dv-input">
+          <option>General Practitioner</option>
+          <option>ENT Specialist</option>
+          <option>Cardiologist</option>
+          <option>Gastroenterologist</option>
+          <option>Neurologist</option>
+          <option>Dermatologist</option>
+          <option>Pulmonologist</option>
+          <option>Psychiatrist / Therapist</option>
+          <option>Orthopedist</option>
+          <option>Other Specialist</option>
+        </select>
+      </div>
+    </div>
+    <button class="dv-btn ${locked ? 'dv-btn--locked' : ''}"
+      onclick="${locked ? "showPaywall('doctor_visit')" : "runAI('doctor_visit')"}">
+      ${locked ? '🔒 Premium — Upgrade to unlock' : '🏥 Generate Visit Briefing'}
+    </button>`;
+}
+
+registerScreen('ai', initAI);
