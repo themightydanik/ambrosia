@@ -1,24 +1,28 @@
 // ─────────────────────────────────────────────
-// AMBROSIA CONFIG
+// AMBROSIA CLIENT CONFIG
 // ─────────────────────────────────────────────
-// IMPORTANT: Add this file to .gitignore before pushing!
-// Never commit your real API key to a public repo.
-//
-// For production: replace the proxy URL with your
-// Vercel/Netlify serverless function endpoint.
+// No API keys here — safe to commit.
+// The Groq key lives in Vercel environment variables.
 // ─────────────────────────────────────────────
 
-// Your Groq API key — paste here for development
-// For production, use the proxy approach (see README)
-export const GROQ_API_KEY = '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';
+// AI Proxy URL — your Vercel deployment URL + /api/ai
+// During local development: use '' to get a "coming soon" message
+// After deploying to Vercel: paste your URL here, e.g.:
+//   'https://ambrosia-app.vercel.app/api/ai'
+export const AI_PROXY_URL = '';
 
-// Groq model to use
+// Groq model (informational — actual model set in api/ai.js on the server)
 export const GROQ_MODEL = 'llama-3.3-70b-versatile';
 
-// Payment link (Stripe, Lemon Squeezy, Paddle, etc.)
-// Paste your payment link here when ready
-export const PAYMENT_LINK = '';
+// In-App Purchase product IDs
+// These must match exactly what you create in:
+//   Google Play Console → Monetization → Subscriptions
+//   App Store Connect → In-App Purchases
+export const IAP_PRODUCT_IDS = {
+  monthly: 'com.ambrosia.premium.monthly',   // $2.50/month
+  yearly:  'com.ambrosia.premium.yearly',    // e.g. $19.99/year (~33% off)
+};
 
-// Access codes for testing / early adopters / promo
-// Add your promo codes here
+// Promo codes for testing / early adopters
+// Safe to be in code — these are just text codes you define
 export const PROMO_CODES = ['AMBROSIA25', 'EARLYBIRD', 'HEALTHPRO'];
