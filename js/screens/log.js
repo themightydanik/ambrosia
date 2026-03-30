@@ -2,6 +2,7 @@ import { state, saveEntries } from '../state.js';
 import { t } from '../i18n.js';
 import { CATEGORIES, CAT_NAMES, TRIGGERS, TRIGGER_ICONS } from '../data.js';
 import { registerScreen, goTo } from '../navigation.js';
+import { canLogEntry, showPaywall, entryLimitBanner } from '../premium.js';
 
 // ─────────────────────────────────────────────
 // INTENSITY DESCRIPTIONS
@@ -148,6 +149,7 @@ function updateIntensityDisplay(v) {
 // STEP 3 — SAVE ENTRY
 // ─────────────────────────────────────────────
 export function saveLog() {
+  if (!canLogEntry()) { showPaywall("entries"); return; }
   const notesEl = document.getElementById('log-notes');
   const entry = {
     id:        Date.now(),
