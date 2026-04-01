@@ -224,18 +224,9 @@
     <div class="settings-section-title" id="set-pref-title">PREFERENCES</div>
     <div class="setting-row"><div class="setting-row-left"><div class="setting-icon">🔔</div><div class="setting-label" id="set-notif">Reminders</div></div><div class="setting-value">Daily 20:00</div></div>
     <div class="setting-row"><div class="setting-row-left"><div class="setting-icon">🎨</div><div class="setting-label" id="set-theme">Theme</div></div><div class="setting-value">Dark Forest</div></div>
-    <!-- AI PROVIDER / GROQ KEY -->
-    <div class="setting-row" style="flex-direction:column;align-items:stretch;gap:10px;cursor:default">
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <div class="setting-row-left"><div class="setting-icon">🤖</div><div class="setting-label" id="set-ai">AI Provider</div></div>
-        <div class="setting-value" id="set-ai-val">Groq</div>
-      </div>
-      <input type="text" id="groq-key-input" class="groq-input" placeholder="Paste your free Groq API key...">
-      <div style="display:flex;gap:8px">
-        <button class="groq-save-btn" onclick="saveGroqKeyFromSettings()">Save Key</button>
-        <a href="https://console.groq.com" target="_blank" class="groq-link-btn">Get free key ↗</a>
-      </div>
-      <div id="groq-key-msg" style="font-size:12px;color:var(--mint)"></div>
+    <div class="setting-row">
+      <div class="setting-row-left"><div class="setting-icon">🤖</div><div class="setting-label" id="set-ai">AI Provider</div></div>
+      <div class="setting-value">Groq AI</div>
     </div>
   </div>
   <div class="settings-section">
