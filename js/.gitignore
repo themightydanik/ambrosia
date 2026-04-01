@@ -1,6 +1,0 @@
-# NEVER commit your API key to a public repo!
-js/config.js
-
-# OS files
-.DS_Store
-Thumbs.db
