@@ -4,7 +4,7 @@ import { registerScreen, goTo } from '../navigation.js';
 import { renderHome } from './home.js';
 import { renderHistory } from './history.js';
 import { isPremium } from '../premium.js';
-import { PAYMENT_LINK, PROMO_CODES } from '../config.js';
+import { PROMO_CODES } from '../config.js';
 
 // ─────────────────────────────────────────────
 // RENDER SETTINGS / PROFILE
