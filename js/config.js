@@ -9,7 +9,7 @@
 // During local development: use '' to get a "coming soon" message
 // After deploying to Vercel: paste your URL here, e.g.:
 //   'https://ambrosia-app.vercel.app/api/ai'
-export const AI_PROXY_URL = 'https://ambrosia-beige.vercel.app/';
+export const AI_PROXY_URL = 'https://ambrosia-beige.vercel.app/api/ai';
 
 // Groq model (informational — actual model set in api/ai.js on the server)
 export const GROQ_MODEL = 'llama-3.3-70b-versatile';
