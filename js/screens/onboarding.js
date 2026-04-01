@@ -33,3 +33,6 @@ export function startApp() {
   markOnboardingDone();
   goTo('home');
 }
+
+window.obNext = obNext;
+window.startApp = startApp;
