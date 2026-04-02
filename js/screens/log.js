@@ -2,19 +2,13 @@ import { state, saveEntries } from '../state.js';
 import { t } from '../i18n.js';
 import { CATEGORIES, CAT_NAMES, TRIGGERS, TRIGGER_ICONS } from '../data.js';
 import { registerScreen, goTo } from '../navigation.js';
-import { canLogEntry, showPaywall, entryLimitBanner } from '../premium.js';
+import { canLogEntry, showPaywall } from '../premium.js';
 
-// ─────────────────────────────────────────────
-// INTENSITY DESCRIPTIONS
-// ─────────────────────────────────────────────
 const INTENSITY_DESC = {
   1:'i1', 2:'i2', 3:'i3', 4:'i4', 5:'i5',
   6:'i6', 7:'i7', 8:'i8', 9:'i9', 10:'i10'
 };
 
-// ─────────────────────────────────────────────
-// INIT LOG SCREEN (reset state)
-// ─────────────────────────────────────────────
 export function initLog() {
   state.logStep      = 0;
   state.logCat       = null;
@@ -34,9 +28,6 @@ export function initLog() {
   showLogStep(0);
 }
 
-// ─────────────────────────────────────────────
-// STEP NAVIGATION
-// ─────────────────────────────────────────────
 export function showLogStep(n) {
   state.logStep = n;
   for (let i = 0; i <= 3; i++) {
@@ -51,7 +42,7 @@ function updateStepDots() {
     const d = document.getElementById('lsd' + i);
     if (!d) continue;
     d.classList.remove('active', 'done');
-    if (i < state.logStep)       d.classList.add('done');
+    if (i < state.logStep)        d.classList.add('done');
     else if (i === state.logStep) d.classList.add('active');
   }
 }
@@ -64,9 +55,6 @@ export function logNextStep(n) {
   showLogStep(n);
 }
 
-// ─────────────────────────────────────────────
-// STEP 0 — CATEGORY GRID
-// ─────────────────────────────────────────────
 function renderCatGrid() {
   const el = document.getElementById('cat-grid');
   if (!el) return;
@@ -88,9 +76,6 @@ export function selectCat(cat) {
   setTimeout(() => showLogStep(1), 180);
 }
 
-// ─────────────────────────────────────────────
-// STEP 1 — SYMPTOM LIST
-// ─────────────────────────────────────────────
 function renderSymptomList(cat) {
   const el = document.getElementById('symptom-list');
   if (!el) return;
@@ -110,9 +95,6 @@ export function toggleSym(s) {
   if (btn) btn.classList.toggle('selected', state.logSymptoms.includes(s));
 }
 
-// ─────────────────────────────────────────────
-// STEP 2 — INTENSITY & TRIGGERS
-// ─────────────────────────────────────────────
 function renderTriggers() {
   const el = document.getElementById('trigger-grid');
   if (!el) return;
@@ -145,22 +127,29 @@ function updateIntensityDisplay(v) {
   if (sliderEl)  sliderEl.value        = v;
 }
 
-// ─────────────────────────────────────────────
-// STEP 3 — SAVE ENTRY
-// ─────────────────────────────────────────────
 export function saveLog() {
-  if (!canLogEntry()) { showPaywall("entries"); return; }
+  if (!canLogEntry()) { showPaywall('entries'); return; }
+
   const notesEl = document.getElementById('log-notes');
+  const now     = new Date();
+  // Format time as HH:MM
+  const time = now.toTimeString().slice(0, 5);
+
   const entry = {
-    id:        Date.now(),
-    date:      new Date().toISOString().split('T')[0],
-    timestamp: new Date().toISOString(),
-    category:  state.logCat,
-    symptoms:  [...state.logSymptoms],
-    intensity: state.logIntensity,
-    triggers:  [...state.logTriggers],
-    notes:     notesEl ? notesEl.value.trim() : ''
+    id:           Date.now(),
+    date:         now.toISOString().split('T')[0],
+    time,
+    timestamp:    now.toISOString(),
+    category:     state.logCat,
+    symptoms:     [...state.logSymptoms],
+    intensity:    state.logIntensity,
+    triggers:     [...state.logTriggers],
+    notes:        notesEl ? notesEl.value.trim() : '',
+    isUpdate:     false,
+    parentId:     null,
+    updateStatus: null,
   };
+
   state.entries.push(entry);
   saveEntries();
   goTo('home');
