@@ -1,6 +1,3 @@
-// ─────────────────────────────────────────────
-// SYMPTOM CATEGORIES & THEIR SYMPTOMS
-// ─────────────────────────────────────────────
 export const CATEGORIES = {
   general:     { icon: '🌡️', symptoms: ['fatigue','fever','chills','weakness','loss_of_appetite'] },
   respiratory: { icon: '🫁', symptoms: ['cough','sore_throat','runny_nose','shortness_of_breath','congestion'] },
@@ -36,88 +33,128 @@ export const SYMPTOM_COLORS = {
   rash: '#E07560', itching: '#D4A853', swelling: '#8EC5FC', bruising: '#8060A0'
 };
 
-// Pre-loaded sample data (3-day illness progression)
+export const STATUS_COLORS = {
+  resolved: '#5BBFA0',
+  improved: '#D4A853',
+  same:     '#A0A0A0',
+  worse:    '#E07560'
+};
+
 export const SAMPLE_ENTRIES = [
   {
-    id: 1, date: '2026-03-27', timestamp: new Date('2026-03-27T19:30').toISOString(),
+    id: 1, date: '2026-03-27', time: '19:30', timestamp: new Date('2026-03-27T19:30').toISOString(),
     category: 'general', symptoms: ['fatigue','loss_of_appetite'],
     intensity: 4, triggers: ['stress','poor_sleep'],
-    notes: 'Feeling unusually tired after work. Not hungry at dinner.'
+    notes: 'Feeling unusually tired after work. Not hungry at dinner.',
+    isUpdate: false, parentId: null, updateStatus: null
   },
   {
-    id: 2, date: '2026-03-28', timestamp: new Date('2026-03-28T21:00').toISOString(),
+    id: 2, date: '2026-03-28', time: '21:00', timestamp: new Date('2026-03-28T21:00').toISOString(),
     category: 'respiratory', symptoms: ['sore_throat','runny_nose','fatigue'],
     intensity: 6, triggers: ['cold_weather'],
-    notes: 'Throat started hurting in the afternoon. Definitely coming down with something.'
+    notes: 'Throat started hurting in the afternoon. Definitely coming down with something.',
+    isUpdate: false, parentId: null, updateStatus: null
   },
   {
-    id: 3, date: '2026-03-29', timestamp: new Date('2026-03-29T10:00').toISOString(),
+    id: 3, date: '2026-03-29', time: '10:00', timestamp: new Date('2026-03-29T10:00').toISOString(),
     category: 'respiratory', symptoms: ['sore_throat','cough','fever','headache','fatigue'],
     intensity: 7, triggers: [],
-    notes: 'Woke up with fever (37.8°C). Cough started. Headache throughout the day.'
+    notes: 'Woke up with fever (37.8°C). Cough started. Headache throughout the day.',
+    isUpdate: false, parentId: null, updateStatus: null
+  },
+  {
+    id: 4, date: '2026-03-31', time: '09:15', timestamp: new Date('2026-03-31T09:15').toISOString(),
+    category: 'respiratory', symptoms: ['sore_throat','cough','fatigue'],
+    intensity: 4, triggers: [],
+    notes: 'Feeling a bit better. Fever gone, cough less frequent.',
+    isUpdate: true, parentId: 3, updateStatus: 'improved'
   }
 ];
 
-// ─────────────────────────────────────────────
-// TRANSLATIONS  (add new languages here)
-// ─────────────────────────────────────────────
 export const T = {
   en: {
-    // nav
-    navHome: 'Home', navHist: 'History', navAI: 'AI', navSet: 'Profile',
-    // greetings
-    goodMorning: 'GOOD MORNING', goodAfternoon: 'GOOD AFTERNOON', goodEvening: 'GOOD EVENING',
-    // home
-    overallFeeling: 'OVERALL FEELING TODAY',
-    todaySymptoms: "TODAY'S SYMPTOMS", logBtn: '+ Log',
-    recentEntries: 'RECENT ENTRIES', seeAll: 'See all',
-    chartTitle: '7-DAY SYMPTOM INTENSITY',
-    noSymptoms: 'No symptoms logged today',
-    homeAiInsight: 'Your symptoms suggest early-stage upper respiratory illness. Tap to see full analysis →',
-    // log
-    logTitle: 'Log Symptom', selectCat: 'Select category',
-    selectSymptoms: 'Select symptoms (tap all that apply)',
-    overallIntensity: 'Overall intensity', triggers: 'Triggers (optional)',
-    addNotes: 'Any additional notes?', notesPlaceholder: 'How are you feeling? Any context that might be relevant...',
-    nextBtn: 'Next →', saveBtn: 'Save Entry',
-    mild: 'Mild', moderate: 'Moderate', severe: 'Severe',
+    navHome:'Home', navHist:'History', navAI:'AI', navSet:'Profile',
+    goodMorning:'GOOD MORNING', goodAfternoon:'GOOD AFTERNOON', goodEvening:'GOOD EVENING',
+    overallFeeling:'OVERALL FEELING TODAY',
+    todaySymptoms:"TODAY'S SYMPTOMS", logBtn:'+ Log',
+    recentEntries:'RECENT ENTRIES', seeAll:'See all',
+    chartTitle:'7-DAY SYMPTOM INTENSITY',
+    noSymptoms:'No symptoms logged today',
+    homeAiInsight:'Your symptoms suggest early-stage upper respiratory illness. Tap to see full analysis →',
+    homeAiNoSymptoms:'Log your symptoms and AI will analyze patterns for you →',
+    // Home DV card
+    dvCardTitle:'Before your next appointment',
+    dvCardSub:'AI prepares a briefing your doctor will love →',
+    // AI screen
+    aiHeadlineMain:'What does your body',
+    aiHeadlineEm:'tell us?',
+    aiDivider:'OTHER AI TOOLS',
+    dvFeatureTitle:'Before Your Doctor Visit',
+    dvFeatureSub:'AI prepares everything your doctor needs to know',
+    dvBtnLocked:'🔒 Premium — Upgrade to unlock',
+    dvBtnUnlocked:'🏥 Generate Visit Briefing',
+    dvDateLabel:'📅 Appointment date',
+    dvDoctorLabel:'🩺 Doctor type',
+    // Log
+    logTitle:'Log Symptom', selectCat:'Select category',
+    selectSymptoms:'Select symptoms (tap all that apply)',
+    overallIntensity:'Overall intensity', triggers:'Triggers (optional)',
+    addNotes:'Any additional notes?', notesPlaceholder:'How are you feeling? Any context that might be relevant...',
+    nextBtn:'Next →', saveBtn:'Save Entry',
+    mild:'Mild', moderate:'Moderate', severe:'Severe',
     i1:'Very mild — barely noticeable', i2:'Mild — slight discomfort', i3:'Mild — noticeable',
     i4:'Moderate — somewhat bothersome', i5:'Moderate — noticeable but manageable',
     i6:'Moderate-severe — affecting daily activities', i7:'Severe — difficult to ignore',
     i8:'Severe — significantly limiting', i9:'Very severe — debilitating', i10:'Extreme — unbearable',
-    // categories
     catGeneral:'General', catRespiratory:'Respiratory', catDigestive:'Digestive',
     catPain:'Pain', catMental:'Mental', catSkin:'Skin',
-    // symptoms
     fatigue:'Fatigue', fever:'Fever', chills:'Chills', weakness:'Weakness', loss_of_appetite:'Loss of appetite',
     cough:'Cough', sore_throat:'Sore throat', runny_nose:'Runny nose', shortness_of_breath:'Shortness of breath', congestion:'Congestion',
     nausea:'Nausea', stomach_pain:'Stomach pain', bloating:'Bloating', diarrhea:'Diarrhea', heartburn:'Heartburn',
     headache:'Headache', back_pain:'Back pain', joint_pain:'Joint pain', muscle_ache:'Muscle ache', chest_pain:'Chest pain',
     anxiety:'Anxiety', brain_fog:'Brain fog', mood_changes:'Mood changes', insomnia:'Insomnia', stress:'Stress',
     rash:'Rash', itching:'Itching', swelling:'Swelling', bruising:'Bruising',
-    // triggers
     poor_sleep:'Poor sleep', bad_diet:'Bad diet', cold_weather:'Cold weather',
     alcohol:'Alcohol', exercise:'Exercise', allergen:'Allergen', medication:'Medication',
-    // history
     histTitle:'Health History', histSub:'Your complete symptom timeline',
     noEntries:'No entries yet. Tap ➕ to log your first symptom.',
     allFilter:'All',
-    // ai
     aiTag:'AI HEALTH ASSISTANT',
     aiBt1:'Analyze My Symptoms', aiBd1:'Get AI insights on patterns and possible conditions',
     aiBt2:'Find Correlations', aiBd2:'Discover hidden connections between your symptoms',
     aiBt3:'Generate Doctor Report', aiBd3:'Create a comprehensive summary for your appointment',
     aiBt4:'Get Recommendations', aiBd4:'What to do now and which doctor to see',
-    // settings
     setTitle:'Profile & Settings', setLang:'LANGUAGE', setPref:'PREFERENCES',
     setData:'DATA', setNotif:'Reminders', setTheme:'Theme',
     setExport:'Export Data', setClear:'Clear All Data',
     entries:'Entries', daysTracked:'Days tracked', symptoms:'Symptoms',
-    // feeling scale
     feeling1:'Feeling great', feeling2:'Feeling good', feeling3:'Slight discomfort',
     feeling4:'Mild discomfort', feeling5:'Moderate discomfort',
     feeling6:'Feeling unwell', feeling7:'Quite unwell', feeling8:'Feeling poorly',
     feeling9:'Feeling very ill', feeling10:'Critical',
+    // Entry cards
+    intensityLabel:'Intensity',
+    // Modal
+    modalEntryTitle:'Entry Details',
+    modalUpdateBtn:'Update Status',
+    modalDeleteBtn:'Delete Entry',
+    modalCloseBtn:'Close',
+    modalDeleteConfirm:'Delete this entry? This cannot be undone.',
+    modalPickStatus:'How is this symptom now?',
+    modalUpdateSaved:'Status update saved',
+    // Status options
+    statusResolved:'Resolved — symptom is gone',
+    statusImproved:'Improved — feeling better',
+    statusSame:'Same — no change',
+    statusWorse:'Worse — getting worse',
+    // Status short labels (for timeline)
+    statusResolvedShort:'Resolved',
+    statusImprovedShort:'Improved',
+    statusSameShort:'No change',
+    statusWorseShort:'Worsened',
+    updateLabel:'Status update',
+    // Placeholders
+    updateNotesPlaceholder:'Any notes about this change?',
   },
 
   ru: {
@@ -129,6 +166,18 @@ export const T = {
     chartTitle:'ИНТЕНСИВНОСТЬ ЗА 7 ДНЕЙ',
     noSymptoms:'Симптомы за сегодня не записаны',
     homeAiInsight:'Ваши симптомы указывают на начало ОРВИ. Нажмите для полного анализа →',
+    homeAiNoSymptoms:'Записывайте симптомы, и ИИ проанализирует паттерны →',
+    dvCardTitle:'Перед следующим приёмом',
+    dvCardSub:'ИИ подготовит брифинг для вашего врача →',
+    aiHeadlineMain:'Что говорит ваш',
+    aiHeadlineEm:'организм?',
+    aiDivider:'ДРУГИЕ ИИ ИНСТРУМЕНТЫ',
+    dvFeatureTitle:'Перед визитом к врачу',
+    dvFeatureSub:'ИИ подготовит всё, что нужно знать вашему врачу',
+    dvBtnLocked:'🔒 Премиум — Обновите для доступа',
+    dvBtnUnlocked:'🏥 Создать брифинг для визита',
+    dvDateLabel:'📅 Дата приёма',
+    dvDoctorLabel:'🩺 Тип врача',
     logTitle:'Записать симптом', selectCat:'Выберите категорию',
     selectSymptoms:'Выберите симптомы (можно несколько)',
     overallIntensity:'Общая интенсивность', triggers:'Триггеры (необязательно)',
@@ -165,6 +214,24 @@ export const T = {
     feeling4:'Умеренный дискомфорт', feeling5:'Умеренное недомогание',
     feeling6:'Нехорошо', feeling7:'Довольно плохо', feeling8:'Плохо',
     feeling9:'Очень плохо', feeling10:'Критично',
+    intensityLabel:'Интенсивность',
+    modalEntryTitle:'Детали записи',
+    modalUpdateBtn:'Обновить статус',
+    modalDeleteBtn:'Удалить запись',
+    modalCloseBtn:'Закрыть',
+    modalDeleteConfirm:'Удалить эту запись? Это действие нельзя отменить.',
+    modalPickStatus:'Как сейчас обстоит дело с этим симптомом?',
+    modalUpdateSaved:'Статус обновлён',
+    statusResolved:'Прошло — симптом исчез',
+    statusImproved:'Улучшение — стало лучше',
+    statusSame:'Без изменений',
+    statusWorse:'Ухудшение — стало хуже',
+    statusResolvedShort:'Прошло',
+    statusImprovedShort:'Улучшение',
+    statusSameShort:'Без изменений',
+    statusWorseShort:'Ухудшение',
+    updateLabel:'Обновление статуса',
+    updateNotesPlaceholder:'Заметки об изменении...',
   },
 
   uk: {
@@ -176,6 +243,18 @@ export const T = {
     chartTitle:'ІНТЕНСИВНІСТЬ ЗА 7 ДНІВ',
     noSymptoms:'Симптоми за сьогодні не записані',
     homeAiInsight:'Ваші симптоми вказують на початок ГРВІ. Натисніть для повного аналізу →',
+    homeAiNoSymptoms:'Записуйте симптоми, і ШІ проаналізує патерни →',
+    dvCardTitle:'Перед наступним прийомом',
+    dvCardSub:'ШІ підготує брифінг для вашого лікаря →',
+    aiHeadlineMain:'Що каже ваш',
+    aiHeadlineEm:'організм?',
+    aiDivider:'ІНШІ ШІ ІНСТРУМЕНТИ',
+    dvFeatureTitle:'Перед візитом до лікаря',
+    dvFeatureSub:'ШІ підготує все, що потрібно знати вашому лікарю',
+    dvBtnLocked:'🔒 Преміум — Оновіть для доступу',
+    dvBtnUnlocked:'🏥 Створити брифінг для візиту',
+    dvDateLabel:'📅 Дата прийому',
+    dvDoctorLabel:'🩺 Тип лікаря',
     logTitle:'Записати симптом', selectCat:'Оберіть категорію',
     selectSymptoms:'Оберіть симптоми (можна кілька)',
     overallIntensity:'Загальна інтенсивність', triggers:"Тригери (необов'язково)",
@@ -212,5 +291,23 @@ export const T = {
     feeling4:'Помірний дискомфорт', feeling5:'Помірне нездужання',
     feeling6:'Погано', feeling7:'Досить погано', feeling8:'Зле',
     feeling9:'Дуже погано', feeling10:'Критично',
+    intensityLabel:'Інтенсивність',
+    modalEntryTitle:'Деталі запису',
+    modalUpdateBtn:'Оновити статус',
+    modalDeleteBtn:'Видалити запис',
+    modalCloseBtn:'Закрити',
+    modalDeleteConfirm:'Видалити цей запис? Цю дію не можна скасувати.',
+    modalPickStatus:'Як зараз справи з цим симптомом?',
+    modalUpdateSaved:'Статус оновлено',
+    statusResolved:'Пройшло — симптом зник',
+    statusImproved:'Покращення — стало краще',
+    statusSame:'Без змін',
+    statusWorse:'Погіршення — стало гірше',
+    statusResolvedShort:'Пройшло',
+    statusImprovedShort:'Покращення',
+    statusSameShort:'Без змін',
+    statusWorseShort:'Погіршення',
+    updateLabel:'Оновлення статусу',
+    updateNotesPlaceholder:'Нотатки про зміну...',
   }
 };
