@@ -2,11 +2,8 @@ import { state } from '../state.js';
 import { registerScreen } from '../navigation.js';
 import { isLocked, showPaywall } from '../premium.js';
 import { AI_PROXY_URL } from '../config.js';
+import { t } from '../i18n.js';
 
-// ─────────────────────────────────────────────
-// AI CALL — goes through your Vercel proxy
-// The Groq key never touches the frontend.
-// ─────────────────────────────────────────────
 async function callAI(prompt) {
   if (!AI_PROXY_URL) throw new Error('NO_PROXY');
   const res = await fetch(AI_PROXY_URL, {
@@ -19,23 +16,30 @@ async function callAI(prompt) {
   return data.text;
 }
 
-// ─────────────────────────────────────────────
-// BUILD HISTORY TEXT FOR PROMPTS
-// ─────────────────────────────────────────────
 export function buildHistoryText() {
-  if (state.entries.length === 0) return 'No symptom entries recorded yet.';
-  return [...state.entries]
+  const mainEntries = state.entries.filter(e => !e.isUpdate);
+  if (mainEntries.length === 0) return 'No symptom entries recorded yet.';
+
+  const updateMap = {};
+  state.entries.filter(e => e.isUpdate && e.parentId).forEach(u => {
+    if (!updateMap[u.parentId]) updateMap[u.parentId] = [];
+    updateMap[u.parentId].push(u);
+  });
+
+  return [...mainEntries]
     .sort((a, b) => a.date.localeCompare(b.date))
-    .map(e =>
-      `Date: ${e.date} | Symptoms: ${e.symptoms.join(', ')} | Intensity: ${e.intensity}/10` +
-      `${e.triggers.length ? ' | Triggers: ' + e.triggers.join(', ') : ''}` +
-      `${e.notes ? ` | Notes: "${e.notes}"` : ''}`
-    ).join('\n');
+    .map(e => {
+      let line = `Date: ${e.date}${e.time ? ' ' + e.time : ''} | Symptoms: ${e.symptoms.join(', ')} | Intensity: ${e.intensity}/10`;
+      if (e.triggers.length) line += ` | Triggers: ${e.triggers.join(', ')}`;
+      if (e.notes) line += ` | Notes: "${e.notes}"`;
+      const updates = updateMap[e.id] || [];
+      if (updates.length) {
+        line += ' | Status updates: ' + updates.map(u => `${u.date} → ${u.updateStatus}`).join(', ');
+      }
+      return line;
+    }).join('\n');
 }
 
-// ─────────────────────────────────────────────
-// PROMPTS
-// ─────────────────────────────────────────────
 const PROMPTS = {
   analyze: h =>
     `You are a health analysis AI (NOT a doctor). User symptom history:\n\n${h}\n\n` +
@@ -65,11 +69,9 @@ const PROMPTS = {
     `You are preparing a patient for a medical appointment on ${appointmentDate} with a ${doctorType}.\n\n` +
     `Their symptom history:\n${h}\n\n` +
     `Create a structured pre-appointment briefing:\n` +
-    `1. CHIEF COMPLAINT (1-2 sentences)\n` +
-    `2. SYMPTOM TIMELINE (chronological)\n` +
-    `3. TOP 3 CONCERNS TO DISCUSS\n` +
-    `4. QUESTIONS TO ASK THE DOCTOR (5 specific questions)\n` +
-    `5. RELEVANT CONTEXT (triggers, patterns)\n\n` +
+    `1. CHIEF COMPLAINT (1-2 sentences)\n2. SYMPTOM TIMELINE (chronological)\n` +
+    `3. TOP 3 CONCERNS TO DISCUSS\n4. QUESTIONS TO ASK THE DOCTOR (5 specific questions)\n` +
+    `5. RELEVANT CONTEXT (triggers, patterns, status updates)\n\n` +
     `Clear, doctor-friendly. Under 400 words.`
 };
 
@@ -81,9 +83,6 @@ const UI = {
   doctor_visit: { label: '🏥 VISIT BRIEFING',  loading: 'Preparing your appointment briefing...' }
 };
 
-// ─────────────────────────────────────────────
-// RUN AI
-// ─────────────────────────────────────────────
 export async function runAI(type) {
   if (isLocked('ai')) { showPaywall(type); return; }
 
@@ -123,24 +122,19 @@ export async function runAI(type) {
         ${isNoProxy ? '⚙️ AI COMING SOON' : '⚠️ ERROR'}
       </div>
       <div class="ai-result-content" style="color:var(--cream60)">
-        ${isNoProxy
-          ? 'AI features are being configured. Check back in a moment!'
-          : `Could not reach AI service.\n\n${err.message}`}
+        ${isNoProxy ? 'AI features are being configured. Check back soon!' : `Could not reach AI.\n\n${err.message}`}
       </div>
     </div>`;
   }
 }
 
-// ─────────────────────────────────────────────
-// RESULT RENDERERS
-// ─────────────────────────────────────────────
 function renderReport(area, text) {
   const today = new Date().toLocaleDateString('en', { year:'numeric', month:'long', day:'numeric' });
   area.innerHTML = `<div class="ai-result-box">
     <div class="ai-result-label">📋 DOCTOR REPORT</div>
     <div class="report-meta">
       <div><div class="report-meta-label">Generated</div><div class="report-meta-value">${today}</div></div>
-      <div><div class="report-meta-label">Entries</div><div class="report-meta-value">${state.entries.length}</div></div>
+      <div><div class="report-meta-label">Entries</div><div class="report-meta-value">${state.entries.filter(e=>!e.isUpdate).length}</div></div>
       <div><div class="report-meta-label">Powered by</div><div class="report-meta-value">Groq AI</div></div>
     </div>
     <div class="ai-result-content">${text}</div>
@@ -165,9 +159,6 @@ function renderDoctorVisitResult(area, text, apptDate, docType) {
   </div>`;
 }
 
-// ─────────────────────────────────────────────
-// RENDER AI SCREEN — includes Doctor Visit form
-// ─────────────────────────────────────────────
 export function initAI() {
   const area = document.getElementById('ai-result-area');
   if (area) area.innerHTML = '';
@@ -181,11 +172,11 @@ export function initAI() {
   dvForm.innerHTML = `
     <div class="dv-row">
       <div class="dv-field">
-        <div class="dv-label">📅 Appointment date</div>
+        <div class="dv-label" id="dv-date-label">${t('dvDateLabel')}</div>
         <input type="date" id="dv-date" class="dv-input" value="${today}" min="${today}">
       </div>
       <div class="dv-field">
-        <div class="dv-label">🩺 Doctor type</div>
+        <div class="dv-label" id="dv-doctor-label">${t('dvDoctorLabel')}</div>
         <select id="dv-doctor" class="dv-input">
           <option>General Practitioner</option>
           <option>ENT Specialist</option>
@@ -202,7 +193,7 @@ export function initAI() {
     </div>
     <button class="dv-btn ${locked ? 'dv-btn--locked' : ''}"
       onclick="${locked ? "showPaywall('doctor_visit')" : "runAI('doctor_visit')"}">
-      ${locked ? '🔒 Premium — Upgrade to unlock' : '🏥 Generate Visit Briefing'}
+      ${locked ? t('dvBtnLocked') : t('dvBtnUnlocked')}
     </button>`;
 }
 
