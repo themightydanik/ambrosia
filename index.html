@@ -84,8 +84,8 @@
   <div class="doctor-visit-card" onclick="goTo('ai')">
     <div class="dv-card-icon">🏥</div>
     <div class="dv-card-body">
-      <div class="dv-card-title">Before your next appointment</div>
-      <div class="dv-card-sub">AI prepares a briefing your doctor will love →</div>
+      <div class="dv-card-title" id="dv-card-title">Before your next appointment</div>
+      <div class="dv-card-sub" id="dv-card-sub">AI prepares a briefing your doctor will love →</div>
     </div>
   </div>
   <div class="mini-chart">
@@ -153,7 +153,7 @@
 <div id="screen-ai" class="screen">
   <div class="ai-top">
     <div class="ai-tagline" id="ai-tag">AI HEALTH ASSISTANT</div>
-    <div class="ai-headline">What does your body <em style="font-style:italic;color:var(--gold)">tell us?</em></div>
+    <div class="ai-headline"><span id="ai-headline-main">What does your body</span> <em id="ai-headline-em" style="font-style:italic;color:var(--gold)">tell us?</em></div>
 
     <!-- Doctor Visit Briefing — KILLER FEATURE -->
     <div class="dv-feature-card">
@@ -168,7 +168,7 @@
       <div id="dv-form"></div>
     </div>
 
-    <div class="ai-divider">OTHER AI TOOLS</div>
+    <div class="ai-divider" id="ai-divider-text">OTHER AI TOOLS</div>
 
     <div class="ai-action-btns">
       <button class="ai-action-btn primary-action" onclick="runAI('analyze')">
