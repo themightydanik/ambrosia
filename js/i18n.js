@@ -1,20 +1,12 @@
 import { T } from './data.js';
 import { state } from './state.js';
 
-// ─────────────────────────────────────────────
-// TRANSLATION HELPER
-// ─────────────────────────────────────────────
 export function t(key) {
   const lang = T[state.lang] || T.en;
   return lang[key] ?? T.en[key] ?? key;
 }
 
-// ─────────────────────────────────────────────
-// APPLY ALL LANGUAGE STRINGS TO DOM
-// Call after any language change or screen transition
-// ─────────────────────────────────────────────
 export function applyLang() {
-  // Map: elementId → translation key
   const map = {
     // nav
     'nav-l-home':  'navHome',
@@ -28,6 +20,9 @@ export function applyLang() {
     'ht-recent':   'recentEntries',
     'ht-all':      'seeAll',
     'chart-title': 'chartTitle',
+    // home DV card (previously untranslated)
+    'dv-card-title': 'dvCardTitle',
+    'dv-card-sub':   'dvCardSub',
     // log
     'log-screen-title': 'logTitle',
     'lst0':        'selectCat',
@@ -44,8 +39,11 @@ export function applyLang() {
     // history
     'hist-title':  'histTitle',
     'hist-sub':    'histSub',
-    // ai
-    'ai-tag':      'aiTag',
+    // AI screen (previously untranslated)
+    'ai-tag':           'aiTag',
+    'ai-headline-main': 'aiHeadlineMain',
+    'ai-headline-em':   'aiHeadlineEm',
+    'ai-divider-text':  'aiDivider',
     'ai-btn1t':    'aiBt1',
     'ai-btn1d':    'aiBd1',
     'ai-btn2t':    'aiBt2',
@@ -66,6 +64,7 @@ export function applyLang() {
     'stat-lbl1':       'entries',
     'stat-lbl2':       'daysTracked',
     'stat-lbl3':       'symptoms',
+    'modal-title-text': 'modalEntryTitle',
   };
 
   for (const [id, key] of Object.entries(map)) {
@@ -73,11 +72,9 @@ export function applyLang() {
     if (el) el.textContent = t(key);
   }
 
-  // Textarea placeholder
   const notesEl = document.getElementById('log-notes');
   if (notesEl) notesEl.placeholder = t('notesPlaceholder');
 
-  // Language buttons highlight
   ['en','ru','uk'].forEach(lang => {
     const btn = document.getElementById('lang-' + lang);
     if (btn) btn.classList.toggle('active', lang === state.lang);
