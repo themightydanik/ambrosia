@@ -77,14 +77,48 @@ function renderDetailPhase(body, entry) {
         <div class="modal-notes">"${entry.notes}"</div>
       </div>` : '';
 
-  // Status label if this is an update entry
+  // Status update badge if this is an update entry
   const updateBadge = entry.isUpdate && entry.updateStatus
     ? `<div class="modal-update-badge" style="background:${STATUS_COLORS[entry.updateStatus]}20;border-color:${STATUS_COLORS[entry.updateStatus]}40;color:${STATUS_COLORS[entry.updateStatus]}">
         ↻ ${t('updateLabel')} · ${t('status' + cap(entry.updateStatus) + 'Short')}
       </div>` : '';
 
+  // Critical tracking indicator
+  const isCritical = entry.criticalTracking === true;
+  const criticalBadge = isCritical
+    ? `<div class="critical-tracking-badge">
+        <div class="critical-pulse"></div>
+        <span>⚠️ ${t('criticalTrackingActive')}</span>
+      </div>` : '';
+
+  // Status history timeline
+  const statusHistory = entry.statusUpdates || [];
+  const timelineHTML = statusHistory.length
+    ? `<div class="modal-row">
+        <div class="modal-label">${t('statusHistory')}</div>
+        <div class="modal-status-timeline">
+          ${statusHistory.map(update => {
+            const uDate = new Date(update.date + 'T12:00').toLocaleDateString(locale, { month: 'short', day: 'numeric' });
+            const uTime = update.time ? ` · ${update.time}` : '';
+            const statusColor = STATUS_COLORS[update.status] || '#888';
+            const statusKey   = 'status' + cap(update.status) + 'Short';
+            return `<div class="modal-timeline-item">
+              <div class="modal-timeline-dot" style="background:${statusColor}"></div>
+              <div class="modal-timeline-content">
+                <div class="modal-timeline-header">
+                  <span class="modal-timeline-date">${uDate}${uTime}</span>
+                  <span class="modal-timeline-status" style="color:${statusColor}">${t(statusKey)}</span>
+                </div>
+                ${update.notes ? `<div class="modal-timeline-note">"${update.notes}"</div>` : ''}
+              </div>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>` : '';
+
   body.innerHTML = `
     ${updateBadge}
+    ${criticalBadge}
     <div class="modal-row">
       <div class="modal-label">Date & Time</div>
       <div class="modal-value">${date}${timeStr}</div>
@@ -99,11 +133,15 @@ function renderDetailPhase(body, entry) {
     </div>
     ${trigsHTML}
     ${notesHTML}
+    ${timelineHTML}
 
     <div class="modal-actions">
       <button class="modal-btn modal-btn--update" onclick="modalPickStatus()">
         ↻ ${t('modalUpdateBtn')}
       </button>
+      ${isCritical ? `<button class="modal-btn modal-btn--warning" onclick="disableCriticalTracking()">
+        🔕 ${t('disableTrackingBtn')}
+      </button>` : ''}
       <button class="modal-btn modal-btn--delete" onclick="modalDelete()">
         🗑 ${t('modalDeleteBtn')}
       </button>
@@ -163,25 +201,30 @@ export function modalSaveStatus(status) {
   const now     = new Date();
   const time    = now.toTimeString().slice(0, 5);
 
-  // Create a new update entry linked to the original
-  const updateEntry = {
-    id:           Date.now(),
-    date:         now.toISOString().split('T')[0],
+  // Initialize statusUpdates array if it doesn't exist
+  if (!entry.statusUpdates) {
+    entry.statusUpdates = [];
+  }
+
+  // Add new status update to the entry
+  entry.statusUpdates.push({
+    date:   now.toISOString().split('T')[0],
     time,
-    timestamp:    now.toISOString(),
-    category:     entry.category,
-    symptoms:     [...entry.symptoms],
-    intensity:    entry.intensity,
-    triggers:     [],
-    notes:        notesEl ? notesEl.value.trim() : '',
-    isUpdate:     true,
-    parentId:     entry.id,
-    updateStatus: status,
-  };
+    status,
+    notes:  notesEl ? notesEl.value.trim() : ''
+  });
 
-  state.entries.push(updateEntry);
+  // Disable critical tracking if resolved or improved
+  if (entry.criticalTracking && (status === 'resolved' || status === 'improved')) {
+    entry.criticalTracking = false;
+  }
+
+  // Show warning if critical symptom is worse or same
+  if (entry.intensity >= 7 && (status === 'worse' || status === 'same')) {
+    showCriticalWarning();
+  }
+
   saveEntries();
-
   closeEntryModal();
 
   // Re-render active screen
@@ -204,6 +247,41 @@ export function modalDelete() {
 
   if (state.screen === 'home')    renderHome();
   if (state.screen === 'history') renderHistory();
+}
+
+// ─────────────────────────────────────────────
+// CRITICAL TRACKING
+// ─────────────────────────────────────────────
+export function disableCriticalTracking() {
+  const entry = state.entries.find(e => e.id === _activeEntryId);
+  if (!entry) return;
+
+  if (confirm(t('disableTrackingConfirm'))) {
+    entry.criticalTracking = false;
+    saveEntries();
+    closeEntryModal();
+    if (state.screen === 'home')    renderHome();
+    if (state.screen === 'history') renderHistory();
+    showToast(t('trackingDisabled'));
+  }
+}
+
+function showCriticalWarning() {
+  // Show warning that user should seek medical help
+  const warningDiv = document.createElement('div');
+  warningDiv.className = 'critical-warning-overlay';
+  warningDiv.innerHTML = `
+    <div class="critical-warning-box">
+      <div class="critical-warning-icon">⚠️</div>
+      <div class="critical-warning-title">${t('criticalWarningTitle')}</div>
+      <div class="critical-warning-text">${t('criticalWarningText')}</div>
+      <div class="critical-warning-actions">
+        <button class="btn-primary" onclick="this.parentElement.parentElement.parentElement.remove()">${t('understood')}</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(warningDiv);
+  setTimeout(() => warningDiv.classList.add('visible'), 50);
 }
 
 // ─────────────────────────────────────────────
