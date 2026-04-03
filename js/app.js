@@ -12,7 +12,8 @@ import { renderUpgrade, handleUpgrade, redeemCode } from './screens/upgrade.js';
 import { showPaywall } from './premium.js';
 import {
   openEntryModal, closeEntryModal,
-  modalPickStatus, modalBackToDetail, modalSaveStatus, modalDelete
+  modalPickStatus, modalBackToDetail, modalSaveStatus, modalDelete,
+  disableCriticalTracking
 } from './modal.js';
 
 // ─────────────────────────────────────────────
@@ -42,6 +43,7 @@ window.modalPickStatus  = modalPickStatus;
 window.modalBackToDetail = modalBackToDetail;
 window.modalSaveStatus  = modalSaveStatus;
 window.modalDelete      = modalDelete;
+window.disableCriticalTracking = disableCriticalTracking;
 
 // ─────────────────────────────────────────────
 // INIT
@@ -50,11 +52,13 @@ document.addEventListener('DOMContentLoaded', () => {
   loadState();
   applyLang();
 
-  if (state.screen === 'home') {
+  // FIX: Always navigate to the correct screen after loading state
+  const targetScreen = state.screen;
+  if (targetScreen !== 'onboarding') {
     const onb = document.getElementById('screen-onboarding');
     if (onb) onb.classList.remove('active');
-    goTo('home');
   }
+  goTo(targetScreen);
 
   // Close modal on overlay click
   const modal = document.getElementById('entry-modal');
