@@ -31,14 +31,15 @@ export function entryCardHTML(entry, updates = []) {
   const notesHTML = entry.notes
     ? `<div class="entry-notes">"${entry.notes}"</div>` : '';
 
-  // Status update timeline items
-  const updatesHTML = updates.length
+  // Status update timeline items (using new statusUpdates array structure)
+  const statusHistory = entry.statusUpdates || [];
+  const updatesHTML = statusHistory.length
     ? `<div class="entry-timeline">
-        ${updates.map(u => {
+        ${statusHistory.map(u => {
           const uDate = new Date(u.date + 'T12:00').toLocaleDateString(locale, { month: 'short', day: 'numeric' });
           const uTime = u.time ? ` · ${u.time}` : '';
-          const statusColor = STATUS_COLORS[u.updateStatus] || '#888';
-          const statusKey   = 'status' + u.updateStatus.charAt(0).toUpperCase() + u.updateStatus.slice(1) + 'Short';
+          const statusColor = STATUS_COLORS[u.status] || '#888';
+          const statusKey   = 'status' + u.status.charAt(0).toUpperCase() + u.status.slice(1) + 'Short';
           return `<div class="entry-timeline-item">
             <div class="entry-timeline-dot" style="background:${statusColor}"></div>
             <div class="entry-timeline-text">
@@ -48,6 +49,12 @@ export function entryCardHTML(entry, updates = []) {
             </div>
           </div>`;
         }).join('')}
+      </div>` : '';
+
+  // Critical tracking indicator (pulsing red dot)
+  const criticalIndicator = entry.criticalTracking
+    ? `<div class="critical-indicator" title="${t('criticalTrackingActive')}">
+        <div class="critical-pulse"></div>
       </div>` : '';
 
   // Is this entry itself a status update?
@@ -76,7 +83,10 @@ export function entryCardHTML(entry, updates = []) {
   return `<div class="entry-card" onclick="openEntryModal(${entry.id})">
     <div class="entry-date-bar">
       <div class="entry-date-text">${date}${timeStr}</div>
-      <div class="entry-severity" style="color:${color}">${t('intensityLabel')} ${entry.intensity}/10</div>
+      <div style="display:flex;align-items:center;gap:8px">
+        ${criticalIndicator}
+        <div class="entry-severity" style="color:${color}">${t('intensityLabel')} ${entry.intensity}/10</div>
+      </div>
     </div>
     <div class="entry-body">
       <div class="entry-symptoms">${symsHTML}</div>
