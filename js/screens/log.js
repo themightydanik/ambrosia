@@ -148,6 +148,9 @@ export function saveLog() {
     isUpdate:     false,
     parentId:     null,
     updateStatus: null,
+    statusUpdates: [],
+    // NEW: Auto-enable critical tracking for high intensity symptoms
+    criticalTracking: state.logIntensity >= 7
   };
 
   state.entries.push(entry);
