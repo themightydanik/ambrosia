@@ -155,6 +155,15 @@ export const T = {
     updateLabel:'Status update',
     // Placeholders
     updateNotesPlaceholder:'Any notes about this change?',
+    statusHistory: 'Status History',
+criticalTrackingActive: 'Critical tracking active',
+disableTrackingBtn: 'Disable tracking',
+disableTrackingConfirm: 'Are you sure you want to disable critical tracking for this symptom?',
+trackingDisabled: 'Critical tracking disabled',
+criticalWarningTitle: 'High Intensity Symptom',
+criticalWarningText: 'This symptom is severe and not improving. Consider seeking medical attention or informing someone close to you.',
+understood: 'Understood',
+modalUpdateSaved: 'Status update saved',
   },
 
   ru: {
@@ -232,6 +241,15 @@ export const T = {
     statusWorseShort:'Ухудшение',
     updateLabel:'Обновление статуса',
     updateNotesPlaceholder:'Заметки об изменении...',
+    statusHistory: 'История статусов',
+criticalTrackingActive: 'Усиленный контроль активен',
+disableTrackingBtn: 'Отключить контроль',
+disableTrackingConfirm: 'Вы уверены, что хотите отключить усиленный контроль этого симптома?',
+trackingDisabled: 'Усиленный контроль отключен',
+criticalWarningTitle: 'Симптом высокой интенсивности',
+criticalWarningText: 'Этот симптом серьёзный и не улучшается. Рекомендуем обратиться к врачу или сообщить близким.',
+understood: 'Понятно',
+modalUpdateSaved: 'Статус обновлён',
   },
 
   uk: {
@@ -309,5 +327,14 @@ export const T = {
     statusWorseShort:'Погіршення',
     updateLabel:'Оновлення статусу',
     updateNotesPlaceholder:'Нотатки про зміну...',
+    statusHistory: 'Історія статусів',
+criticalTrackingActive: 'Посилений контроль активний',
+disableTrackingBtn: 'Вимкнути контроль',
+disableTrackingConfirm: 'Ви впевнені, що хочете вимкнути посилений контроль цього симптому?',
+trackingDisabled: 'Посилений контроль вимкнено',
+criticalWarningTitle: 'Симптом високої інтенсивності',
+criticalWarningText: 'Цей симптом серйозний і не покращується. Рекомендуємо звернутися до лікаря або повідомити близьких.',
+understood: 'Зрозуміло',
+modalUpdateSaved: 'Статус оновлено',
   }
 };
