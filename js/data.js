@@ -190,6 +190,19 @@ modalUpdateSaved: 'Status update saved',
     homeAiFewSymptoms: 'Keep logging symptoms for more accurate AI insights →',
     homeAiNeedMore: 'No recent symptoms logged. Start tracking to get AI insights →',
     homeAiGeneric: 'Unusual symptom combination detected. AI can help analyze this pattern →'
+
+    // Profile fields
+    profileName: 'Name',
+    profileAge: 'Age',
+    profileOccupation: 'Work / Study',
+    profileNamePlaceholder: 'Your name',
+    profileOccupationPlaceholder: 'What do you do?',
+    yearsOld: 'years old',
+    
+    // Buttons
+    editProfileBtn: 'Edit Profile',
+    saveBtn: 'Save',
+    cancelBtn: 'Cancel',
   },
 
   ru: {
@@ -296,6 +309,17 @@ modalUpdateSaved: 'Статус обновлён',
     homeAiFewSymptoms: 'Продолжайте добавлять симптомы для более точных AI инсайтов →',
     homeAiNeedMore: 'Нет недавних симптомов. Начните отслеживание для получения AI инсайтов →',
     homeAiGeneric: 'Обнаружена необычная комбинация симптомов. AI поможет проанализировать паттерн →'
+
+profileName: 'Имя',
+    profileAge: 'Возраст',
+    profileOccupation: 'Работа / Учёба',
+    profileNamePlaceholder: 'Ваше имя',
+    profileOccupationPlaceholder: 'Чем вы занимаетесь?',
+    yearsOld: 'лет',
+    
+    editProfileBtn: 'Редактировать профиль',
+    saveBtn: 'Сохранить',
+    cancelBtn: 'Отмена',
   },
 
   uk: {
@@ -402,5 +426,16 @@ modalUpdateSaved: 'Статус оновлено',
     homeAiFewSymptoms: 'Продовжуйте додавати симптоми для більш точних AI інсайтів →',
     homeAiNeedMore: 'Немає нещодавніх симптомів. Почніть відстеження для отримання AI інсайтів →',
     homeAiGeneric: 'Виявлено незвичайну комбінацію симптомів. AI допоможе проаналізувати патерн →'
+
+    profileName: "Ім'я",
+    profileAge: 'Вік',
+    profileOccupation: 'Робота / Навчання',
+    profileNamePlaceholder: "Ваше ім'я",
+    profileOccupationPlaceholder: 'Чим ви займаєтесь?',
+    yearsOld: 'років',
+    
+    editProfileBtn: 'Редагувати профіль',
+    saveBtn: 'Зберегти',
+    cancelBtn: 'Скасувати',
   }
 };
