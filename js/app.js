@@ -52,13 +52,12 @@ document.addEventListener('DOMContentLoaded', () => {
   loadState();
   applyLang();
 
-  // FIX: Always navigate to the correct screen after loading state
-  const targetScreen = state.screen;
-  if (targetScreen !== 'onboarding') {
-    const onb = document.getElementById('screen-onboarding');
-    if (onb) onb.classList.remove('active');
-  }
-  goTo(targetScreen);
+  // FIX: Prevent race condition - let navigation.js handle screen transitions
+  // Don't manually remove 'active' class from onboarding
+  // Just navigate to the correct screen
+  setTimeout(() => {
+    goTo(state.screen);
+  }, 50);
 
   // Close modal on overlay click
   const modal = document.getElementById('entry-modal');
