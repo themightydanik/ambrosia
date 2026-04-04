@@ -20,13 +20,17 @@ export const state = {
   premium:       false,
   groqKey:       '',
   upgradeReason: 'general',
-  // NEW: User profile
+  // User profile
   profile: {
     name:       '',
     age:        null,
     occupation: '',
-    avatar:     '🌿'  // Default avatar emoji
-  }
+    avatar:     '🌿'
+  },
+  // NEW: Gamification
+  bonusPoints:   0,
+  dailyStreak:   0,
+  lastVisitDate: null  // YYYY-MM-DD format
 };
 
 // Avatar options для выбора
@@ -44,6 +48,7 @@ export function loadState() {
     } else {
       state.entries = [...SAMPLE_ENTRIES];
     }
+    
     const savedLang = localStorage.getItem('ambrosia_lang');
     if (savedLang) state.lang = savedLang;
 
@@ -54,11 +59,28 @@ export function loadState() {
     const savedKey = localStorage.getItem('ambrosia_groq_key');
     if (savedKey) state.groqKey = savedKey;
 
-    // NEW: Load user profile
+    // Load user profile
     const savedProfile = localStorage.getItem('ambrosia_profile');
     if (savedProfile) {
       state.profile = { ...state.profile, ...JSON.parse(savedProfile) };
     }
+
+    // NEW: Load gamification data
+    const savedPoints = localStorage.getItem('ambrosia_bonus_points');
+    if (savedPoints) {
+      state.bonusPoints = parseInt(savedPoints, 10);
+    }
+
+    const savedStreak = localStorage.getItem('ambrosia_daily_streak');
+    if (savedStreak) {
+      state.dailyStreak = parseInt(savedStreak, 10);
+    }
+
+    const savedLastVisit = localStorage.getItem('ambrosia_last_visit');
+    if (savedLastVisit) {
+      state.lastVisitDate = savedLastVisit;
+    }
+
   } catch (e) {
     console.warn('Could not load saved state:', e);
     state.entries = [...SAMPLE_ENTRIES];
@@ -78,7 +100,14 @@ export function saveLang() {
 }
 
 export function markOnboardingDone() {
-  try { localStorage.setItem('ambrosia_onboarding_done', '1'); } catch (e) {}
+  try { 
+    localStorage.setItem('ambrosia_onboarding_done', '1');
+    // NEW: Give 100 bonus points on first app launch
+    if (state.bonusPoints === 0) {
+      state.bonusPoints = 100;
+      saveBonusPoints();
+    }
+  } catch (e) {}
 }
 
 export function activatePremium() {
@@ -91,7 +120,6 @@ export function saveGroqKey(key) {
   try { localStorage.setItem('ambrosia_groq_key', key); } catch (e) {}
 }
 
-// NEW: Save user profile
 export function saveProfile(profileData) {
   state.profile = { ...state.profile, ...profileData };
   try {
@@ -99,6 +127,34 @@ export function saveProfile(profileData) {
   } catch (e) {
     console.warn('Could not save profile:', e);
   }
+}
+
+// NEW: Gamification save functions
+export function saveBonusPoints() {
+  try {
+    localStorage.setItem('ambrosia_bonus_points', state.bonusPoints.toString());
+  } catch (e) {}
+}
+
+export function saveDailyStreak() {
+  try {
+    localStorage.setItem('ambrosia_daily_streak', state.dailyStreak.toString());
+    localStorage.setItem('ambrosia_last_visit', state.lastVisitDate);
+  } catch (e) {}
+}
+
+export function spendBonusPoints(amount) {
+  if (state.bonusPoints >= amount) {
+    state.bonusPoints -= amount;
+    saveBonusPoints();
+    return true;
+  }
+  return false;
+}
+
+export function addBonusPoints(amount) {
+  state.bonusPoints += amount;
+  saveBonusPoints();
 }
 
 export function clearAllData() {
