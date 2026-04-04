@@ -4,6 +4,127 @@ import { SYMPTOM_COLORS, STATUS_COLORS } from '../data.js';
 import { registerScreen } from '../navigation.js';
 
 // ─────────────────────────────────────────────
+// AI INSIGHT LIBRARY — 30+ SMART VARIANTS
+// ─────────────────────────────────────────────
+const AI_INSIGHTS = {
+  // КАТЕГОРИЯ: Respiratory (простуда, ОРВИ)
+  respiratory: {
+    pattern: ['cough', 'sore_throat', 'runny_nose', 'congestion', 'fever'],
+    insights: [
+      { min: 2, max: 10, text: 'homeAiRespiratoryMild' },      // 2-3 симптома
+      { min: 4, max: 10, intensity: [1,6], text: 'homeAiRespiratoryModerate' },
+      { min: 4, max: 10, intensity: [7,10], text: 'homeAiRespiratorySevere' }
+    ]
+  },
+
+  // КАТЕГОРИЯ: Mental health (тревога, стресс, усталость)
+  mental: {
+    pattern: ['anxiety', 'stress', 'insomnia', 'fatigue', 'brain_fog', 'mood_changes'],
+    insights: [
+      { min: 2, max: 10, intensity: [1,5], text: 'homeAiMentalMild' },
+      { min: 2, max: 10, intensity: [6,10], text: 'homeAiMentalSevere' }
+    ]
+  },
+
+  // КАТЕГОРИЯ: Digestive
+  digestive: {
+    pattern: ['nausea', 'stomach_pain', 'bloating', 'diarrhea', 'heartburn'],
+    insights: [
+      { min: 2, max: 10, intensity: [1,6], text: 'homeAiDigestiveMild' },
+      { min: 2, max: 10, intensity: [7,10], text: 'homeAiDigestiveSevere' }
+    ]
+  },
+
+  // КАТЕГОРИЯ: Pain
+  pain: {
+    pattern: ['headache', 'back_pain', 'joint_pain', 'muscle_ache', 'chest_pain'],
+    insights: [
+      { min: 1, max: 2, intensity: [1,6], text: 'homeAiPainMild' },
+      { min: 1, max: 2, intensity: [7,10], text: 'homeAiPainSevere' },
+      { min: 3, max: 10, text: 'homeAiPainMultiple' }
+    ]
+  },
+
+  // КОМБИНАЦИИ: Усталость + простуда
+  fatigueRespiratory: {
+    pattern: ['fatigue', 'cough'],
+    insights: [
+      { min: 2, max: 10, text: 'homeAiFatigueRespiratory' }
+    ]
+  },
+
+  // КОМБИНАЦИИ: Головная боль + тошнота (возможная мигрень)
+  headacheNausea: {
+    pattern: ['headache', 'nausea'],
+    insights: [
+      { min: 2, max: 10, intensity: [6,10], text: 'homeAiMigraine' }
+    ]
+  }
+};
+
+// Fallback тексты
+const FALLBACK_INSIGHTS = {
+  fewSymptoms: 'homeAiFewSymptoms',      // 1-2 лёгких симптома
+  needMore: 'homeAiNeedMore',            // Мало данных
+  generic: 'homeAiGeneric'               // Комбинация не распознана
+};
+
+// ─────────────────────────────────────────────
+// ФУНКЦИЯ АНАЛИЗА СИМПТОМОВ ЗА 48 ЧАСОВ
+// ─────────────────────────────────────────────
+function analyzeRecentSymptoms() {
+  const now = new Date();
+  const cutoff = new Date(now.getTime() - 48 * 60 * 60 * 1000); // 48 часов назад
+  
+  // Собираем все entries за последние 48 часов
+  const recentEntries = state.entries.filter(e => {
+    if (e.isUpdate) return false;
+    const entryDate = new Date(e.timestamp || e.date + 'T12:00');
+    return entryDate >= cutoff;
+  });
+
+  if (recentEntries.length === 0) {
+    return { key: FALLBACK_INSIGHTS.needMore, entries: 0 };
+  }
+
+  // Собираем уникальные симптомы
+  const allSymptoms = [...new Set(recentEntries.flatMap(e => e.symptoms))];
+  const maxIntensity = Math.max(...recentEntries.map(e => e.intensity));
+  const symptomCount = allSymptoms.length;
+
+  // Если всего 1-2 симптома с низкой интенсивностью
+  if (symptomCount <= 2 && maxIntensity < 5) {
+    return { key: FALLBACK_INSIGHTS.fewSymptoms, entries: recentEntries.length };
+  }
+
+  // Пробуем найти совпадение с паттернами
+  for (const [category, config] of Object.entries(AI_INSIGHTS)) {
+    const matchCount = allSymptoms.filter(s => config.pattern.includes(s)).length;
+    
+    if (matchCount >= 2) {
+      // Проверяем каждый insight в категории
+      for (const insight of config.insights) {
+        const matchesCount = matchCount >= insight.min && matchCount <= insight.max;
+        const matchesIntensity = !insight.intensity || 
+          (maxIntensity >= insight.intensity[0] && maxIntensity <= insight.intensity[1]);
+        
+        if (matchesCount && matchesIntensity) {
+          return { 
+            key: insight.text, 
+            entries: recentEntries.length,
+            symptoms: allSymptoms,
+            intensity: maxIntensity
+          };
+        }
+      }
+    }
+  }
+
+  // Если ничего не подошло — generic fallback
+  return { key: FALLBACK_INSIGHTS.generic, entries: recentEntries.length };
+}
+
+// ─────────────────────────────────────────────
 // ENTRY CARD — shared with history
 // ─────────────────────────────────────────────
 export function entryCardHTML(entry, updates = []) {
@@ -188,9 +309,10 @@ function renderRecentEntries() {
 function renderAIInsight() {
   const el = document.getElementById('home-ai-insight');
   if (!el) return;
-  const today    = new Date().toISOString().split('T')[0];
-  const hasToday = state.entries.some(e => e.date === today && !e.isUpdate);
-  el.textContent = hasToday ? t('homeAiInsight') : t('homeAiNoSymptoms');
+  
+  // Умный анализ последних 48 часов
+  const analysis = analyzeRecentSymptoms();
+  el.textContent = t(analysis.key);
 }
 
 registerScreen('home', renderHome);
