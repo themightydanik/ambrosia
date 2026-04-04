@@ -6,7 +6,10 @@ import { renderHome } from './screens/home.js';
 import { renderHistory, historySetFilter } from './screens/history.js';
 import { initLog, selectCat, toggleSym, updateIntensity, toggleTrig, logNextStep, saveLog } from './screens/log.js';
 import { runAI, initAI } from './screens/ai.js';
-import { renderSettings, setLang, exportData, clearData } from './screens/settings.js';
+import { 
+  renderSettings, setLang, exportData, clearData,
+  editProfile, cancelProfileEdit, selectAvatar, saveProfileEdit
+} from './screens/settings.js';
 import { obNext, startApp } from './screens/onboarding.js';
 import { renderUpgrade, handleUpgrade, redeemCode } from './screens/upgrade.js';
 import { showPaywall } from './premium.js';
@@ -44,6 +47,11 @@ window.modalBackToDetail = modalBackToDetail;
 window.modalSaveStatus  = modalSaveStatus;
 window.modalDelete      = modalDelete;
 window.disableCriticalTracking = disableCriticalTracking;
+// NEW: Profile functions
+window.editProfile      = editProfile;
+window.cancelProfileEdit = cancelProfileEdit;
+window.selectAvatar     = selectAvatar;
+window.saveProfileEdit  = saveProfileEdit;
 
 // ─────────────────────────────────────────────
 // INIT
@@ -52,9 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
   loadState();
   applyLang();
 
-  // FIX: Prevent race condition - let navigation.js handle screen transitions
-  // Don't manually remove 'active' class from onboarding
-  // Just navigate to the correct screen
+  // Navigate to correct screen after brief delay to avoid race conditions
   setTimeout(() => {
     goTo(state.screen);
   }, 50);
