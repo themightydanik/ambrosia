@@ -8,17 +8,20 @@ export function registerScreen(name, renderFn) {
 }
 
 export function goTo(screen) {
-  const prev = document.getElementById('screen-' + state.screen);
-  if (prev) {
-    prev.classList.add('slide-out');
-    setTimeout(() => prev.classList.remove('active', 'slide-out'), 300);
-  }
+  // Remove active from ALL screens first
+  const allScreens = document.querySelectorAll('.screen');
+  allScreens.forEach(s => {
+    s.classList.remove('active', 'slide-out');
+  });
 
   state.screen = screen;
 
+  // Activate target screen
   const next = document.getElementById('screen-' + screen);
   if (next) {
-    setTimeout(() => next.classList.add('active'), 50);
+    // Force reflow to ensure clean transition
+    void next.offsetHeight;
+    next.classList.add('active');
   }
 
   updateNav(screen);
