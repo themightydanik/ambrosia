@@ -535,3 +535,190 @@ input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:26px; h
   gap: 10px;
 }
 
+/* ═══════════════════════════════════════
+   PROFILE HEADER ON HOME SCREEN
+═══════════════════════════════════════ */
+.home-top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.home-top-left {
+  flex: 1;
+}
+
+.home-top-right {
+  flex-shrink: 0;
+}
+
+.home-profile-avatar {
+  width: 44px;
+  height: 44px;
+  background: linear-gradient(135deg, var(--gold), var(--coral));
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  cursor: pointer;
+  transition: transform 0.2s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+.home-profile-avatar:active {
+  transform: scale(0.95);
+}
+
+/* ═══════════════════════════════════════
+   PROFILE DISPLAY (Settings)
+═══════════════════════════════════════ */
+.profile-display {
+  text-align: center;
+}
+
+.profile-avatar {
+  width: 64px;
+  height: 64px;
+  background: linear-gradient(135deg, var(--gold), var(--coral));
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  margin: 0 auto 12px;
+}
+
+.profile-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
+  color: var(--cream);
+  text-align: center;
+  margin-bottom: 4px;
+}
+
+.profile-sub {
+  font-size: 13px;
+  color: var(--cream60);
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.profile-edit-btn {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  color: var(--cream);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.profile-edit-btn:active {
+  transform: scale(0.98);
+  background: var(--surface2);
+}
+
+/* ═══════════════════════════════════════
+   PROFILE EDIT FORM
+═══════════════════════════════════════ */
+.profile-edit-form {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 20px;
+  margin-bottom: 24px;
+}
+
+.profile-avatar-selector {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.profile-avatar-current {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, var(--gold), var(--coral));
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  margin-bottom: 16px;
+}
+
+.avatar-grid {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 8px;
+  max-width: 320px;
+  margin: 0 auto;
+}
+
+.avatar-option {
+  width: 36px;
+  height: 36px;
+  border: 2px solid var(--border);
+  border-radius: 50%;
+  background: var(--surface2);
+  font-size: 18px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.avatar-option.selected {
+  border-color: var(--gold);
+  background: var(--gold-dim);
+  transform: scale(1.1);
+}
+
+.avatar-option:active {
+  transform: scale(0.95);
+}
+
+.profile-edit-field {
+  margin-bottom: 16px;
+}
+
+.profile-edit-label {
+  display: block;
+  font-size: 12px;
+  color: var(--cream30);
+  margin-bottom: 6px;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+
+.profile-edit-input {
+  width: 100%;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  color: var(--cream);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  padding: 12px 14px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.profile-edit-input:focus {
+  border-color: var(--gold);
+}
+
+.profile-edit-input::placeholder {
+  color: var(--cream30);
+}
+
+.profile-edit-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+}
