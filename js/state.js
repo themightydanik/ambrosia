@@ -20,7 +20,21 @@ export const state = {
   premium:       false,
   groqKey:       '',
   upgradeReason: 'general',
+  // NEW: User profile
+  profile: {
+    name:       '',
+    age:        null,
+    occupation: '',
+    avatar:     '🌿'  // Default avatar emoji
+  }
 };
+
+// Avatar options для выбора
+export const AVATAR_OPTIONS = [
+  '🌿', '🍃', '🌱', '🌸', '🌺', '🌻', '🌼', '🌷',
+  '🦋', '🐝', '🐛', '🦜', '🦚', '🦉', '🐢', '🐠',
+  '⭐', '✨', '🌙', '☀️', '🌈', '🔥', '💧', '🌊'
+];
 
 export function loadState() {
   try {
@@ -39,6 +53,12 @@ export function loadState() {
     if (localStorage.getItem('ambrosia_premium') === '1') state.premium = true;
     const savedKey = localStorage.getItem('ambrosia_groq_key');
     if (savedKey) state.groqKey = savedKey;
+
+    // NEW: Load user profile
+    const savedProfile = localStorage.getItem('ambrosia_profile');
+    if (savedProfile) {
+      state.profile = { ...state.profile, ...JSON.parse(savedProfile) };
+    }
   } catch (e) {
     console.warn('Could not load saved state:', e);
     state.entries = [...SAMPLE_ENTRIES];
@@ -69,6 +89,16 @@ export function activatePremium() {
 export function saveGroqKey(key) {
   state.groqKey = key;
   try { localStorage.setItem('ambrosia_groq_key', key); } catch (e) {}
+}
+
+// NEW: Save user profile
+export function saveProfile(profileData) {
+  state.profile = { ...state.profile, ...profileData };
+  try {
+    localStorage.setItem('ambrosia_profile', JSON.stringify(state.profile));
+  } catch (e) {
+    console.warn('Could not save profile:', e);
+  }
 }
 
 export function clearAllData() {
