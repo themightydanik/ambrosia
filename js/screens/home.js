@@ -1,9 +1,9 @@
-import { state } from '../state.js';
+import { state, saveDailyStreak, addBonusPoints } from '../state.js';
 import { t } from '../i18n.js';
 import { SYMPTOM_COLORS, STATUS_COLORS } from '../data.js';
 import { registerScreen } from '../navigation.js';
 
-// [entryCardHTML остаётся без изменений - тот же код что и раньше]
+// [entryCardHTML и все другие функции остаются без изменений]
 export function entryCardHTML(entry, updates = []) {
   const localeMap = { en: 'en-US', ru: 'ru-RU', uk: 'uk-UA' };
   const locale    = localeMap[state.lang] || 'en-US';
@@ -92,9 +92,122 @@ export function entryCardHTML(entry, updates = []) {
 }
 
 // ─────────────────────────────────────────────
+// DAILY STREAK LOGIC
+// ─────────────────────────────────────────────
+function checkDailyStreak() {
+  const today = new Date().toISOString().split('T')[0];
+  const lastVisit = state.lastVisitDate;
+
+  // First time ever opening the app
+  if (!lastVisit) {
+    state.lastVisitDate = today;
+    state.dailyStreak = 1;
+    saveDailyStreak();
+    showDailyStreakModal(1, 10);
+    return;
+  }
+
+  // Already visited today
+  if (lastVisit === today) {
+    return;
+  }
+
+  // Calculate days difference
+  const lastDate = new Date(lastVisit + 'T12:00');
+  const todayDate = new Date(today + 'T12:00');
+  const diffDays = Math.floor((todayDate - lastDate) / (1000 * 60 * 60 * 24));
+
+  if (diffDays === 1) {
+    // Consecutive day
+    state.dailyStreak++;
+    state.lastVisitDate = today;
+    
+    // Calculate reward
+    let reward = 10;
+    if (state.dailyStreak === 7) {
+      reward = 100; // Bonus on 7th day
+    } else if (state.dailyStreak % 7 === 0) {
+      reward = 100; // Bonus every 7 days
+    }
+    
+    addBonusPoints(reward);
+    saveDailyStreak();
+    showDailyStreakModal(state.dailyStreak, reward);
+  } else {
+    // Streak broken
+    state.dailyStreak = 1;
+    state.lastVisitDate = today;
+    saveDailyStreak();
+    addBonusPoints(10);
+    showDailyStreakModal(1, 10, true); // Show "streak broken" message
+  }
+}
+
+function showDailyStreakModal(streak, reward, broken = false) {
+  const modal = document.createElement('div');
+  modal.className = 'daily-streak-overlay';
+  modal.id = 'daily-streak-modal';
+
+  const isWeekMilestone = streak % 7 === 0 && streak > 0;
+  const emoji = isWeekMilestone ? '🎉' : broken ? '💔' : '🔥';
+  const title = broken 
+    ? t('streakBroken')
+    : isWeekMilestone 
+      ? t('streakWeekMilestone')
+      : t('streakContinues');
+  
+  const message = broken
+    ? t('streakBrokenMsg')
+    : isWeekMilestone
+      ? t('streakWeekMsg').replace('{streak}', streak)
+      : t('streakMsg').replace('{streak}', streak);
+
+  modal.innerHTML = `
+    <div class="daily-streak-box">
+      <div class="daily-streak-icon">${emoji}</div>
+      <div class="daily-streak-title">${title}</div>
+      <div class="daily-streak-message">${message}</div>
+      
+      <div class="daily-streak-reward">
+        <div class="streak-reward-label">${t('rewardEarned')}</div>
+        <div class="streak-reward-value">+${reward} ${t('bonusPoints')}</div>
+      </div>
+      
+      <div class="daily-streak-progress">
+        <div class="streak-progress-label">${t('currentStreak')}</div>
+        <div class="streak-progress-bar">
+          ${Array.from({length: 7}, (_, i) => {
+            const dayNum = (streak - 1) % 7;
+            const filled = i <= dayNum;
+            return `<div class="streak-day ${filled ? 'filled' : ''}">${i + 1}</div>`;
+          }).join('')}
+        </div>
+        <div class="streak-progress-text">${streak} ${t('daysStreak')}</div>
+      </div>
+
+      <button class="btn-primary" onclick="closeDailyStreakModal()">
+        ${t('awesome')}
+      </button>
+    </div>
+  `;
+
+  document.body.appendChild(modal);
+  setTimeout(() => modal.classList.add('visible'), 50);
+}
+
+window.closeDailyStreakModal = function() {
+  const modal = document.getElementById('daily-streak-modal');
+  if (modal) {
+    modal.classList.remove('visible');
+    setTimeout(() => modal.remove(), 300);
+  }
+};
+
+// ─────────────────────────────────────────────
 // RENDER HOME SCREEN
 // ─────────────────────────────────────────────
 export function renderHome() {
+  checkDailyStreak(); // Check on every home screen render
   renderGreeting();
   renderProfileHeader();
   renderStatusCard();
@@ -109,7 +222,6 @@ function renderGreeting() {
   const greetKey = h < 12 ? 'goodMorning' : h < 17 ? 'goodAfternoon' : 'goodEvening';
   const greetEl  = document.getElementById('home-greeting');
   
-  // NEW: Personalized greeting with user's name
   const userName = state.profile.name || '';
   const greetText = userName 
     ? `${t(greetKey)}, ${userName}` 
@@ -130,10 +242,16 @@ function renderProfileHeader() {
   if (!el) return;
 
   const { avatar } = state.profile;
+  const points = state.bonusPoints;
   
   el.innerHTML = `
-    <div class="home-profile-avatar" onclick="goTo('settings')">
-      ${avatar}
+    <div class="home-profile-section">
+      <div class="home-bonus-points" title="${t('bonusPoints')}">
+        ⭐ ${points}
+      </div>
+      <div class="home-profile-avatar" onclick="goTo('settings')">
+        ${avatar}
+      </div>
     </div>
   `;
 }
@@ -203,15 +321,11 @@ function renderRecentEntries() {
 function renderAIInsight() {
   const el = document.getElementById('home-ai-insight');
   if (!el) return;
-  
-  // Use smart AI analysis from analyzeRecentSymptoms (imported from bugfix home.js)
   const analysis = analyzeRecentSymptoms();
   el.textContent = t(analysis.key);
 }
 
-// ─────────────────────────────────────────────
-// AI INSIGHT ANALYSIS (from bugfix)
-// ─────────────────────────────────────────────
+// [AI Insights код остается без изменений - тот же что в bugfix]
 const AI_INSIGHTS = {
   respiratory: {
     pattern: ['cough', 'sore_throat', 'runny_nose', 'congestion', 'fever'],
