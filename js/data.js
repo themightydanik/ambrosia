@@ -164,6 +164,32 @@ criticalWarningTitle: 'High Intensity Symptom',
 criticalWarningText: 'This symptom is severe and not improving. Consider seeking medical attention or informing someone close to you.',
 understood: 'Understood',
 modalUpdateSaved: 'Status update saved',
+        // Respiratory
+    homeAiRespiratoryMild: 'Symptoms suggest early-stage cold. Tap for full AI analysis →',
+    homeAiRespiratoryModerate: 'Upper respiratory symptoms detected. AI can help analyze the pattern →',
+    homeAiRespiratorySevere: 'Severe respiratory symptoms. Consider seeing a doctor. Tap for AI analysis →',
+    
+    // Mental
+    homeAiMentalMild: 'Stress and mental health symptoms detected. AI can offer insights →',
+    homeAiMentalSevere: 'High stress levels detected. AI recommends coping strategies. Tap here →',
+    
+    // Digestive
+    homeAiDigestiveMild: 'Digestive discomfort detected. AI can help identify triggers →',
+    homeAiDigestiveSevere: 'Severe digestive symptoms. Consider medical consultation. AI analysis available →',
+    
+    // Pain
+    homeAiPainMild: 'Pain symptoms logged. AI can analyze patterns and suggest relief →',
+    homeAiPainSevere: 'High intensity pain detected. Seek medical attention if persistent. Tap for AI insights →',
+    homeAiPainMultiple: 'Multiple pain points detected. AI can help identify the root cause →',
+    
+    // Combinations
+    homeAiFatigueRespiratory: 'Fatigue combined with respiratory symptoms. Could be viral infection. AI analysis →',
+    homeAiMigraine: 'Symptoms consistent with migraine. AI can provide management tips →',
+    
+    // Fallbacks
+    homeAiFewSymptoms: 'Keep logging symptoms for more accurate AI insights →',
+    homeAiNeedMore: 'No recent symptoms logged. Start tracking to get AI insights →',
+    homeAiGeneric: 'Unusual symptom combination detected. AI can help analyze this pattern →'
   },
 
   ru: {
@@ -250,6 +276,26 @@ criticalWarningTitle: 'Симптом высокой интенсивности'
 criticalWarningText: 'Этот симптом серьёзный и не улучшается. Рекомендуем обратиться к врачу или сообщить близким.',
 understood: 'Понятно',
 modalUpdateSaved: 'Статус обновлён',
+    homeAiRespiratoryMild: 'Симптомы указывают на начало простуды. Нажмите для полного AI анализа →',
+    homeAiRespiratoryModerate: 'Обнаружены симптомы верхних дыхательных путей. AI поможет проанализировать →',
+    homeAiRespiratorySevere: 'Серьёзные респираторные симптомы. Рекомендуем обратиться к врачу. AI анализ →',
+    
+    homeAiMentalMild: 'Обнаружены симптомы стресса. AI может предложить инсайты →',
+    homeAiMentalSevere: 'Высокий уровень стресса. AI рекомендует стратегии преодоления. Нажмите →',
+    
+    homeAiDigestiveMild: 'Обнаружены проблемы с пищеварением. AI поможет найти триггеры →',
+    homeAiDigestiveSevere: 'Серьёзные проблемы с пищеварением. Рекомендуем консультацию врача. AI анализ →',
+    
+    homeAiPainMild: 'Зафиксирована боль. AI может проанализировать паттерны и предложить облегчение →',
+    homeAiPainSevere: 'Высокая интенсивность боли. Обратитесь к врачу при сохранении. AI инсайты →',
+    homeAiPainMultiple: 'Множественные болевые точки. AI поможет найти первопричину →',
+    
+    homeAiFatigueRespiratory: 'Усталость в сочетании с респираторными симптомами. Возможна вирусная инфекция. AI анализ →',
+    homeAiMigraine: 'Симптомы соответствуют мигрени. AI может предложить советы по управлению →',
+    
+    homeAiFewSymptoms: 'Продолжайте добавлять симптомы для более точных AI инсайтов →',
+    homeAiNeedMore: 'Нет недавних симптомов. Начните отслеживание для получения AI инсайтов →',
+    homeAiGeneric: 'Обнаружена необычная комбинация симптомов. AI поможет проанализировать паттерн →'
   },
 
   uk: {
@@ -336,5 +382,25 @@ criticalWarningTitle: 'Симптом високої інтенсивності'
 criticalWarningText: 'Цей симптом серйозний і не покращується. Рекомендуємо звернутися до лікаря або повідомити близьких.',
 understood: 'Зрозуміло',
 modalUpdateSaved: 'Статус оновлено',
+    homeAiRespiratoryMild: 'Симптоми вказують на початок застуди. Натисніть для повного AI аналізу →',
+    homeAiRespiratoryModerate: 'Виявлено симптоми верхніх дихальних шляхів. AI допоможе проаналізувати →',
+    homeAiRespiratorySevere: 'Серйозні респіраторні симптоми. Рекомендуємо звернутися до лікаря. AI аналіз →',
+    
+    homeAiMentalMild: 'Виявлено симптоми стресу. AI може запропонувати інсайти →',
+    homeAiMentalSevere: 'Високий рівень стресу. AI рекомендує стратегії подолання. Натисніть →',
+    
+    homeAiDigestiveMild: 'Виявлено проблеми з травленням. AI допоможе знайти тригери →',
+    homeAiDigestiveSevere: 'Серйозні проблеми з травленням. Рекомендуємо консультацію лікаря. AI аналіз →',
+    
+    homeAiPainMild: 'Зафіксовано біль. AI може проаналізувати патерни та запропонувати полегшення →',
+    homeAiPainSevere: 'Висока інтенсивність болю. Зверніться до лікаря при збереженні. AI інсайти →',
+    homeAiPainMultiple: 'Множинні больові точки. AI допоможе знайти першопричину →',
+    
+    homeAiFatigueRespiratory: 'Втома в поєднанні з респіраторними симптомами. Можлива вірусна інфекція. AI аналіз →',
+    homeAiMigraine: 'Симптоми відповідають мігрені. AI може запропонувати поради з управління →',
+    
+    homeAiFewSymptoms: 'Продовжуйте додавати симптоми для більш точних AI інсайтів →',
+    homeAiNeedMore: 'Немає нещодавніх симптомів. Почніть відстеження для отримання AI інсайтів →',
+    homeAiGeneric: 'Виявлено незвичайну комбінацію симптомів. AI допоможе проаналізувати патерн →'
   }
 };
