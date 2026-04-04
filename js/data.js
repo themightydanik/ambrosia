@@ -320,6 +320,32 @@ profileName: 'Имя',
     editProfileBtn: 'Редактировать профиль',
     saveBtn: 'Сохранить',
     cancelBtn: 'Отмена',
+      bonusPoints: 'Бонусные баллы',
+    
+    streakContinues: 'Ежедневный стрик!',
+    streakBroken: 'Стрик сброшен',
+    streakWeekMilestone: 'Неделя завершена! 🎉',
+    
+    streakMsg: 'Вы посещали Ambrosia {streak} дней подряд!',
+    streakBrokenMsg: 'Ваш стрик прервался, но каждый день — новое начало!',
+    streakWeekMsg: 'Невероятно! Стрик {streak} дней завершён!',
+    
+    rewardEarned: 'Награда получена',
+    currentStreak: 'Текущий стрик',
+    daysStreak: 'дней подряд',
+    awesome: 'Отлично!',
+    
+    notEnoughPoints: 'Недостаточно баллов',
+    needMorePoints: 'Вам нужно {required} баллов, но у вас {current}. Заработайте больше:',
+    
+    earnPointsStreakTitle: 'Ежедневный стрик',
+    earnPointsStreakDesc: 'Заходите каждый день и получайте 10 баллов (+100 каждые 7 дней)',
+    
+    upgradeTitle: 'Обновление до Premium',
+    upgradeDesc: 'Безлимитный AI анализ без списания баллов',
+    
+    upgradeToPremium: 'Обновить до Premium',
+    cancelBtn: 'Отмена',
   },
 
   uk: {
@@ -437,5 +463,32 @@ modalUpdateSaved: 'Статус оновлено',
     editProfileBtn: 'Редагувати профіль',
     saveBtn: 'Зберегти',
     cancelBtn: 'Скасувати',
+          bonusPoints: 'Бонусні бали',
+    
+    streakContinues: 'Щоденний стрік!',
+    streakBroken: 'Стрік скинуто',
+    streakWeekMilestone: 'Тиждень завершено! 🎉',
+    
+    streakMsg: 'Ви відвідували Ambrosia {streak} днів поспіль!',
+    streakBrokenMsg: 'Ваш стрік перервався, але кожен день — новий початок!',
+    streakWeekMsg: 'Неймовірно! Стрік {streak} днів завершено!',
+    
+    rewardEarned: 'Нагорода отримана',
+    currentStreak: 'Поточний стрік',
+    daysStreak: 'днів поспіль',
+    awesome: 'Чудово!',
+    
+    notEnoughPoints: 'Недостатньо балів',
+    needMorePoints: 'Вам потрібно {required} балів, але у вас {current}. Заробіть більше:',
+    
+    earnPointsStreakTitle: 'Щоденний стрік',
+    earnPointsStreakDesc: 'Заходьте щодня та отримуйте 10 балів (+100 кожні 7 днів)',
+    
+    upgradeTitle: 'Оновлення до Premium',
+    upgradeDesc: 'Безлімітний AI аналіз без списання балів',
+    
+    upgradeToPremium: 'Оновити до Premium',
+    cancelBtn: 'Скасувати',
+      
   }
 };
