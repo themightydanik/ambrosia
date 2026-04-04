@@ -1,8 +1,17 @@
-import { state } from '../state.js';
+import { state, spendBonusPoints } from '../state.js';
 import { registerScreen } from '../navigation.js';
 import { isLocked, showPaywall } from '../premium.js';
 import { AI_PROXY_URL } from '../config.js';
 import { t } from '../i18n.js';
+
+// AI costs in bonus points
+const AI_COSTS = {
+  analyze: 100,
+  correlations: 100,
+  report: 100,
+  recommend: 100,
+  doctor_visit: 150
+};
 
 async function callAI(prompt) {
   if (!AI_PROXY_URL) throw new Error('NO_PROXY');
@@ -84,7 +93,16 @@ const UI = {
 };
 
 export async function runAI(type) {
-  if (isLocked('ai')) { showPaywall(type); return; }
+  const cost = AI_COSTS[type] || 100;
+
+  // Check if premium or has enough points
+  if (isLocked('ai')) {
+    // Not premium - check bonus points
+    if (state.bonusPoints < cost) {
+      showInsufficientPointsModal(cost);
+      return;
+    }
+  }
 
   const area = document.getElementById('ai-result-area');
   if (!area) return;
@@ -103,11 +121,40 @@ export async function runAI(type) {
       apptDate = document.getElementById('dv-date')?.value || 'upcoming appointment';
       docType  = document.getElementById('dv-doctor')?.value || 'General Practitioner';
       text = await callAI(PROMPTS.doctor_visit(history, apptDate, docType));
+      
+      // Deduct points if not premium
+      if (!state.premium) {
+        spendBonusPoints(cost);
+        renderHome(); // Update points display
+      }
+      
       renderDoctorVisitResult(area, text, apptDate, docType);
       return;
     }
 
     text = await callAI(PROMPTS[type](history));
+    
+    // Deduct points if not premium
+    if (!state.premium) {
+      spendBonusPoints(cost);
+      // Update home screen to show new points balance
+      const homeHeader = document.getElementById('home-profile-header');
+      if (homeHeader) {
+        const { avatar } = state.profile;
+        const points = state.bonusPoints;
+        homeHeader.innerHTML = `
+          <div class="home-profile-section">
+            <div class="home-bonus-points" title="${t('bonusPoints')}">
+              ⭐ ${points}
+            </div>
+            <div class="home-profile-avatar" onclick="goTo('settings')">
+              ${avatar}
+            </div>
+          </div>
+        `;
+      }
+    }
+    
     if (type === 'report') { renderReport(area, text); return; }
 
     area.innerHTML = `<div class="ai-result-box">
@@ -127,6 +174,59 @@ export async function runAI(type) {
     </div>`;
   }
 }
+
+function showInsufficientPointsModal(required) {
+  const modal = document.createElement('div');
+  modal.className = 'insufficient-points-overlay';
+  modal.id = 'insufficient-points-modal';
+
+  modal.innerHTML = `
+    <div class="insufficient-points-box">
+      <div class="insufficient-points-icon">⭐</div>
+      <div class="insufficient-points-title">${t('notEnoughPoints')}</div>
+      <div class="insufficient-points-message">
+        ${t('needMorePoints').replace('{required}', required).replace('{current}', state.bonusPoints)}
+      </div>
+      
+      <div class="insufficient-points-options">
+        <div class="points-option">
+          <div class="points-option-icon">🔥</div>
+          <div class="points-option-text">
+            <div class="points-option-title">${t('earnPointsStreakTitle')}</div>
+            <div class="points-option-desc">${t('earnPointsStreakDesc')}</div>
+          </div>
+        </div>
+        <div class="points-option">
+          <div class="points-option-icon">✦</div>
+          <div class="points-option-text">
+            <div class="points-option-title">${t('upgradeTitle')}</div>
+            <div class="points-option-desc">${t('upgradeDesc')}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="insufficient-points-actions">
+        <button class="btn-primary" onclick="goTo('upgrade')">
+          ${t('upgradeToPremium')}
+        </button>
+        <button class="btn-ghost" onclick="closeInsufficientPointsModal()">
+          ${t('cancelBtn')}
+        </button>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(modal);
+  setTimeout(() => modal.classList.add('visible'), 50);
+}
+
+window.closeInsufficientPointsModal = function() {
+  const modal = document.getElementById('insufficient-points-modal');
+  if (modal) {
+    modal.classList.remove('visible');
+    setTimeout(() => modal.remove(), 300);
+  }
+};
 
 function renderReport(area, text) {
   const today = new Date().toLocaleDateString('en', { year:'numeric', month:'long', day:'numeric' });
@@ -169,6 +269,9 @@ export function initAI() {
   const locked = isLocked('ai');
   const today  = new Date().toISOString().split('T')[0];
 
+  // Show cost if not premium
+  const costBadge = !state.premium ? ` <span style="font-size:11px;color:var(--gold)">(-150 ⭐)</span>` : '';
+
   dvForm.innerHTML = `
     <div class="dv-row">
       <div class="dv-field">
@@ -191,9 +294,9 @@ export function initAI() {
         </select>
       </div>
     </div>
-    <button class="dv-btn ${locked ? 'dv-btn--locked' : ''}"
-      onclick="${locked ? "showPaywall('doctor_visit')" : "runAI('doctor_visit')"}">
-      ${locked ? t('dvBtnLocked') : t('dvBtnUnlocked')}
+    <button class="dv-btn ${locked && state.bonusPoints < AI_COSTS.doctor_visit ? 'dv-btn--locked' : ''}"
+      onclick="${locked && state.bonusPoints < AI_COSTS.doctor_visit ? `showInsufficientPointsModal(${AI_COSTS.doctor_visit})` : "runAI('doctor_visit')"}">
+      ${locked ? t('dvBtnLocked') : t('dvBtnUnlocked')}${!state.premium ? costBadge : ''}
     </button>`;
 }
 
