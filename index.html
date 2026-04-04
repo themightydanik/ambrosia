@@ -208,17 +208,21 @@
   <div class="screen-header">
     <div class="screen-title" id="set-title">Profile & Settings</div>
   </div>
-  <div style="padding:0 24px 20px;text-align:center">
-    <div class="profile-avatar">🌿</div>
-    <div class="profile-name" id="prof-name">Health Tracker</div>
-    <div class="profile-sub" id="prof-sub">Tracking since March 2026</div>
-    <div id="set-premium-badge"></div>
-    <div class="stat-row" style="margin-top:16px">
-      <div class="stat-card"><div class="stat-num" id="stat-entries">0</div><div class="stat-lbl" id="stat-lbl1">Entries</div></div>
-      <div class="stat-card"><div class="stat-num" id="stat-days">0</div><div class="stat-lbl" id="stat-lbl2">Days tracked</div></div>
-      <div class="stat-card"><div class="stat-num" id="stat-syms">0</div><div class="stat-lbl" id="stat-lbl3">Symptoms</div></div>
-    </div>
+  
+  <!-- NEW: Dynamic profile section -->
+  <div id="profile-section" style="padding:0 24px 20px">
+    <!-- Renders dynamically via settings.js -->
   </div>
+  
+  <div id="set-premium-badge" style="padding:0 24px"></div>
+  
+  <div class="stat-row" style="margin:0 24px 24px">
+    <div class="stat-card"><div class="stat-num" id="stat-entries">0</div><div class="stat-lbl" id="stat-lbl1">Entries</div></div>
+    <div class="stat-card"><div class="stat-num" id="stat-days">0</div><div class="stat-lbl" id="stat-lbl2">Days tracked</div></div>
+    <div class="stat-card"><div class="stat-num" id="stat-syms">0</div><div class="stat-lbl" id="stat-lbl3">Symptoms</div></div>
+  </div>
+
+  <!-- Rest of settings (language, preferences, data) remain the same -->
   <div class="settings-section">
     <div class="settings-section-title" id="set-lang-title">LANGUAGE</div>
     <div class="lang-options">
@@ -227,24 +231,24 @@
       <button class="lang-btn" id="lang-uk" onclick="setLang('uk')">🇺🇦 Українська</button>
     </div>
   </div>
+  
   <div class="settings-section">
     <div class="settings-section-title" id="set-pref-title">PREFERENCES</div>
     <div class="setting-row"><div class="setting-row-left"><div class="setting-icon">🔔</div><div class="setting-label" id="set-notif">Reminders</div></div><div class="setting-value">Daily 20:00</div></div>
     <div class="setting-row"><div class="setting-row-left"><div class="setting-icon">🎨</div><div class="setting-label" id="set-theme">Theme</div></div><div class="setting-value">Dark Forest</div></div>
-    <div class="setting-row">
-      <div class="setting-row-left"><div class="setting-icon">🤖</div><div class="setting-label" id="set-ai">AI Provider</div></div>
-      <div class="setting-value">Groq AI</div>
-    </div>
   </div>
+  
   <div class="settings-section">
     <div class="settings-section-title" id="set-data-title">DATA</div>
     <div class="setting-row" onclick="exportData()"><div class="setting-row-left"><div class="setting-icon">📤</div><div class="setting-label" id="set-export">Export Data</div></div><div style="color:var(--cream30)">→</div></div>
     <div class="setting-row" onclick="clearData()"><div class="setting-row-left"><div class="setting-icon">🗑️</div><div class="setting-label" id="set-clear" style="color:var(--coral)">Clear All Data</div></div><div style="color:var(--cream30)">→</div></div>
   </div>
+  
   <div style="padding:0 24px 100px;text-align:center">
-    <div style="font-size:13px;color:var(--cream30);line-height:1.6">Ambrosia v1.1 · <em>Not a medical device</em><br>Always consult a qualified healthcare professional.</div>
+    <div style="font-size:13px;color:var(--cream30);line-height:1.6">Ambrosia v1.2 · <em>Not a medical device</em><br>Always consult a qualified healthcare professional.</div>
   </div>
 </div>
+
 
 <!-- ══════════ UPGRADE / PAYWALL ══════════ -->
 <div id="screen-upgrade" class="screen">
