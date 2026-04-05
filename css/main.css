@@ -968,3 +968,10 @@ input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:26px; h
   gap: 10px;
 }
 
+.ob-slide {
+  display: none;
+}
+
+.ob-slide.active {
+  display: block;
+}
