@@ -193,7 +193,7 @@ export const T = {
     streakContinues: 'Daily Streak!',
     streakBroken: 'Streak Reset',
     streakWeekMilestone: 'Week Complete! 🎉',
-    streakMsg: 'You've visited Ambrosia {streak} days in a row!',
+    streakMsg: 'You have visited Ambrosia {streak} days in a row!',
     streakBrokenMsg: 'Your streak was reset, but every day is a fresh start!',
     streakWeekMsg: 'Amazing! {streak} day streak complete!',
     rewardEarned: 'Reward Earned',
