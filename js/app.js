@@ -61,9 +61,13 @@ document.addEventListener('DOMContentLoaded', () => {
   applyLang();
 
   // Navigate to correct screen after brief delay to avoid race conditions
-  setTimeout(() => {
-    goTo(state.screen);
-  }, 50);
+setTimeout(() => {
+  if (!state.onboardingDone) {
+    goTo('onboarding');
+  } else {
+    goTo(state.screen || 'home');
+  }
+}, 50);
 
   // Close modal on overlay click
   const modal = document.getElementById('entry-modal');
