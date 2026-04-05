@@ -47,7 +47,7 @@ window.modalBackToDetail = modalBackToDetail;
 window.modalSaveStatus  = modalSaveStatus;
 window.modalDelete      = modalDelete;
 window.disableCriticalTracking = disableCriticalTracking;
-// NEW: Profile functions
+// Profile functions
 window.editProfile      = editProfile;
 window.cancelProfileEdit = cancelProfileEdit;
 window.selectAvatar     = selectAvatar;
