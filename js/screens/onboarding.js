@@ -8,9 +8,13 @@ let _obStep = 0;
 // ─────────────────────────────────────────────
 export function obNext() {
   if (_obStep < 2) {
-    document.getElementById('ob-slide-' + _obStep).style.display = 'none';
+    const current = document.getElementById('ob-slide-' + _obStep);
+    if (current) current.classList.remove('active');
+
     _obStep++;
-    document.getElementById('ob-slide-' + _obStep).style.display = 'block';
+
+    const next = document.getElementById('ob-slide-' + _obStep);
+    if (next) next.classList.add('active');
 
     // Update progress dots
     for (let i = 0; i <= 2; i++) {
