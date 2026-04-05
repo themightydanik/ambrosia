@@ -156,41 +156,29 @@ export const T = {
     // Placeholders
     updateNotesPlaceholder:'Any notes about this change?',
     statusHistory: 'Status History',
-criticalTrackingActive: 'Critical tracking active',
-disableTrackingBtn: 'Disable tracking',
-disableTrackingConfirm: 'Are you sure you want to disable critical tracking for this symptom?',
-trackingDisabled: 'Critical tracking disabled',
-criticalWarningTitle: 'High Intensity Symptom',
-criticalWarningText: 'This symptom is severe and not improving. Consider seeking medical attention or informing someone close to you.',
-understood: 'Understood',
-modalUpdateSaved: 'Status update saved',
-        // Respiratory
+    criticalTrackingActive: 'Critical tracking active',
+    disableTrackingBtn: 'Disable tracking',
+    disableTrackingConfirm: 'Are you sure you want to disable critical tracking for this symptom?',
+    trackingDisabled: 'Critical tracking disabled',
+    criticalWarningTitle: 'High Intensity Symptom',
+    criticalWarningText: 'This symptom is severe and not improving. Consider seeking medical attention or informing someone close to you.',
+    understood: 'Understood',
+    // AI Insights
     homeAiRespiratoryMild: 'Symptoms suggest early-stage cold. Tap for full AI analysis →',
     homeAiRespiratoryModerate: 'Upper respiratory symptoms detected. AI can help analyze the pattern →',
     homeAiRespiratorySevere: 'Severe respiratory symptoms. Consider seeing a doctor. Tap for AI analysis →',
-    
-    // Mental
     homeAiMentalMild: 'Stress and mental health symptoms detected. AI can offer insights →',
     homeAiMentalSevere: 'High stress levels detected. AI recommends coping strategies. Tap here →',
-    
-    // Digestive
     homeAiDigestiveMild: 'Digestive discomfort detected. AI can help identify triggers →',
     homeAiDigestiveSevere: 'Severe digestive symptoms. Consider medical consultation. AI analysis available →',
-    
-    // Pain
     homeAiPainMild: 'Pain symptoms logged. AI can analyze patterns and suggest relief →',
     homeAiPainSevere: 'High intensity pain detected. Seek medical attention if persistent. Tap for AI insights →',
     homeAiPainMultiple: 'Multiple pain points detected. AI can help identify the root cause →',
-    
-    // Combinations
     homeAiFatigueRespiratory: 'Fatigue combined with respiratory symptoms. Could be viral infection. AI analysis →',
     homeAiMigraine: 'Symptoms consistent with migraine. AI can provide management tips →',
-    
-    // Fallbacks
     homeAiFewSymptoms: 'Keep logging symptoms for more accurate AI insights →',
     homeAiNeedMore: 'No recent symptoms logged. Start tracking to get AI insights →',
-    homeAiGeneric: 'Unusual symptom combination detected. AI can help analyze this pattern →'
-
+    homeAiGeneric: 'Unusual symptom combination detected. AI can help analyze this pattern →',
     // Profile fields
     profileName: 'Name',
     profileAge: 'Age',
@@ -198,11 +186,27 @@ modalUpdateSaved: 'Status update saved',
     profileNamePlaceholder: 'Your name',
     profileOccupationPlaceholder: 'What do you do?',
     yearsOld: 'years old',
-    
-    // Buttons
     editProfileBtn: 'Edit Profile',
-    saveBtn: 'Save',
     cancelBtn: 'Cancel',
+    // Gamification
+    bonusPoints: 'Bonus Points',
+    streakContinues: 'Daily Streak!',
+    streakBroken: 'Streak Reset',
+    streakWeekMilestone: 'Week Complete! 🎉',
+    streakMsg: 'You've visited Ambrosia {streak} days in a row!',
+    streakBrokenMsg: 'Your streak was reset, but every day is a fresh start!',
+    streakWeekMsg: 'Amazing! {streak} day streak complete!',
+    rewardEarned: 'Reward Earned',
+    currentStreak: 'Current Streak',
+    daysStreak: 'days in a row',
+    awesome: 'Awesome!',
+    notEnoughPoints: 'Not Enough Points',
+    needMorePoints: 'You need {required} points, but you have {current}. Earn more by:',
+    earnPointsStreakTitle: 'Daily Streak',
+    earnPointsStreakDesc: 'Visit every day and earn 10 points (+100 bonus every 7 days)',
+    upgradeTitle: 'Upgrade to Premium',
+    upgradeDesc: 'Unlimited AI analysis with no point deduction',
+    upgradeToPremium: 'Upgrade to Premium',
   },
 
   ru: {
@@ -281,71 +285,54 @@ modalUpdateSaved: 'Status update saved',
     updateLabel:'Обновление статуса',
     updateNotesPlaceholder:'Заметки об изменении...',
     statusHistory: 'История статусов',
-criticalTrackingActive: 'Усиленный контроль активен',
-disableTrackingBtn: 'Отключить контроль',
-disableTrackingConfirm: 'Вы уверены, что хотите отключить усиленный контроль этого симптома?',
-trackingDisabled: 'Усиленный контроль отключен',
-criticalWarningTitle: 'Симптом высокой интенсивности',
-criticalWarningText: 'Этот симптом серьёзный и не улучшается. Рекомендуем обратиться к врачу или сообщить близким.',
-understood: 'Понятно',
-modalUpdateSaved: 'Статус обновлён',
+    criticalTrackingActive: 'Усиленный контроль активен',
+    disableTrackingBtn: 'Отключить контроль',
+    disableTrackingConfirm: 'Вы уверены, что хотите отключить усиленный контроль этого симптома?',
+    trackingDisabled: 'Усиленный контроль отключен',
+    criticalWarningTitle: 'Симптом высокой интенсивности',
+    criticalWarningText: 'Этот симптом серьёзный и не улучшается. Рекомендуем обратиться к врачу или сообщить близким.',
+    understood: 'Понятно',
     homeAiRespiratoryMild: 'Симптомы указывают на начало простуды. Нажмите для полного AI анализа →',
-    homeAiRespiratoryModerate: 'Обнаружены симптомы верхних дыхательных путей. AI поможет проанализировать →',
+    homeAiRespiratoryModerate: 'Обнаружены симптомы верхних дыхательных путей. AI поможет проаналізувати →',
     homeAiRespiratorySevere: 'Серьёзные респираторные симптомы. Рекомендуем обратиться к врачу. AI анализ →',
-    
     homeAiMentalMild: 'Обнаружены симптомы стресса. AI может предложить инсайты →',
     homeAiMentalSevere: 'Высокий уровень стресса. AI рекомендует стратегии преодоления. Нажмите →',
-    
     homeAiDigestiveMild: 'Обнаружены проблемы с пищеварением. AI поможет найти триггеры →',
     homeAiDigestiveSevere: 'Серьёзные проблемы с пищеварением. Рекомендуем консультацию врача. AI анализ →',
-    
     homeAiPainMild: 'Зафиксирована боль. AI может проанализировать паттерны и предложить облегчение →',
     homeAiPainSevere: 'Высокая интенсивность боли. Обратитесь к врачу при сохранении. AI инсайты →',
-    homeAiPainMultiple: 'Множественные болевые точки. AI поможет найти первопричину →',
-    
+    homeAiPainMultiple: 'Множественные болевые точки. AI поможет найти першопричину →',
     homeAiFatigueRespiratory: 'Усталость в сочетании с респираторными симптомами. Возможна вирусная инфекция. AI анализ →',
     homeAiMigraine: 'Симптомы соответствуют мигрени. AI может предложить советы по управлению →',
-    
     homeAiFewSymptoms: 'Продолжайте добавлять симптомы для более точных AI инсайтов →',
-    homeAiNeedMore: 'Нет недавних симптомов. Начните отслеживание для получения AI инсайтов →',
-    homeAiGeneric: 'Обнаружена необычная комбинация симптомов. AI поможет проанализировать паттерн →'
-
-profileName: 'Имя',
+    homeAiNeedMore: 'Нет недавних симптомов. Начните отслеживание для получения AI инсайтів →',
+    homeAiGeneric: 'Обнаружена необычная комбинация симптомов. AI поможет проанализировать паттерн →',
+    profileName: 'Имя',
     profileAge: 'Возраст',
     profileOccupation: 'Работа / Учёба',
     profileNamePlaceholder: 'Ваше имя',
     profileOccupationPlaceholder: 'Чем вы занимаетесь?',
     yearsOld: 'лет',
-    
-    editProfileBtn: 'Редактировать профиль',
-    saveBtn: 'Сохранить',
+    editProfileBtn: 'Редактировать профіль',
     cancelBtn: 'Отмена',
-      bonusPoints: 'Бонусные баллы',
-    
+    bonusPoints: 'Бонусные баллы',
     streakContinues: 'Ежедневный стрик!',
     streakBroken: 'Стрик сброшен',
     streakWeekMilestone: 'Неделя завершена! 🎉',
-    
     streakMsg: 'Вы посещали Ambrosia {streak} дней подряд!',
     streakBrokenMsg: 'Ваш стрик прервался, но каждый день — новое начало!',
     streakWeekMsg: 'Невероятно! Стрик {streak} дней завершён!',
-    
     rewardEarned: 'Награда получена',
     currentStreak: 'Текущий стрик',
     daysStreak: 'дней подряд',
     awesome: 'Отлично!',
-    
     notEnoughPoints: 'Недостаточно баллов',
     needMorePoints: 'Вам нужно {required} баллов, но у вас {current}. Заработайте больше:',
-    
     earnPointsStreakTitle: 'Ежедневный стрик',
     earnPointsStreakDesc: 'Заходите каждый день и получайте 10 баллов (+100 каждые 7 дней)',
-    
     upgradeTitle: 'Обновление до Premium',
     upgradeDesc: 'Безлимитный AI анализ без списания баллов',
-    
     upgradeToPremium: 'Обновить до Premium',
-    cancelBtn: 'Отмена',
   },
 
   uk: {
@@ -424,71 +411,53 @@ profileName: 'Имя',
     updateLabel:'Оновлення статусу',
     updateNotesPlaceholder:'Нотатки про зміну...',
     statusHistory: 'Історія статусів',
-criticalTrackingActive: 'Посилений контроль активний',
-disableTrackingBtn: 'Вимкнути контроль',
-disableTrackingConfirm: 'Ви впевнені, що хочете вимкнути посилений контроль цього симптому?',
-trackingDisabled: 'Посилений контроль вимкнено',
-criticalWarningTitle: 'Симптом високої інтенсивності',
-criticalWarningText: 'Цей симптом серйозний і не покращується. Рекомендуємо звернутися до лікаря або повідомити близьких.',
-understood: 'Зрозуміло',
-modalUpdateSaved: 'Статус оновлено',
+    criticalTrackingActive: 'Посилений контроль активний',
+    disableTrackingBtn: 'Вимкнути контроль',
+    disableTrackingConfirm: 'Ви впевнені, що хочете вимкнути посилений контроль цього симптому?',
+    trackingDisabled: 'Посилений контроль вимкнено',
+    criticalWarningTitle: 'Симптом високої інтенсивності',
+    criticalWarningText: 'Цей симптом серйозний і не покращується. Рекомендуємо звернутися до лікаря або повідомити близьких.',
+    understood: 'Зрозуміло',
     homeAiRespiratoryMild: 'Симптоми вказують на початок застуди. Натисніть для повного AI аналізу →',
     homeAiRespiratoryModerate: 'Виявлено симптоми верхніх дихальних шляхів. AI допоможе проаналізувати →',
     homeAiRespiratorySevere: 'Серйозні респіраторні симптоми. Рекомендуємо звернутися до лікаря. AI аналіз →',
-    
     homeAiMentalMild: 'Виявлено симптоми стресу. AI може запропонувати інсайти →',
     homeAiMentalSevere: 'Високий рівень стресу. AI рекомендує стратегії подолання. Натисніть →',
-    
     homeAiDigestiveMild: 'Виявлено проблеми з травленням. AI допоможе знайти тригери →',
     homeAiDigestiveSevere: 'Серйозні проблеми з травленням. Рекомендуємо консультацію лікаря. AI аналіз →',
-    
     homeAiPainMild: 'Зафіксовано біль. AI може проаналізувати патерни та запропонувати полегшення →',
     homeAiPainSevere: 'Висока інтенсивність болю. Зверніться до лікаря при збереженні. AI інсайти →',
     homeAiPainMultiple: 'Множинні больові точки. AI допоможе знайти першопричину →',
-    
     homeAiFatigueRespiratory: 'Втома в поєднанні з респіраторними симптомами. Можлива вірусна інфекція. AI аналіз →',
     homeAiMigraine: 'Симптоми відповідають мігрені. AI може запропонувати поради з управління →',
-    
     homeAiFewSymptoms: 'Продовжуйте додавати симптоми для більш точних AI інсайтів →',
     homeAiNeedMore: 'Немає нещодавніх симптомів. Почніть відстеження для отримання AI інсайтів →',
-    homeAiGeneric: 'Виявлено незвичайну комбінацію симптомів. AI допоможе проаналізувати патерн →'
-
+    homeAiGeneric: 'Виявлено незвичайну комбінацію симптомів. AI допоможе проаналізувати патерн →',
     profileName: "Ім'я",
     profileAge: 'Вік',
     profileOccupation: 'Робота / Навчання',
     profileNamePlaceholder: "Ваше ім'я",
     profileOccupationPlaceholder: 'Чим ви займаєтесь?',
     yearsOld: 'років',
-    
     editProfileBtn: 'Редагувати профіль',
-    saveBtn: 'Зберегти',
     cancelBtn: 'Скасувати',
-          bonusPoints: 'Бонусні бали',
-    
+    bonusPoints: 'Бонусні бали',
     streakContinues: 'Щоденний стрік!',
     streakBroken: 'Стрік скинуто',
     streakWeekMilestone: 'Тиждень завершено! 🎉',
-    
     streakMsg: 'Ви відвідували Ambrosia {streak} днів поспіль!',
     streakBrokenMsg: 'Ваш стрік перервався, але кожен день — новий початок!',
     streakWeekMsg: 'Неймовірно! Стрік {streak} днів завершено!',
-    
     rewardEarned: 'Нагорода отримана',
     currentStreak: 'Поточний стрік',
     daysStreak: 'днів поспіль',
     awesome: 'Чудово!',
-    
     notEnoughPoints: 'Недостатньо балів',
     needMorePoints: 'Вам потрібно {required} балів, але у вас {current}. Заробіть більше:',
-    
     earnPointsStreakTitle: 'Щоденний стрік',
     earnPointsStreakDesc: 'Заходьте щодня та отримуйте 10 балів (+100 кожні 7 днів)',
-    
     upgradeTitle: 'Оновлення до Premium',
     upgradeDesc: 'Безлімітний AI аналіз без списання балів',
-    
     upgradeToPremium: 'Оновити до Premium',
-    cancelBtn: 'Скасувати',
-      
   }
 };
