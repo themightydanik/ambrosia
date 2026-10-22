@@ -2,14 +2,10 @@
 // AMBROSIA CLIENT CONFIG
 // ─────────────────────────────────────────────
 // No API keys here — safe to commit.
-// The Groq key lives in Vercel environment variables.
+// The Groq key lives in the hosting provider's server-side environment variables.
 // ─────────────────────────────────────────────
 
-// AI Proxy URL — your Vercel deployment URL + /api/ai
-// During local development: use '' to get a "coming soon" message
-// After deploying to Vercel: paste your URL here, e.g.:
-//   'https://ambrosia-app.vercel.app/api/ai'
-export const AI_PROXY_URL = 'https://ambrosia-beige.vercel.app/api/ai';
+// Same-origin API endpoint, redirected to the Netlify Function by netlify.toml.\nexport const AI_PROXY_URL = '/api/ai';
 
 // Groq model (informational — actual model set in api/ai.js on the server)
 export const GROQ_MODEL = 'llama-3.3-70b-versatile';
