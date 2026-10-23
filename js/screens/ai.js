@@ -4,6 +4,7 @@ import { isLocked, showPaywall } from '../premium.js';
 import { AI_PROXY_URL } from '../config.js';
 import { t } from '../i18n.js';
 import { renderHome } from './home.js';
+import { escapeHTML } from '../utils/escape.js';
 
 // AI costs in bonus points
 const AI_COSTS = {
@@ -176,7 +177,7 @@ export async function runAI(type) {
 
     area.innerHTML = `<div class="ai-result-box">
       <div class="ai-result-label">${ui.label}</div>
-      <div class="ai-result-content">${text}</div>
+      <div class="ai-result-content">${escapeHTML(text)}</div>
     </div>`;
 
   } catch (err) {
@@ -186,7 +187,7 @@ export async function runAI(type) {
         ${isNoProxy ? '⚙️ AI COMING SOON' : '⚠️ ERROR'}
       </div>
       <div class="ai-result-content" style="color:var(--cream60)">
-        ${isNoProxy ? 'AI features are being configured. Check back soon!' : `Could not reach AI.\n\n${err.message}`}
+        ${isNoProxy ? 'AI features are being configured. Check back soon!' : `Could not reach AI.\n\n${escapeHTML(err.message)}`}
       </div>
     </div>`;
   }
@@ -254,7 +255,7 @@ function renderReport(area, text) {
       <div><div class="report-meta-label">Entries</div><div class="report-meta-value">${state.entries.filter(e=>!e.isUpdate).length}</div></div>
       <div><div class="report-meta-label">Powered by</div><div class="report-meta-value">Groq AI</div></div>
     </div>
-    <div class="ai-result-content">${text}</div>
+    <div class="ai-result-content">${escapeHTML(text)}</div>
     <div style="margin-top:16px;font-size:12px;color:var(--coral);font-style:italic">
       ⚠️ For informational purposes only. Always consult a qualified medical professional.
     </div>
@@ -266,9 +267,9 @@ function renderDoctorVisitResult(area, text, apptDate, docType) {
     <div class="ai-result-label">🏥 APPOINTMENT BRIEFING</div>
     <div class="report-meta">
       <div><div class="report-meta-label">Appointment</div><div class="report-meta-value">${apptDate}</div></div>
-      <div><div class="report-meta-label">Doctor</div><div class="report-meta-value">${docType}</div></div>
+      <div><div class="report-meta-label">Doctor</div><div class="report-meta-value">${escapeHTML(docType)}</div></div>
     </div>
-    <div class="ai-result-content">${text}</div>
+    <div class="ai-result-content">${escapeHTML(text)}</div>
     <div style="margin-top:16px;padding:14px 16px;background:var(--mint-dim);border-radius:var(--r-sm);display:flex;gap:10px;align-items:center">
       <div style="font-size:20px">💡</div>
       <div style="font-size:13px;color:var(--cream60)">Show this briefing to your doctor at the start of your appointment.</div>
