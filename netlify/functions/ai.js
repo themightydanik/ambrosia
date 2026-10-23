@@ -1,6 +1,6 @@
 // Netlify serverless proxy for Groq. Set GROQ_API_KEY in Netlify environment variables.
 const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
-const GROQ_MODEL = 'llama-3.3-70b-versatile';
+const GROQ_MODEL = process.env.GROQ_MODEL || 'openai/gpt-oss-120b';
 
 exports.handler = async (event) => {
   const json = (statusCode, body) => ({ statusCode, headers: { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' }, body: JSON.stringify(body) });
@@ -19,7 +19,7 @@ exports.handler = async (event) => {
     const response = await fetch(GROQ_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${apiKey}` },
-      body: JSON.stringify({ model: GROQ_MODEL, max_tokens: 1000, temperature: 0.4, messages: [{ role: 'user', content: prompt }] })
+      body: JSON.stringify({ model: GROQ_MODEL, max_tokens: 1600, temperature: 0.4, messages: [{ role: 'user', content: prompt }] })
     });
     if (!response.ok) {
       console.error('Groq upstream status:', response.status);
