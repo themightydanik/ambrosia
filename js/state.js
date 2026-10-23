@@ -5,6 +5,7 @@ import { SAMPLE_ENTRIES } from './data.js';
 // ─────────────────────────────────────────────
 export const state = {
   screen:        'onboarding',
+  onboardingDone: false,
   lang:          'en',
   // log flow
   logStep:       0,
@@ -53,7 +54,8 @@ export function loadState() {
     if (savedLang) state.lang = savedLang;
 
     const seenOnboarding = localStorage.getItem('ambrosia_onboarding_done');
-    if (seenOnboarding) state.screen = 'home';
+    state.onboardingDone = seenOnboarding === '1';
+    if (state.onboardingDone) state.screen = 'home';
 
     if (localStorage.getItem('ambrosia_premium') === '1') state.premium = true;
     const savedKey = localStorage.getItem('ambrosia_groq_key');
@@ -100,6 +102,7 @@ export function saveLang() {
 }
 
 export function markOnboardingDone() {
+  state.onboardingDone = true;
   try { 
     localStorage.setItem('ambrosia_onboarding_done', '1');
     // NEW: Give 100 bonus points on first app launch
