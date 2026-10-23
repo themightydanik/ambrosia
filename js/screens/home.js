@@ -1,4 +1,5 @@
 import { state, saveDailyStreak, addBonusPoints } from '../state.js';
+import { escapeHTML } from '../utils/escape.js';
 import { t } from '../i18n.js';
 import { SYMPTOM_COLORS, STATUS_COLORS } from '../data.js';
 import { registerScreen } from '../navigation.js';
@@ -19,15 +20,15 @@ export function entryCardHTML(entry, updates = []) {
 
   const symsHTML = entry.symptoms
     .map(s => `<div class="entry-chip">
-      <div class="entry-chip-dot" style="background:${SYMPTOM_COLORS[s] || '#888'}"></div>${t(s)}
+      <div class="entry-chip-dot" style="background:${SYMPTOM_COLORS[s] || '#888'}"></div>${escapeHTML(t(s))}
     </div>`).join('');
 
   const trigsHTML = entry.triggers.length
-    ? `<div class="entry-triggers">${entry.triggers.map(tr => `<div class="trig-tag">⚡ ${t(tr)}</div>`).join('')}</div>`
+    ? `<div class="entry-triggers">${entry.triggers.map(tr => `<div class="trig-tag">⚡ ${escapeHTML(t(tr))}</div>`).join('')}</div>`
     : '';
 
   const notesHTML = entry.notes
-    ? `<div class="entry-notes">"${entry.notes}"</div>` : '';
+    ? `<div class="entry-notes">"${escapeHTML(entry.notes)}"</div>` : '';
 
   const statusHistory = entry.statusUpdates || [];
   const updatesHTML = statusHistory.length
@@ -42,7 +43,7 @@ export function entryCardHTML(entry, updates = []) {
             <div class="entry-timeline-text">
               <span class="entry-timeline-date">${uDate}${uTime}</span>
               <span class="entry-timeline-status" style="color:${statusColor}">${t(statusKey)}</span>
-              ${u.notes ? `<span class="entry-timeline-note">"${u.notes}"</span>` : ''}
+              ${u.notes ? `<span class="entry-timeline-note">"${escapeHTML(u.notes)}"</span>` : ''}
             </div>
           </div>`;
         }).join('')}
@@ -250,7 +251,7 @@ function renderProfileHeader() {
         ⭐ ${points}
       </div>
       <div class="home-profile-avatar" onclick="goTo('settings')">
-        ${avatar}
+        ${escapeHTML(avatar)}
       </div>
     </div>
   `;
@@ -284,7 +285,7 @@ function renderTodayChips() {
   }
   const unique = [...new Set(entries.flatMap(e => e.symptoms))];
   el.innerHTML = unique.slice(0, 6).map(s =>
-    `<div class="chip"><div class="chip-dot" style="background:${SYMPTOM_COLORS[s] || '#D4A853'}"></div>${t(s)}</div>`
+    `<div class="chip"><div class="chip-dot" style="background:${SYMPTOM_COLORS[s] || '#D4A853'}"></div>${escapeHTML(t(s))}</div>`
   ).join('');
 }
 
