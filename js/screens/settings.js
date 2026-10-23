@@ -5,6 +5,7 @@ import { renderHome } from './home.js';
 import { renderHistory } from './history.js';
 import { isPremium } from '../premium.js';
 import { PROMO_CODES } from '../config.js';
+import { escapeHTML } from '../utils/escape.js';
 
 let _editingProfile = false;
 
@@ -49,7 +50,7 @@ function renderProfileSection() {
     el.innerHTML = `
       <div class="profile-edit-form">
         <div class="profile-avatar-selector">
-          <div class="profile-avatar-current">${avatar}</div>
+          <div class="profile-avatar-current">${escapeHTML(avatar)}</div>
           <div class="avatar-grid" id="avatar-grid">
             ${AVATAR_OPTIONS.map(a => `
               <button class="avatar-option ${a === avatar ? 'selected' : ''}" 
@@ -60,7 +61,7 @@ function renderProfileSection() {
         <div class="profile-edit-field">
           <label class="profile-edit-label">${t('profileName')}</label>
           <input type="text" id="profile-name-input" class="profile-edit-input" 
-            value="${name}" placeholder="${t('profileNamePlaceholder')}">
+            value="${escapeHTML(name)}" placeholder="${t('profileNamePlaceholder')}">
         </div>
         <div class="profile-edit-field">
           <label class="profile-edit-label">${t('profileAge')}</label>
@@ -70,7 +71,7 @@ function renderProfileSection() {
         <div class="profile-edit-field">
           <label class="profile-edit-label">${t('profileOccupation')}</label>
           <input type="text" id="profile-occupation-input" class="profile-edit-input" 
-            value="${occupation}" placeholder="${t('profileOccupationPlaceholder')}">
+            value="${escapeHTML(occupation)}" placeholder="${t('profileOccupationPlaceholder')}">
         </div>
         <div class="profile-edit-actions">
           <button class="btn-primary" onclick="saveProfileEdit()">${t('saveBtn')}</button>
@@ -81,9 +82,9 @@ function renderProfileSection() {
   } else {
     el.innerHTML = `
       <div class="profile-display">
-        <div class="profile-avatar">${avatar}</div>
-        <div class="profile-name">${displayName}${displayAge}</div>
-        <div class="profile-sub">${displayOccupation}</div>
+        <div class="profile-avatar">${escapeHTML(avatar)}</div>
+        <div class="profile-name">${escapeHTML(displayName)}${displayAge}</div>
+        <div class="profile-sub">${escapeHTML(displayOccupation)}</div>
         <button class="profile-edit-btn" onclick="editProfile()">✏️ ${t('editProfileBtn')}</button>
       </div>
     `;

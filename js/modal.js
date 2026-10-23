@@ -3,6 +3,7 @@
 // Bottom sheet: view details, update status, delete
 // ─────────────────────────────────────────────
 import { state, saveEntries } from './state.js';
+import { escapeHTML } from './utils/escape.js';
 import { t } from './i18n.js';
 import { SYMPTOM_COLORS, STATUS_COLORS } from './data.js';
 import { renderHome } from './screens/home.js';
@@ -52,7 +53,7 @@ function renderDetailPhase(body, entry) {
   const date = new Date(entry.date + 'T12:00').toLocaleDateString(locale, {
     weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
   });
-  const timeStr = entry.time ? ` · ${entry.time}` : '';
+  const timeStr = entry.time ? ` · ${escapeHTML(entry.time)}` : '';
 
   const color = entry.intensity < 4 ? 'var(--mint)'
               : entry.intensity < 7 ? 'var(--gold)'
@@ -61,20 +62,20 @@ function renderDetailPhase(body, entry) {
   const symsHTML = entry.symptoms.map(s =>
     `<div class="modal-chip">
       <div style="width:8px;height:8px;border-radius:50%;background:${SYMPTOM_COLORS[s]||'#888'}"></div>
-      ${t(s)}
+      ${escapeHTML(t(s))}
     </div>`
   ).join('');
 
   const trigsHTML = entry.triggers.length
     ? `<div class="modal-row">
         <div class="modal-label">Triggers</div>
-        <div style="display:flex;flex-wrap:wrap;gap:6px">${entry.triggers.map(tr => `<div class="trig-tag">⚡ ${t(tr)}</div>`).join('')}</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px">${entry.triggers.map(tr => `<div class="trig-tag">⚡ ${escapeHTML(t(tr))}</div>`).join('')}</div>
       </div>` : '';
 
   const notesHTML = entry.notes
     ? `<div class="modal-row">
         <div class="modal-label">Notes</div>
-        <div class="modal-notes">"${entry.notes}"</div>
+        <div class="modal-notes">"${escapeHTML(entry.notes)}"</div>
       </div>` : '';
 
   // Status update badge if this is an update entry
@@ -99,7 +100,7 @@ function renderDetailPhase(body, entry) {
         <div class="modal-status-timeline">
           ${statusHistory.map(update => {
             const uDate = new Date(update.date + 'T12:00').toLocaleDateString(locale, { month: 'short', day: 'numeric' });
-            const uTime = update.time ? ` · ${update.time}` : '';
+            const uTime = update.time ? ` · ${escapeHTML(update.time)}` : '';
             const statusColor = STATUS_COLORS[update.status] || '#888';
             const statusKey   = 'status' + cap(update.status) + 'Short';
             return `<div class="modal-timeline-item">
@@ -109,7 +110,7 @@ function renderDetailPhase(body, entry) {
                   <span class="modal-timeline-date">${uDate}${uTime}</span>
                   <span class="modal-timeline-status" style="color:${statusColor}">${t(statusKey)}</span>
                 </div>
-                ${update.notes ? `<div class="modal-timeline-note">"${update.notes}"</div>` : ''}
+                ${update.notes ? `<div class="modal-timeline-note">"${escapeHTML(update.notes)}"</div>` : ''}
               </div>
             </div>`;
           }).join('')}
