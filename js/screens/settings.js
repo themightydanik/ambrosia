@@ -6,6 +6,7 @@ import { renderHistory } from './history.js';
 import { isPremium } from '../premium.js';
 import { PROMO_CODES } from '../config.js';
 import { escapeHTML } from '../utils/escape.js';
+import { renderCloudAccount } from '../supabase-auth.js';
 
 let _editingProfile = false;
 
@@ -25,6 +26,7 @@ export function renderSettings() {
 
   // Profile display
   renderProfileSection();
+  renderCloudAccount(state.lang);
 
   // Premium badge
   const premBadgeEl = document.getElementById('set-premium-badge');

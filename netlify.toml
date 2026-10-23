@@ -7,3 +7,9 @@
   to = "/.netlify/functions/ai"
   status = 200
   force = true
+
+[[redirects]]
+  from = "/api/supabase-config"
+  to = "/.netlify/functions/supabase-config"
+  status = 200
+  force = true
