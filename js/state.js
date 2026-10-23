@@ -1,5 +1,3 @@
-import { SAMPLE_ENTRIES } from './data.js';
-
 // ─────────────────────────────────────────────
 // GLOBAL APP STATE
 // ─────────────────────────────────────────────
@@ -47,7 +45,7 @@ export function loadState() {
     if (savedEntries) {
       state.entries = JSON.parse(savedEntries);
     } else {
-      state.entries = [...SAMPLE_ENTRIES];
+      state.entries = [];
     }
     
     const savedLang = localStorage.getItem('ambrosia_lang');
@@ -85,7 +83,7 @@ export function loadState() {
 
   } catch (e) {
     console.warn('Could not load saved state:', e);
-    state.entries = [...SAMPLE_ENTRIES];
+    state.entries = [];
   }
 }
 
