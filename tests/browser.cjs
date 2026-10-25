@@ -143,6 +143,8 @@ const wait = (page, fn) => page.waitForFunction(fn, null, {timeout:15000});
     assert.equal(await a.page.evaluate(async()=> (await import('/js/premium.js')).isPremium()),false);
     backend.tiers.set(A,'premium');await a.page.evaluate(async()=>{await (await import('/js/account-access.js')).refreshAccess(true);});
     assert.equal(await a.page.evaluate(async()=> (await import('/js/premium.js')).isPremium()),true);
+    await a.page.evaluate(async()=>{const {state,saveEntries}=await import('/js/state.js');state.entries.push({...state.entries[0],id:crypto.randomUUID(),symptoms:['fatigue'],notes:'Filter fixture'});saveEntries();window.goTo('history');window.historySetFilter('headache');});
+    assert.equal(await a.page.locator('#history-list .entry-card').count(),1);assert.equal(await a.page.locator('#history-list .limit-banner').count(),0);
     backend.tiers.delete(A);await a.page.evaluate(async()=>{await (await import('/js/account-access.js')).refreshAccess(true);});
     await a.page.evaluate(()=>window.goTo('upgrade'));assert.ok(!(await a.page.locator('#upgrade-content').innerText()).includes('$'));assert.equal(await a.page.locator('#upgrade-code-input').count(),0);
     await a.page.evaluate(()=>window.goTo('ai'));
