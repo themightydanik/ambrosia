@@ -11,11 +11,6 @@ const t = () => copy[state.lang] || copy.en;
 const emit = (accountChanged = false) => window.dispatchEvent(new CustomEvent('journal-changed', { detail:{ accountChanged } }));
 function status(next) {
   phase = next;
-  const banner = document.getElementById('sync-status');
-  if (banner) { banner.textContent = writable ? t()[next] || t().error : t().locked; banner.dataset.status = next;
-    if (draft) { banner.textContent = `${t().failedSave} ${t().backup}`; banner.onclick = downloadRecovery; banner.tabIndex = 0; banner.onkeydown = e => { if (e.key === 'Enter') downloadRecovery(); }; }
-    else { banner.onclick = null; banner.removeAttribute('tabindex'); banner.onkeydown = null; }
-  }
   document.querySelectorAll('[data-sync-panel]').forEach(panel => populate(panel));
 }
 function apply(accountChanged = false) {
