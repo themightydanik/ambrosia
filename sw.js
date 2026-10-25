@@ -1,4 +1,4 @@
-const CACHE = 'ambrosia-shell-sync-v2-1';
+const CACHE = 'ambrosia-shell-sync-v2-2';
 const SHELL = [
   "/",
   "/index.html",

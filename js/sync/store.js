@@ -1,7 +1,13 @@
 // One atomic localStorage document per account: data, outbox and conflicts commit together.
 export const PROFILE_ID = '00000000-0000-4000-8000-000000000001';
 const clone = value => structuredClone(value);
-const equal = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+function canonical(value) {
+  if (Array.isArray(value)) return value.map(canonical);
+  if (value && typeof value === 'object') return Object.fromEntries(Object.keys(value).sort().filter(key => value[key] !== undefined).map(key => [key, canonical(value[key])]));
+  return value;
+}
+// PostgreSQL jsonb reorders object keys; equality must follow content, not serialization order.
+const equal = (a, b) => JSON.stringify(canonical(a)) === JSON.stringify(canonical(b));
 export const defaultProfile = () => ({ name: '', age: null, occupation: '', avatar: '🌿', language: 'en' });
 export function localWhen(timestamp) {
   const d = new Date(timestamp);

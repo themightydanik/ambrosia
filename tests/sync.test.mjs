@@ -109,3 +109,9 @@ test('profile form based on an older revision retains remote changes as a confli
   b.store.putExpected(PROFILE_ID,'profile',{...defaultProfile(),name:'typed before remote update'},openedVersion);
   assert.equal(b.store.conflicts().length,1);assert.equal(b.store.conflicts()[0].conflict.payload.occupation,'remote change');
 });
+
+test('lost acknowledgement recognizes identical PostgreSQL jsonb with reordered keys', async()=>{
+  const s=new Server(),a=device(s);const e=entry();a.store.saveEntries([e]);
+  s.afterWrite=()=>{const row=[...s.rows.values()][0];row.payload=Object.fromEntries(Object.entries(row.payload).reverse());throw Error('lost ack');};
+  await a.engine.run();s.afterWrite=null;await a.engine.run();assert.equal(a.store.conflicts().length,0);assert.equal(a.store.pending().length,0);assert.equal(s.rows.size,1);
+});
