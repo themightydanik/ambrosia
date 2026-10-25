@@ -68,7 +68,7 @@ Staged IDs are retained, so retrying after interruption does not duplicate uploa
 
 ## Auth, profile and device settings
 
-Auth changes immediately switch the in-memory journal and profile, clear journal/AI/modal content, and invalidate old asynchronous responses. No previous account outbox is flushed under another user's credentials. Missing/expired authorization retains pending changes and reports an error; sign in again to retry. Logout hides account data but keeps its private local partition for the next sign-in to the same account. An offline reload opens only the last active partition; explicit sign-out clears that pointer.
+Auth changes immediately switch the in-memory journal and profile, clear journal/AI/modal content, and invalidate old asynchronous responses. No previous account outbox is flushed under another user's credentials. Missing/expired authorization retains pending changes and reports an error; sign in again to retry. Offline sign-out hides records immediately and persists a deferred local-session sign-out; reconnect completes it before any account can reopen or upload. Logout hides account data but keeps its private local partition for the next sign-in to the same account. An offline reload opens only the last active partition; explicit sign-out clears that pointer.
 
 Name, age, occupation, avatar and language synchronize with the account. Premium flags, promo codes, bonus points, streaks, AI-period selection, onboarding state and browser-specific preferences retain their existing device-local behavior. This milestone does not grant, revoke or implement server-side subscription entitlements. AI reads synchronized journal data and embedded status histories; delayed responses are ignored after an account switch.
 

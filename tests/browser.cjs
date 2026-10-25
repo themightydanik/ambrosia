@@ -120,6 +120,12 @@ const wait = (page, fn) => page.waitForFunction(fn, null, {timeout:15000});
     await b.page.getByRole('button',{name:'Use cloud version',exact:true}).click();await wait(b.page,()=>document.querySelector('#sync-status').dataset.status==='synced');
     assert.ok(await b.page.evaluate(()=>Object.values(JSON.parse(localStorage.getItem('ambrosia_sync_v2:aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa')).archives).length>0));
     console.log('PASS browser: simultaneous status updates retain both versions until explicit review');
+    await b.ctx.setOffline(true);await b.page.evaluate(()=>window.goTo('settings'));
+    await b.page.getByRole('button',{name:'Sign out',exact:true}).click();
+    assert.equal(await b.page.evaluate(async()=> (await import('/js/state.js')).state.accountId),null);
+    await b.ctx.setOffline(false);await wait(b.page,()=>!localStorage.getItem('ambrosia_sync_logout_requested'));
+    assert.equal(await b.page.evaluate(async()=> (await import('/js/state.js')).state.accountId),null);
+    console.log('PASS browser: offline sign-out stays signed out after reconnect');
     // Account changes erase journal, profile, modal and AI output. Guest never sees old restored keys.
     await a.page.evaluate(B=>window.testAuth.setUser({id:B,email:'b@example.test'}),B);
     await wait(a.page,()=>document.querySelector('#sync-status').dataset.status==='synced');

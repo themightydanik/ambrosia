@@ -49,6 +49,7 @@ function guestStore() {
   return guest;
 }
 export function switchAccount(user) {
+  if (user && localStorage.getItem('ambrosia_sync_logout_requested')) user = null;
   if (store && store.user === (user?.id || null)) {
     if (user && client && writable && !engine) startEngine();
     else if (user) void engine?.run();
@@ -97,10 +98,11 @@ export async function initializeSync() {
     try { cached = JSON.parse(localStorage.getItem('ambrosia_sync_last_account') || 'null'); } catch { /* fail closed */ }
     switchAccount(cached);
   } else await connectCloud();
-  window.addEventListener('online', () => { if (client) void engine?.run(); else void connectCloud(); });
+  window.addEventListener('online', () => { if (client && !localStorage.getItem('ambrosia_sync_logout_requested')) void engine?.run(); else void connectCloud(); });
   window.addEventListener('offline', () => { if (store?.user) status('offline'); });
   window.addEventListener('focus', () => void engine?.run());
   window.addEventListener('storage', event => {
+    if (event.key === 'ambrosia_sync_logout_requested' && event.newValue) { void requestSignOut(); return; }
     if (event.key === 'ambrosia_sync_last_account' && (!writable || !client)) {
       try { switchAccount(JSON.parse(event.newValue || 'null')); } catch { switchAccount(null); }
       return;
@@ -118,6 +120,11 @@ async function connectCloud() {
     try {
       client = await getSupabaseClient();
       if (!client) { switchAccount(null); return; }
+      if (localStorage.getItem('ambrosia_sync_logout_requested')) {
+        const { error } = await client.auth.signOut({scope:'local'});
+        if (error) { switchAccount(null); throw error; }
+        localStorage.removeItem('ambrosia_sync_logout_requested');
+      }
       const { data, error } = await client.auth.getSession(); if (error) throw error;
       switchAccount(data.session?.user || null);
       if (!subscribed) {
@@ -131,6 +138,16 @@ async function connectCloud() {
     }
   })().finally(() => { connecting = null; });
   return connecting;
+}
+export async function requestSignOut() {
+  // Hide cached records immediately even when the SDK/session endpoint is unavailable offline.
+  localStorage.setItem('ambrosia_sync_logout_requested','1');
+  switchAccount(null);
+  if (client && navigator.onLine) {
+    const { error } = await client.auth.signOut({scope:'local'});
+    if (error) throw error;
+    localStorage.removeItem('ambrosia_sync_logout_requested');
+  }
 }
 function button(panel, label, action) {
   const b = document.createElement('button'); b.type = 'button'; b.className = 'btn-ghost'; b.textContent = label;

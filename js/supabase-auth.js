@@ -1,5 +1,6 @@
 import { getSupabaseClient } from './supabase-client.js';
-import { switchAccount, renderSyncControls } from './sync/runtime.js';
+import { state } from './state.js';
+import { switchAccount, requestSignOut, renderSyncControls } from './sync/runtime.js';
 export { getSupabaseClient } from './supabase-client.js';
 const copy = {
   en: { title: 'Cloud account', missing: 'Cloud login is not configured yet.', signed: 'Signed in as', email: 'Email address', password: 'Password (at least 6 characters)', signup: 'Sign up', login: 'Sign in', logout: 'Sign out', sent: 'Check your email to confirm registration.', local: 'Changes are saved on this device first. Cloud sync keeps this account separate.' },
@@ -16,6 +17,14 @@ export async function renderCloudAccount(lang = 'en') {
   const title = document.createElement('div'); title.className = 'settings-section-title'; title.textContent = t.title; root.append(title);
   const status = document.createElement('div'); status.style.cssText = 'font-size:13px;line-height:1.6;margin:10px 0'; root.append(status);
   const hint = document.createElement('div'); hint.style.cssText = 'font-size:12px;opacity:.65;margin:10px 0'; hint.textContent = t.local; root.append(hint);
+  if (state.accountId) {
+    renderSyncControls(root, lang);
+    if (!navigator.onLine) {
+      const logout = document.createElement('button'); logout.className = 'btn-ghost'; logout.textContent = t.logout;
+      logout.onclick = async () => { try { await requestSignOut(); renderCloudAccount(lang); } catch (e) { status.textContent = e.message; } }; root.append(logout);
+      return;
+    }
+  }
   let supabase;
   try { supabase = await getSupabaseClient(); } catch (e) { status.textContent = e.message; return; }
   if (!root.isConnected || generation !== renderGeneration) return;
@@ -26,9 +35,9 @@ export async function renderCloudAccount(lang = 'en') {
   if (user) {
     status.textContent = t.signed + ' ' + user.email;
     const button = document.createElement('button'); button.className = 'btn-ghost'; button.textContent = t.logout;
-    button.onclick = async () => { const { error } = await supabase.auth.signOut(); if (error) status.textContent = error.message; else { switchAccount(null); renderCloudAccount(lang); } };
+    button.onclick = async () => { try { await requestSignOut(); renderCloudAccount(lang); } catch (e) { status.textContent = e.message; } };
     root.append(button);
-    renderSyncControls(root, lang);
+    if (!state.accountId) renderSyncControls(root, lang);
     return;
   }
   const form = document.createElement('form'); form.style.cssText = 'display:grid;gap:10px;margin-top:12px';
