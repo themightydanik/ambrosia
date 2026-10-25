@@ -1,3 +1,4 @@
+import { escapeHTML } from '../utils/escape.js';
 import { state } from '../state.js';
 import { t } from '../i18n.js';
 import { SYMPTOM_COLORS } from '../data.js';
@@ -27,9 +28,9 @@ function renderFilterChips() {
     const color    = SYMPTOM_COLORS[s] || '#888';
     const locked   = isLocked('filter');
     return `<div class="filter-chip ${isActive ? 'active' : ''}"
-      onclick="${locked ? `showPaywall('filter')` : `historySetFilter('${s}')`}">
+      onclick="${locked ? `showPaywall('filter')` : `historySetFilter(${escapeHTML(JSON.stringify(s))})`}">
       <div class="filter-dot" style="background:${color}"></div>
-      ${t(s)}${locked ? ' 🔒' : ''}
+      ${escapeHTML(t(s))}${locked ? ' 🔒' : ''}
     </div>`;
   }).join('');
 

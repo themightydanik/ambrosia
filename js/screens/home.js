@@ -12,7 +12,7 @@ export function entryCardHTML(entry, updates = []) {
   const date = new Date(entry.date + 'T12:00').toLocaleDateString(locale, {
     weekday: 'short', month: 'short', day: 'numeric'
   });
-  const timeStr = entry.time ? ` · ${entry.time}` : '';
+  const timeStr = entry.time ? ` · ${escapeHTML(entry.time)}` : '';
 
   const color = entry.intensity < 4 ? 'var(--mint)'
               : entry.intensity < 7 ? 'var(--gold)'
@@ -35,14 +35,14 @@ export function entryCardHTML(entry, updates = []) {
     ? `<div class="entry-timeline">
         ${statusHistory.map(u => {
           const uDate = new Date(u.date + 'T12:00').toLocaleDateString(locale, { month: 'short', day: 'numeric' });
-          const uTime = u.time ? ` · ${u.time}` : '';
+          const uTime = u.time ? ` · ${escapeHTML(u.time)}` : '';
           const statusColor = STATUS_COLORS[u.status] || '#888';
           const statusKey   = 'status' + u.status.charAt(0).toUpperCase() + u.status.slice(1) + 'Short';
           return `<div class="entry-timeline-item">
             <div class="entry-timeline-dot" style="background:${statusColor}"></div>
             <div class="entry-timeline-text">
               <span class="entry-timeline-date">${uDate}${uTime}</span>
-              <span class="entry-timeline-status" style="color:${statusColor}">${t(statusKey)}</span>
+              <span class="entry-timeline-status" style="color:${statusColor}">${escapeHTML(t(statusKey))}</span>
               ${u.notes ? `<span class="entry-timeline-note">"${escapeHTML(u.notes)}"</span>` : ''}
             </div>
           </div>`;
@@ -57,31 +57,31 @@ export function entryCardHTML(entry, updates = []) {
   if (entry.isUpdate) {
     const statusColor = STATUS_COLORS[entry.updateStatus] || '#888';
     const statusKey   = 'status' + entry.updateStatus.charAt(0).toUpperCase() + entry.updateStatus.slice(1) + 'Short';
-    return `<div class="entry-card entry-card--update" onclick="openEntryModal(${entry.id})">
+    return `<div class="entry-card entry-card--update" onclick="openEntryModal(${escapeHTML(JSON.stringify(entry.id))})">
       <div class="entry-date-bar">
         <div class="entry-date-text">
           <span class="update-badge">↻ ${t('updateLabel')}</span>
           ${date}${timeStr}
         </div>
-        <div style="color:${statusColor};font-size:13px;font-weight:600">${t(statusKey)}</div>
+        <div style="color:${statusColor};font-size:13px;font-weight:600">${escapeHTML(t(statusKey))}</div>
       </div>
       <div class="entry-body">
         <div class="entry-symptoms">${symsHTML}</div>
         <div style="display:flex;align-items:center;gap:8px;margin-top:6px">
           <div class="intensity-mini-bar" style="background:${color}"></div>
-          <span style="font-size:12px;color:var(--cream60)">${t('intensityLabel')} ${entry.intensity}/10</span>
+          <span style="font-size:12px;color:var(--cream60)">${t('intensityLabel')} ${escapeHTML(entry.intensity)}/10</span>
         </div>
         ${notesHTML}
       </div>
     </div>`;
   }
 
-  return `<div class="entry-card" onclick="openEntryModal(${entry.id})">
+  return `<div class="entry-card" onclick="openEntryModal(${escapeHTML(JSON.stringify(entry.id))})">
     <div class="entry-date-bar">
       <div class="entry-date-text">${date}${timeStr}</div>
       <div style="display:flex;align-items:center;gap:8px">
         ${criticalIndicator}
-        <div class="entry-severity" style="color:${color}">${t('intensityLabel')} ${entry.intensity}/10</div>
+        <div class="entry-severity" style="color:${color}">${t('intensityLabel')} ${escapeHTML(entry.intensity)}/10</div>
       </div>
     </div>
     <div class="entry-body">

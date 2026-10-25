@@ -1,7 +1,10 @@
+let persistence;
+export function setPersistence(adapter) { persistence = adapter; }
 // ─────────────────────────────────────────────
 // GLOBAL APP STATE
 // ─────────────────────────────────────────────
 export const state = {
+  accountId: null,
   screen:        'onboarding',
   onboardingDone: false,
   lang:          'en',
@@ -88,6 +91,7 @@ export function loadState() {
 }
 
 export function saveEntries() {
+  if (persistence) return persistence.entries();
   try {
     localStorage.setItem('ambrosia_entries', JSON.stringify(state.entries));
   } catch (e) {
@@ -96,6 +100,7 @@ export function saveEntries() {
 }
 
 export function saveLang() {
+  if (persistence) return persistence.profile();
   try { localStorage.setItem('ambrosia_lang', state.lang); } catch (e) {}
 }
 
@@ -121,7 +126,8 @@ export function saveGroqKey(key) {
   try { localStorage.setItem('ambrosia_groq_key', key); } catch (e) {}
 }
 
-export function saveProfile(profileData) {
+export function saveProfile(profileData, expectedVersion) {
+  if (persistence) { state.profile = { ...state.profile, ...profileData }; return persistence.profile(expectedVersion); }
   state.profile = { ...state.profile, ...profileData };
   try {
     localStorage.setItem('ambrosia_profile', JSON.stringify(state.profile));
@@ -159,6 +165,7 @@ export function addBonusPoints(amount) {
 }
 
 export function clearAllData() {
+  if (persistence) { state.entries = []; return persistence.entries(); }
   try {
     localStorage.removeItem('ambrosia_entries');
     state.entries = [];

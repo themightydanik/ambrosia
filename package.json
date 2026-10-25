@@ -1,0 +1,9 @@
+{
+  "name": "ambrosia",
+  "private": true,
+  "scripts": {
+    "test": "node --test tests/sync.test.mjs",
+    "test:browser": "node tests/browser.cjs",
+    "test:db": "bash tests/database.sh"
+  }
+}

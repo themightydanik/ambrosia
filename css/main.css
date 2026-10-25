@@ -975,3 +975,11 @@ input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:26px; h
 .ob-slide.active {
   display: block;
 }
+
+/* Account-scoped offline sync, matching existing settings controls. */
+.sync-status { position:relative; z-index:2; padding:8px 20px; color:var(--cream60); font-size:12px; background:var(--bg); }
+.sync-status[data-status="conflict"], .sync-status[data-status="error"] { color:var(--gold); }
+.sync-panel { font-size:13px; line-height:1.6; }
+.sync-panel button { margin:4px 0; }
+.sync-panel details { padding:12px 0; border-top:1px solid var(--cream10); }
+.sync-panel pre { white-space:pre-wrap; overflow-wrap:anywhere; max-height:280px; overflow:auto; font-size:12px; }

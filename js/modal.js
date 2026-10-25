@@ -108,7 +108,7 @@ function renderDetailPhase(body, entry) {
               <div class="modal-timeline-content">
                 <div class="modal-timeline-header">
                   <span class="modal-timeline-date">${uDate}${uTime}</span>
-                  <span class="modal-timeline-status" style="color:${statusColor}">${t(statusKey)}</span>
+                  <span class="modal-timeline-status" style="color:${statusColor}">${escapeHTML(t(statusKey))}</span>
                 </div>
                 ${update.notes ? `<div class="modal-timeline-note">"${escapeHTML(update.notes)}"</div>` : ''}
               </div>
@@ -126,7 +126,7 @@ function renderDetailPhase(body, entry) {
     </div>
     <div class="modal-row">
       <div class="modal-label">${t('intensityLabel')}</div>
-      <div class="modal-value" style="color:${color}">${entry.intensity} / 10</div>
+      <div class="modal-value" style="color:${color}">${escapeHTML(entry.intensity)} / 10</div>
     </div>
     <div class="modal-row">
       <div class="modal-label">Symptoms</div>
@@ -209,7 +209,9 @@ export function modalSaveStatus(status) {
 
   // Add new status update to the entry
   entry.statusUpdates.push({
-    date:   now.toISOString().split('T')[0],
+    id: crypto.randomUUID(),
+    timestamp: now.toISOString(),
+    date: `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`,
     time,
     status,
     notes:  notesEl ? notesEl.value.trim() : ''
