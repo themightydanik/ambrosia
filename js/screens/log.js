@@ -136,8 +136,8 @@ export function saveLog() {
   const time = now.toTimeString().slice(0, 5);
 
   const entry = {
-    id:           Date.now(),
-    date:         now.toISOString().split('T')[0],
+    id:           crypto.randomUUID(),
+    date:         `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`,
     time,
     timestamp:    now.toISOString(),
     category:     state.logCat,

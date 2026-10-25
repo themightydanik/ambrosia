@@ -1,3 +1,4 @@
+import { initializeSync } from './sync/runtime.js';
 import { loadState, state } from './state.js';
 import { applyLang } from './i18n.js';
 import { goTo } from './navigation.js';
@@ -7,7 +8,7 @@ import { renderHistory, historySetFilter } from './screens/history.js';
 import { initLog, selectCat, toggleSym, updateIntensity, toggleTrig, logNextStep, saveLog } from './screens/log.js';
 import { runAI, initAI } from './screens/ai.js';
 import { 
-  renderSettings, setLang, exportData, clearData,
+  renderSettings, refreshSettingsData, setLang, exportData, clearData,
   editProfile, cancelProfileEdit, selectAvatar, saveProfileEdit
 } from './screens/settings.js';
 import { obNext, startApp } from './screens/onboarding.js';
@@ -53,11 +54,23 @@ window.cancelProfileEdit = cancelProfileEdit;
 window.selectAvatar     = selectAvatar;
 window.saveProfileEdit  = saveProfileEdit;
 
+window.addEventListener('journal-changed', event => {
+  applyLang();
+  if (event.detail.accountChanged) {
+    cancelProfileEdit();
+    closeEntryModal();
+    goTo(state.screen === 'onboarding' ? 'onboarding' : 'settings');
+  } else if (state.screen === 'settings') refreshSettingsData();
+  else if (state.screen !== 'log') goTo(state.screen);
+});
+
 // ─────────────────────────────────────────────
 // INIT
 // ─────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   loadState();
+  await initializeSync();
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(() => {});
   applyLang();
 
   // Navigate to correct screen after brief delay to avoid race conditions

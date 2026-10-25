@@ -51,9 +51,9 @@ export function buildHistoryText(period = 'all') {
       let line = `Date: ${e.date}${e.time ? ' ' + e.time : ''} | Symptoms: ${e.symptoms.join(', ')} | Intensity: ${e.intensity}/10`;
       if (e.triggers.length) line += ` | Triggers: ${e.triggers.join(', ')}`;
       if (e.notes) line += ` | Notes: "${e.notes}"`;
-      const updates = updateMap[e.id] || [];
+      const updates = [...(e.statusUpdates || []), ...(updateMap[e.id] || [])];
       if (updates.length) {
-        line += ' | Status updates: ' + updates.map(u => `${u.date} → ${u.updateStatus}`).join(', ');
+        line += ' | Status updates: ' + updates.map(u => `${u.date} ${u.time || ''} → ${u.status || u.updateStatus}${u.notes ? `: ${u.notes}` : ''}`).join(', ');
       }
       return line;
     }).join('\n');
@@ -103,6 +103,7 @@ const UI = {
 };
 
 export async function runAI(type) {
+  const accountId = state.accountId;
   const cost = AI_COSTS[type] || 100;
 
   // Check if premium or has enough points
@@ -139,6 +140,7 @@ export async function runAI(type) {
       apptDate = document.getElementById('dv-date')?.value || 'upcoming appointment';
       docType  = document.getElementById('dv-doctor')?.value || 'General Practitioner';
       text = await callAI(localizedPrompt(PROMPTS.doctor_visit(history, apptDate, docType)));
+      if (accountId !== state.accountId) return;
       
       // Deduct points if not premium
       if (!state.premium) {
@@ -151,6 +153,7 @@ export async function runAI(type) {
     }
 
     text = await callAI(localizedPrompt(PROMPTS[type](history)));
+    if (accountId !== state.accountId) return;
     
     // Deduct points if not premium
     if (!state.premium) {
@@ -166,7 +169,7 @@ export async function runAI(type) {
               ⭐ ${points}
             </div>
             <div class="home-profile-avatar" onclick="goTo('settings')">
-              ${avatar}
+              ${escapeHTML(avatar)}
             </div>
           </div>
         `;
@@ -181,6 +184,7 @@ export async function runAI(type) {
     </div>`;
 
   } catch (err) {
+    if (accountId !== state.accountId) return;
     const isNoProxy = err.message === 'NO_PROXY';
     area.innerHTML = `<div class="ai-result-box">
       <div class="ai-result-label" style="color:var(--gold)">

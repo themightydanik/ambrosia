@@ -1,3 +1,9 @@
+# Supabase setup and synchronization
+
+The current sync protocol requires migration **002 after 001**. Follow the exact browser-only [deployment steps](../docs/deployment.md) and [architecture/conflict guide](../docs/synchronization.md). Do not rerun the original migration on an existing project.
+
+The notes below describe the original schema milestone, not the current sync behavior.
+
 # Ambrosia Supabase setup (Phase 1: schema only)
 
 This PR adds database structure only. **It does not enable login, cloud sync or alter existing local data.**

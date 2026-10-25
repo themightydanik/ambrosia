@@ -1,3 +1,4 @@
+import { profileVersion } from '../sync/runtime.js';
 import { state, saveLang, clearAllData, activatePremium, saveProfile, AVATAR_OPTIONS } from '../state.js';
 import { applyLang, t } from '../i18n.js';
 import { registerScreen, goTo } from '../navigation.js';
@@ -9,6 +10,7 @@ import { escapeHTML } from '../utils/escape.js';
 import { renderCloudAccount } from '../supabase-auth.js';
 
 let _editingProfile = false;
+let _profileDraft, _profileVersion;
 
 // ─────────────────────────────────────────────
 // RENDER SETTINGS / PROFILE
@@ -39,11 +41,17 @@ export function renderSettings() {
   }
 }
 
+export function refreshSettingsData() {
+  if (!_editingProfile) renderProfileSection();
+  const counts = { 'stat-entries':state.entries.length, 'stat-days':new Set(state.entries.map(e => e.date)).size, 'stat-syms':state.entries.reduce((n,e) => n + e.symptoms.length,0) };
+  for (const [id,count] of Object.entries(counts)) { const el = document.getElementById(id); if (el) el.textContent = count; }
+}
+
 function renderProfileSection() {
   const el = document.getElementById('profile-section');
   if (!el) return;
 
-  const { name, age, occupation, avatar } = state.profile;
+  const { name, age, occupation, avatar } = _editingProfile ? _profileDraft : state.profile;
   const displayName = name || t('profileNamePlaceholder');
   const displayAge = age ? `, ${age} ${t('yearsOld')}` : '';
   const displayOccupation = occupation || t('profileOccupationPlaceholder');
@@ -94,6 +102,7 @@ function renderProfileSection() {
 }
 
 export function editProfile() {
+  _profileDraft = { ...state.profile }; _profileVersion = profileVersion();
   _editingProfile = true;
   renderProfileSection();
 }
@@ -104,7 +113,7 @@ export function cancelProfileEdit() {
 }
 
 export function selectAvatar(emoji) {
-  state.profile.avatar = emoji;
+  _profileDraft = { ..._profileDraft, name:document.getElementById('profile-name-input').value, age:document.getElementById('profile-age-input').value, occupation:document.getElementById('profile-occupation-input').value, avatar:emoji };
   // Re-render to update selection
   renderProfileSection();
 }
@@ -114,11 +123,13 @@ export function saveProfileEdit() {
   const ageInput = document.getElementById('profile-age-input');
   const occupationInput = document.getElementById('profile-occupation-input');
 
+  if (ageInput && ageInput.value && !ageInput.reportValidity()) return;
   saveProfile({
+    avatar: _profileDraft.avatar,
     name: nameInput ? nameInput.value.trim() : state.profile.name,
     age: ageInput ? parseInt(ageInput.value) || null : state.profile.age,
     occupation: occupationInput ? occupationInput.value.trim() : state.profile.occupation
-  });
+  }, _profileVersion);
 
   _editingProfile = false;
   renderProfileSection();
@@ -161,7 +172,7 @@ export function exportData() {
 // CLEAR DATA
 // ─────────────────────────────────────────────
 export function clearData() {
-  if (!confirm('Delete all symptom history? This cannot be undone.')) return;
+  if (!confirm(({en:'Delete all entries from this journal? When signed in, deletions synchronize to your other devices.',uk:'Видалити всі записи цього журналу? Після входу видалення синхронізуються з іншими пристроями.',ru:'Удалить все записи этого журнала? После входа удаления синхронизируются с другими устройствами.'})[state.lang] || 'Delete all entries?')) return;
   clearAllData();
   renderSettings();
 }
