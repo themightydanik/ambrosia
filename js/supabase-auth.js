@@ -1,4 +1,5 @@
 import { renderCloudImport } from './cloud-import.js';
+import { renderCloudRestore } from './cloud-restore.js';
 
 let clientPromise;
 export async function getSupabaseClient() {
@@ -38,6 +39,7 @@ export async function renderCloudAccount(lang = 'en') {
     button.onclick = async () => { const { error } = await supabase.auth.signOut(); if (error) status.textContent = error.message; else renderCloudAccount(lang); };
     root.append(button);
     renderCloudImport(root, lang, user);
+    renderCloudRestore(root, lang, user);
     return;
   }
   const form = document.createElement('form'); form.style.cssText = 'display:grid;gap:10px;margin-top:12px';
