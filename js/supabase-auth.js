@@ -1,5 +1,7 @@
+import { renderCloudImport } from './cloud-import.js';
+
 let clientPromise;
-async function client() {
+export async function getSupabaseClient() {
   if (!clientPromise) clientPromise = (async () => {
     const res = await fetch('/api/supabase-config', { cache: 'no-store' });
     if (!res.ok) throw new Error('Supabase configuration unavailable');
@@ -24,7 +26,7 @@ export async function renderCloudAccount(lang = 'en') {
   const status = document.createElement('div'); status.style.cssText = 'font-size:13px;line-height:1.6;margin:10px 0'; root.append(status);
   const hint = document.createElement('div'); hint.style.cssText = 'font-size:12px;opacity:.65;margin:10px 0'; hint.textContent = t.local; root.append(hint);
   let supabase;
-  try { supabase = await client(); } catch (e) { status.textContent = e.message; return; }
+  try { supabase = await getSupabaseClient(); } catch (e) { status.textContent = e.message; return; }
   if (!root.isConnected) return;
   if (!supabase) { status.textContent = t.missing; return; }
   const { data: { user }, error } = await supabase.auth.getUser();
@@ -34,7 +36,9 @@ export async function renderCloudAccount(lang = 'en') {
     status.textContent = t.signed + ' ' + user.email;
     const button = document.createElement('button'); button.className = 'btn-ghost'; button.textContent = t.logout;
     button.onclick = async () => { const { error } = await supabase.auth.signOut(); if (error) status.textContent = error.message; else renderCloudAccount(lang); };
-    root.append(button); return;
+    root.append(button);
+    renderCloudImport(root, lang, user);
+    return;
   }
   const form = document.createElement('form'); form.style.cssText = 'display:grid;gap:10px;margin-top:12px';
   const email = document.createElement('input'); email.type = 'email'; email.required = true; email.placeholder = t.email; email.autocomplete = 'email'; email.className = 'profile-edit-input';
