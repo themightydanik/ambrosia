@@ -15,3 +15,35 @@ sql < supabase/migrations/001_initial_schema.sql
 sql < tests/db-legacy.sql
 sql < supabase/migrations/002_bidirectional_sync.sql
 sql < tests/db-assertions.sql
+
+sql < supabase/migrations/003_security_premium_ai.sql
+sql < tests/db-security.sql
+# Twelve independent PostgreSQL connections compete for three Free slots.
+pids=()
+for attempt in $(seq 1 12); do
+  sql >/dev/null <<SQL &
+set role service_role;
+select public.reserve_ai_request('cccccccc-cccc-4ccc-8ccc-cccccccccccc',gen_random_uuid(),'analyze');
+SQL
+  pids+=("$!")
+done
+for pid in "${pids[@]}"; do wait "$pid"; done
+# Then Premium requests compete for the one remaining global slot.
+pids=()
+for attempt in $(seq 1 12); do
+  sql >/dev/null <<SQL &
+set role service_role;
+select public.reserve_ai_request('dddddddd-dddd-4ddd-8ddd-dddddddddddd',gen_random_uuid(),'report');
+SQL
+  pids+=("$!")
+done
+for pid in "${pids[@]}"; do wait "$pid"; done
+sql <<'SQL'
+do $$ begin
+  if (select used from public.ai_usage where user_id='cccccccc-cccc-4ccc-8ccc-cccccccccccc')<>3 then raise exception 'concurrent Free quota bypass';end if;
+  if (select used from public.ai_usage where user_id='dddddddd-dddd-4ddd-8ddd-dddddddddddd')<>1 then raise exception 'concurrent global budget bypass';end if;
+  if (select used from public.ai_global_usage)<>4 then raise exception 'incorrect global usage';end if;
+  if (select count(*) from public.ai_requests)<>4 then raise exception 'incorrect durable reservations';end if;
+end $$;
+select 'PASS: 24 concurrent connections obey Free and global limits' as result;
+SQL

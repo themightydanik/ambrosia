@@ -19,8 +19,7 @@ export const state = {
   // entries
   entries:       [],
   // monetization
-  premium:       false,
-  groqKey:       '',
+  recoveringPassword: false,
   upgradeReason: 'general',
   // User profile
   profile: {
@@ -44,6 +43,9 @@ export const AVATAR_OPTIONS = [
 
 export function loadState() {
   try {
+    // Retire legacy client authority/credentials; journal and sync storage remain untouched.
+    localStorage.removeItem('ambrosia_premium');
+    localStorage.removeItem('ambrosia_groq_key');
     const savedEntries = localStorage.getItem('ambrosia_entries');
     if (savedEntries) {
       state.entries = JSON.parse(savedEntries);
@@ -57,10 +59,6 @@ export function loadState() {
     const seenOnboarding = localStorage.getItem('ambrosia_onboarding_done');
     state.onboardingDone = seenOnboarding === '1';
     if (state.onboardingDone) state.screen = 'home';
-
-    if (localStorage.getItem('ambrosia_premium') === '1') state.premium = true;
-    const savedKey = localStorage.getItem('ambrosia_groq_key');
-    if (savedKey) state.groqKey = savedKey;
 
     // Load user profile
     const savedProfile = localStorage.getItem('ambrosia_profile');
@@ -85,7 +83,7 @@ export function loadState() {
     }
 
   } catch (e) {
-    console.warn('Could not load saved state:', e);
+    console.warn('Could not load saved state');
     state.entries = [];
   }
 }
@@ -95,7 +93,7 @@ export function saveEntries() {
   try {
     localStorage.setItem('ambrosia_entries', JSON.stringify(state.entries));
   } catch (e) {
-    console.warn('Could not save entries:', e);
+    console.warn('Could not save entries');
   }
 }
 
@@ -116,23 +114,13 @@ export function markOnboardingDone() {
   } catch (e) {}
 }
 
-export function activatePremium() {
-  state.premium = true;
-  try { localStorage.setItem('ambrosia_premium', '1'); } catch (e) {}
-}
-
-export function saveGroqKey(key) {
-  state.groqKey = key;
-  try { localStorage.setItem('ambrosia_groq_key', key); } catch (e) {}
-}
-
 export function saveProfile(profileData, expectedVersion) {
   if (persistence) { state.profile = { ...state.profile, ...profileData }; return persistence.profile(expectedVersion); }
   state.profile = { ...state.profile, ...profileData };
   try {
     localStorage.setItem('ambrosia_profile', JSON.stringify(state.profile));
   } catch (e) {
-    console.warn('Could not save profile:', e);
+    console.warn('Could not save profile');
   }
 }
 

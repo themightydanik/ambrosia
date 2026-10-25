@@ -25,7 +25,7 @@
     <p class="ob-desc">Track symptoms, discover patterns, and arrive at your doctor's appointment fully prepared — with months of detailed health data.</p>
     <div class="ob-features">
       <div class="ob-feat"><div class="ob-feat-icon">📋</div><div class="ob-feat-text"><strong>Symptom Logging</strong><span>Record any symptom in seconds with intensity, triggers, and notes.</span></div></div>
-      <div class="ob-feat"><div class="ob-feat-icon">🔗</div><div class="ob-feat-text"><strong>Correlation Engine</strong><span>AI discovers hidden links between your symptoms over time.</span></div></div>
+      <div class="ob-feat"><div class="ob-feat-icon">🔗</div><div class="ob-feat-text"><strong>Correlation Engine</strong><span>Review recorded patterns with optional AI observations.</span></div></div>
       <div class="ob-feat"><div class="ob-feat-icon">🏥</div><div class="ob-feat-text"><strong>Doctor Visit Briefing</strong><span>AI prepares the perfect summary before every appointment.</span></div></div>
     </div>
   </div>
@@ -46,7 +46,7 @@
     <div class="ob-features">
       <div class="ob-feat"><div class="ob-feat-icon">🔒</div><div class="ob-feat-text"><strong>Local Storage</strong><span>All data lives on your device. Nothing sent to servers.</span></div></div>
       <div class="ob-feat"><div class="ob-feat-icon">🌍</div><div class="ob-feat-text"><strong>3 Languages</strong><span>English, Русский, Українська — switch anytime.</span></div></div>
-      <div class="ob-feat"><div class="ob-feat-icon">💰</div><div class="ob-feat-text"><strong>Premium for $2.5/mo</strong><span>AI analysis, unlimited history, and doctor visit briefings.</span></div></div>
+      <div class="ob-feat"><div class="ob-feat-icon">💰</div><div class="ob-feat-text"><strong>Private wellness journal</strong><span>Offline records and optional AI observations with account usage limits.</span></div></div>
     </div>
   </div>
   <div class="ob-actions">
@@ -171,7 +171,7 @@
           <div class="dv-feature-title">Before Your Doctor Visit</div>
           <div class="dv-feature-sub">AI prepares everything your doctor needs to know</div>
         </div>
-        <span class="premium-badge">PRO</span>
+
       </div>
       <div id="dv-form"></div>
     </div>
@@ -183,22 +183,22 @@
       <button class="ai-action-btn primary-action" onclick="runAI('analyze')">
         <div class="ai-action-icon">🔬</div>
         <div class="ai-action-info"><div class="ai-action-title" id="ai-btn1t">Analyze My Symptoms</div><div class="ai-action-desc" id="ai-btn1d">Get AI insights on patterns and possible conditions</div></div>
-        <span class="premium-badge">PRO</span>
+
       </button>
       <button class="ai-action-btn" onclick="runAI('correlations')">
         <div class="ai-action-icon">🔗</div>
         <div class="ai-action-info"><div class="ai-action-title" id="ai-btn2t">Find Correlations</div><div class="ai-action-desc" id="ai-btn2d">Discover hidden connections between your symptoms</div></div>
-        <span class="premium-badge">PRO</span>
+
       </button>
       <button class="ai-action-btn" onclick="runAI('report')">
         <div class="ai-action-icon">📋</div>
         <div class="ai-action-info"><div class="ai-action-title" id="ai-btn3t">Generate Doctor Report</div><div class="ai-action-desc" id="ai-btn3d">Create a comprehensive summary for your appointment</div></div>
-        <span class="premium-badge">PRO</span>
+
       </button>
       <button class="ai-action-btn" onclick="runAI('recommend')">
         <div class="ai-action-icon">💊</div>
         <div class="ai-action-info"><div class="ai-action-title" id="ai-btn4t">Get Recommendations</div><div class="ai-action-desc" id="ai-btn4d">What to do now and which doctor to see</div></div>
-        <span class="premium-badge">PRO</span>
+
       </button>
     </div>
   </div>
@@ -210,14 +210,14 @@
   <div class="screen-header">
     <div class="screen-title" id="set-title">Profile & Settings</div>
   </div>
-  
+
   <!-- NEW: Dynamic profile section -->
   <div id="profile-section" style="padding:0 24px 20px">
     <!-- Renders dynamically via settings.js -->
   </div>
-  
+
   <div id="set-premium-badge" style="padding:0 24px"></div>
-  
+
   <div class="stat-row" style="margin:0 24px 24px">
     <div class="stat-card"><div class="stat-num" id="stat-entries">0</div><div class="stat-lbl" id="stat-lbl1">Entries</div></div>
     <div class="stat-card"><div class="stat-num" id="stat-days">0</div><div class="stat-lbl" id="stat-lbl2">Days tracked</div></div>
@@ -233,13 +233,13 @@
       <button class="lang-btn" id="lang-uk" onclick="setLang('uk')">🇺🇦 Українська</button>
     </div>
   </div>
-  
+
   <div class="settings-section">
     <div class="settings-section-title" id="set-pref-title">PREFERENCES</div>
     <div class="setting-row"><div class="setting-row-left"><div class="setting-icon">🔔</div><div class="setting-label" id="set-notif">Reminders</div></div><div class="setting-value">Daily 20:00</div></div>
     <div class="setting-row"><div class="setting-row-left"><div class="setting-icon">🎨</div><div class="setting-label" id="set-theme">Theme</div></div><div class="setting-value">Dark Forest</div></div>
   </div>
-  
+
   <div class="settings-section" id="cloud-account"></div>
 
   <div class="settings-section">
@@ -247,7 +247,7 @@
     <div class="setting-row" onclick="exportData()"><div class="setting-row-left"><div class="setting-icon">📤</div><div class="setting-label" id="set-export">Export Data</div></div><div style="color:var(--cream30)">→</div></div>
     <div class="setting-row" onclick="clearData()"><div class="setting-row-left"><div class="setting-icon">🗑️</div><div class="setting-label" id="set-clear" style="color:var(--coral)">Clear All Data</div></div><div style="color:var(--cream30)">→</div></div>
   </div>
-  
+
   <div style="padding:0 24px 100px;text-align:center">
     <div style="font-size:13px;color:var(--cream30);line-height:1.6">Ambrosia v1.2 · <em>Not a medical device</em><br>Always consult a qualified healthcare professional.</div>
   </div>

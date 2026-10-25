@@ -1,12 +1,14 @@
 import { profileVersion } from '../sync/runtime.js';
-import { state, saveLang, clearAllData, activatePremium, saveProfile, AVATAR_OPTIONS } from '../state.js';
+import { state, saveLang, clearAllData, saveProfile, AVATAR_OPTIONS } from '../state.js';
 import { applyLang, t } from '../i18n.js';
 import { registerScreen, goTo } from '../navigation.js';
 import { renderHome } from './home.js';
 import { renderHistory } from './history.js';
 import { isPremium } from '../premium.js';
-import { PROMO_CODES } from '../config.js';
 import { escapeHTML } from '../utils/escape.js';
+import { accountAccess } from '../account-access.js';
+import { securityText } from '../security-copy.js';
+import { exportUserData } from '../account-management.js';
 import { renderCloudAccount } from '../supabase-auth.js';
 
 let _editingProfile = false;
@@ -30,18 +32,17 @@ export function renderSettings() {
   renderProfileSection();
   renderCloudAccount(state.lang);
 
-  // Premium badge
-  const premBadgeEl = document.getElementById('set-premium-badge');
-  if (premBadgeEl) {
-    premBadgeEl.innerHTML = isPremium()
-      ? `<div class="premium-status premium-status--active">✦ PREMIUM ACTIVE</div>`
-      : `<div class="premium-status premium-status--free">
-          Free plan · <span onclick="goTo('upgrade')" style="color:var(--gold);cursor:pointer;font-weight:600">Upgrade $2.5/mo →</span>
-        </div>`;
-  }
+  renderAccessBadge();
+}
+
+function renderAccessBadge() {
+  const el=document.getElementById('set-premium-badge');if(!el)return;
+  const t=securityText(state.lang),access=accountAccess();el.replaceChildren();
+  const button=document.createElement('button');button.className='btn-ghost';button.textContent=access?t[access.state]:t.unknown;button.onclick=()=>goTo('upgrade');el.append(button);
 }
 
 export function refreshSettingsData() {
+  renderAccessBadge();
   if (!_editingProfile) renderProfileSection();
   const counts = { 'stat-entries':state.entries.length, 'stat-days':new Set(state.entries.map(e => e.date)).size, 'stat-syms':state.entries.reduce((n,e) => n + e.symptoms.length,0) };
   for (const [id,count] of Object.entries(counts)) { const el = document.getElementById(id); if (el) el.textContent = count; }
@@ -76,7 +77,7 @@ function renderProfileSection() {
         <div class="profile-edit-field">
           <label class="profile-edit-label">${t('profileAge')}</label>
           <input type="number" id="profile-age-input" class="profile-edit-input" 
-            value="${age || ''}" placeholder="25" min="1" max="120">
+            value="${escapeHTML(age || '')}" placeholder="25" min="1" max="120">
         </div>
         <div class="profile-edit-field">
           <label class="profile-edit-label">${t('profileOccupation')}</label>
@@ -93,7 +94,7 @@ function renderProfileSection() {
     el.innerHTML = `
       <div class="profile-display">
         <div class="profile-avatar">${escapeHTML(avatar)}</div>
-        <div class="profile-name">${escapeHTML(displayName)}${displayAge}</div>
+        <div class="profile-name">${escapeHTML(displayName)}${escapeHTML(displayAge)}</div>
         <div class="profile-sub">${escapeHTML(displayOccupation)}</div>
         <button class="profile-edit-btn" onclick="editProfile()">✏️ ${t('editProfileBtn')}</button>
       </div>
@@ -155,17 +156,8 @@ export function setLang(lang) {
 // ─────────────────────────────────────────────
 // DATA EXPORT (premium only)
 // ─────────────────────────────────────────────
-export function exportData() {
-  if (state.entries.length === 0) { alert('No data to export yet.'); return; }
-  const blob = new Blob([JSON.stringify(state.entries, null, 2)], { type: 'application/json' });
-  const url  = URL.createObjectURL(blob);
-  const a    = document.createElement('a');
-  a.href     = url;
-  a.download = `ambrosia-export-${new Date().toISOString().split('T')[0]}.json`;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
+export async function exportData() {
+  try { await exportUserData(); } catch { alert(securityText(state.lang).error); }
 }
 
 // ─────────────────────────────────────────────

@@ -1,8 +1,10 @@
-const CACHE = 'ambrosia-shell-sync-v2-2';
+const CACHE = 'ambrosia-shell-security-v3-1';
 const SHELL = [
   "/",
   "/index.html",
   "/css/main.css",
+  "/js/account-access.js",
+  "/js/account-management.js",
   "/js/app.js",
   "/js/cloud-import.js",
   "/js/cloud-restore.js",
@@ -19,6 +21,7 @@ const SHELL = [
   "/js/screens/onboarding.js",
   "/js/screens/settings.js",
   "/js/screens/upgrade.js",
+  "/js/security-copy.js",
   "/js/state.js",
   "/js/supabase-auth.js",
   "/js/supabase-client.js",

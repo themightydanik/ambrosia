@@ -72,7 +72,7 @@ function renderEntryList() {
   }
 
   const hiddenCount = mainEntries.length - visible.length;
-  const lockedBanner = (!state.premium && hiddenCount > 0)
+  const lockedBanner = (hiddenCount > 0)
     ? `<div class="limit-banner" style="margin-bottom:12px">
         🔒 ${hiddenCount} older entr${hiddenCount === 1 ? 'y' : 'ies'} hidden (free plan shows last 14 days).
         <span onclick="showPaywall('filter')" style="color:var(--gold);cursor:pointer;font-weight:600"> Unlock all →</span>

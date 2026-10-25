@@ -12,7 +12,7 @@ import {
   editProfile, cancelProfileEdit, selectAvatar, saveProfileEdit
 } from './screens/settings.js';
 import { obNext, startApp } from './screens/onboarding.js';
-import { renderUpgrade, handleUpgrade, redeemCode } from './screens/upgrade.js';
+import { renderUpgrade, handleUpgrade } from './screens/upgrade.js';
 import { showPaywall } from './premium.js';
 import {
   openEntryModal, closeEntryModal,
@@ -38,7 +38,6 @@ window.exportData       = exportData;
 window.clearData        = clearData;
 window.historySetFilter = historySetFilter;
 window.handleUpgrade    = handleUpgrade;
-window.redeemCode       = redeemCode;
 window.showPaywall      = showPaywall;
 // Modal
 window.openEntryModal   = openEntryModal;
@@ -54,6 +53,11 @@ window.cancelProfileEdit = cancelProfileEdit;
 window.selectAvatar     = selectAvatar;
 window.saveProfileEdit  = saveProfileEdit;
 
+window.addEventListener('access-changed', () => {
+  if (state.screen === 'settings') refreshSettingsData();
+  if (state.screen === 'upgrade') renderUpgrade();
+});
+window.addEventListener('password-recovery', () => goTo('settings'));
 window.addEventListener('journal-changed', event => {
   applyLang();
   if (event.detail.accountChanged) {

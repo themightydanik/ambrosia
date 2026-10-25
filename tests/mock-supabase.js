@@ -3,11 +3,14 @@ export function createClient() {
   let user = JSON.parse(localStorage.getItem('__test_user') || 'null');
   const listeners = [];
   const auth = {
-    async getSession() { return { data:{session:user ? {user} : null} }; },
+    async getSession() { return { data:{session:user ? {user,access_token:"test-token-"+user.id} : null} }; },
     async getUser() { return { data:{user} }; },
     onAuthStateChange(fn) { listeners.push(fn); return {data:{subscription:{unsubscribe(){}}}}; },
-    async signOut() { auth.setUser(null); return {}; },
-    setUser(next) { user=next; localStorage.setItem('__test_user',JSON.stringify(user)); for(const fn of listeners) fn('SIGNED_IN',user ? {user} : null); },
+    async signOut(options) { if(options?.scope!=='others') auth.setUser(null); return {}; },
+    async resetPasswordForEmail(email,options) {window.testReset={email,options};return {};},
+    async updateUser({password}) {window.testPasswordUpdated=password.length;return {};},
+    recover() {for(const fn of listeners) fn('PASSWORD_RECOVERY',{user,access_token:'test-token-'+user.id});},
+    setUser(next) { user=next; localStorage.setItem('__test_user',JSON.stringify(user)); for(const fn of listeners) fn('SIGNED_IN',user ? {user,access_token:"test-token-"+user.id} : null); },
     async signInWithPassword({email}) { auth.setUser({id:email.startsWith('b')?'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb':'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',email}); return {data:{session:{user}}}; }
   };
   window.testAuth=auth;
@@ -21,5 +24,5 @@ export function createClient() {
     const params=new URLSearchParams({table});
     const query={select(){return query;},eq(k,v){params.set(k,v);return query;},order(){return query;},limit(n){params.set('limit',n);return query;},gt(k,v){params.set('after',v);return query;},then(ok,fail){return request('/__test/page?'+params).then(ok,fail);}};
     return query;
-  },rpc(name,payload){return request('/__test/write',{method:'POST',body:JSON.stringify(payload)});}};
+  },rpc(name,payload){if(name==='export_account_data')return request('/__test/export');return request('/__test/write',{method:'POST',body:JSON.stringify(payload)});}};
 }

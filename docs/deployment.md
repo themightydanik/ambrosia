@@ -1,3 +1,7 @@
+# Current security milestone
+
+For migration 003 and current AI/Premium/account setup, use [security-production.md](security-production.md). The synchronization-only checklist below predates 003; no separate project is required. Use designated synthetic accounts in your existing project.
+
 # Browser-only deployment and acceptance checklist
 
 The owner needs GitHub, Supabase Dashboard and Netlify Dashboard. No local CLI, download or development setup is required. The implementation must be reviewed as **one PR targeting `main`**. Do not merge or deploy it until approved.
@@ -5,7 +9,7 @@ The owner needs GitHub, Supabase Dashboard and Netlify Dashboard. No local CLI, 
 ## Prepare a test environment
 
 1. In GitHub, open the PR's **Files changed** and **Checks** tabs. Wait for all Synchronization checks to pass.
-2. In Supabase Dashboard, create or select a **test project**, not the production project. Open **SQL Editor → New query**.
+2. In Supabase Dashboard, select the configured project. Use designated synthetic accounts; a separate project is optional. Open **SQL Editor → New query**.
 3. If the project has no Ambrosia schema, open `supabase/migrations/001_initial_schema.sql` in GitHub, copy its entire contents, paste into SQL Editor and click **Run** once. Do not rerun it on a project where its policies already exist.
 4. Open `supabase/migrations/002_bidirectional_sync.sql` in GitHub, copy its complete contents into a **new query**, and click **Run** once. It includes `BEGIN`/`COMMIT`; a failure rolls back the whole migration. Investigate errors before retrying. Do not rerun after success: the migration intentionally creates new objects without hiding duplicate application.
 5. In Table Editor, verify `sync_records` exists, RLS is enabled, and earlier cloud records (if present in the test project) appear with `version = 1`. The three original tables must remain present. In SQL Editor, this read-only check shows counts without displaying private records:
@@ -17,7 +21,7 @@ The owner needs GitHub, Supabase Dashboard and Netlify Dashboard. No local CLI, 
 
 6. In Supabase **Project Settings → API / API Keys**, obtain the project URL and **publishable** key (or legacy **anon** key). Never use `service_role`, secret server keys or the database password in the frontend or Netlify configuration endpoint.
 7. In Supabase **Authentication → Providers → Email**, enable email/password sign-in. Under **URL Configuration**, set the test site's URL and allow its exact confirmation/redirect URL. Create two test users, completing email confirmation if enabled.
-8. In Netlify Dashboard, open the site's **Environment variables**. Set `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY` for the **Deploy Preview** context to the test project's values. Leave production bindings unchanged. `GROQ_API_KEY` is optional for testing AI and does not affect journal sync.
+8. In Netlify Dashboard, open the site's **Environment variables**. Set `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY` for the **Deploy Preview** context to the selected project's values. Leave production bindings unchanged. `GROQ_API_KEY` is optional for testing AI and does not affect journal sync.
 9. Open the PR's Netlify Deploy Preview. If Netlify did not create it automatically, use the site's deploy settings to enable Deploy Previews for this PR. Rebuild the preview after changing environment variables. The repository uses `netlify.toml`; there is no build command, publish directory is `.`, and functions directory is `netlify/functions`.
 10. In the preview, go to Settings → Cloud account. Sign in as test account A. If configuration is missing, check the preview-context variables and redeploy the preview. If an error mentions missing `sync_records`/`sync_write`, check that migration 002 ran in the project used by that preview.
 

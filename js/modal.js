@@ -81,7 +81,7 @@ function renderDetailPhase(body, entry) {
   // Status update badge if this is an update entry
   const updateBadge = entry.isUpdate && entry.updateStatus
     ? `<div class="modal-update-badge" style="background:${STATUS_COLORS[entry.updateStatus]}20;border-color:${STATUS_COLORS[entry.updateStatus]}40;color:${STATUS_COLORS[entry.updateStatus]}">
-        ↻ ${t('updateLabel')} · ${t('status' + cap(entry.updateStatus) + 'Short')}
+        ↻ ${t('updateLabel')} · ${escapeHTML(t('status' + cap(entry.updateStatus) + 'Short'))}
       </div>` : '';
 
   // Critical tracking indicator
