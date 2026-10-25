@@ -1,3 +1,7 @@
+# Current security milestone
+
+[Security milestone 003](security-production.md) supersedes the Premium/AI and account-management behavior described below. It removes local Premium authority, keeps full journal/history/export on Free, and adds protected quotas and account deletion. Existing synchronization semantics remain.
+
 # Account synchronization
 
 ## Architecture and audit
@@ -79,6 +83,6 @@ Name, age, occupation, avatar and language synchronize with the account. Premium
 - `npm run test:db`: actual PostgreSQL 17 in a disposable Docker container, applying both migrations and asserting backfill, CAS, idempotence, tombstones, RLS, owner-bound writes, anonymous denial and old-client write revocation. Auth roles/`auth.uid()` are modeled locally; this is not a live Supabase service test.
 - GitHub Actions runs these checks on the PR. The owner can inspect results entirely through GitHub.
 
-A live two-device Supabase Auth/PostgREST check is still required in the deployment preview using a test project and two accounts. No credentials were available to execute that external check here. There is no production deployment or production migration in these automated tests.
+A live two-device Supabase Auth/PostgREST check is still required in the deployment preview using the configured project and two designated synthetic accounts. No credentials were available to execute that external check here. There is no production deployment or production migration in these automated tests.
 
 Recovery archives and tombstones consume local storage. Quota warnings require recovery before closing the tab; browser eviction/clearing site data cannot be prevented. Account-isolated storage does not protect against XSS or someone operating an unlocked browser profile. Keep the existing RLS and auth protections, and do not expose any service role key.

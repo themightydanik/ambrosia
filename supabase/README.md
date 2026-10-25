@@ -1,6 +1,6 @@
 # Supabase setup and synchronization
 
-The current sync protocol requires migration **002 after 001**. Follow the exact browser-only [deployment steps](../docs/deployment.md) and [architecture/conflict guide](../docs/synchronization.md). Do not rerun the original migration on an existing project.
+The current release requires **001 → 002 → 003**. Apply only unapplied migrations. For AI/Premium/privacy, follow the [security setup guide](../docs/security-production.md). Follow the exact browser-only [deployment steps](../docs/deployment.md) and [architecture/conflict guide](../docs/synchronization.md). Do not rerun the original migration on an existing project.
 
 The notes below describe the original schema milestone, not the current sync behavior.
 

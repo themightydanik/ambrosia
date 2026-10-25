@@ -7,6 +7,7 @@ const path = require('node:path');
 let staticServer;
 const A='aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',B='bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb';
 const rows=new Map(), errors=[];
+const backend=require('./browser-backend.cjs')(rows);
 const wait = (page, fn) => page.waitForFunction(fn, null, {timeout:15000});
 (async()=>{
   if (!base) {
@@ -31,9 +32,11 @@ const wait = (page, fn) => page.waitForFunction(fn, null, {timeout:15000});
         }
       },{A,legacy});
       await ctx.route('**/api/supabase-config',r=>r.fulfill({json:{url:'https://test.supabase.invalid',publishableKey:'public-test-only'}}));
+      for(const endpoint of ['ai','account-status','delete-account'])await ctx.route('**/api/'+endpoint,route=>backend.route(route));
       await ctx.route('https://esm.sh/**',r=>r.fulfill({contentType:'application/javascript',body:fs.readFileSync('tests/mock-supabase.js','utf8')}));
       await ctx.route('**/__test/**',async route=>{
         const req=route.request(),url=new URL(req.url()),user=req.headers()['x-test-user'];
+        if(url.pathname.endsWith('/export'))return route.fulfill({json:{userId:user,journal:[...rows.values()].filter(r=>r.user_id===user)}});
         if(url.pathname.endsWith('/page')) {
           assert.equal(url.searchParams.get('user_id'),user);
           const data=[...rows.values()].filter(r=>r.user_id===user && (!url.searchParams.get('after') || r.id>url.searchParams.get('after'))).sort((a,b)=>a.id.localeCompare(b.id)).slice(0,500);
@@ -135,6 +138,35 @@ const wait = (page, fn) => page.waitForFunction(fn, null, {timeout:15000});
     await a.page.evaluate(A=>window.testAuth.setUser({id:A,email:'a@example.test'}),A);
     await wait(a.page,async()=> (await import('/js/state.js')).state.entries.length===1);
     console.log('PASS browser: logout/account switching and original-data protection');
+    // localStorage/legacy flags and point balances cannot grant Premium.
+    await a.page.evaluate(async()=>{localStorage.setItem('ambrosia_premium','1');localStorage.setItem('ambrosia_bonus_points','999999');const {state}=await import('/js/state.js');state.premium=true;state.bonusPoints=999999;await (await import('/js/account-access.js')).refreshAccess(true);});
+    assert.equal(await a.page.evaluate(async()=> (await import('/js/premium.js')).isPremium()),false);
+    backend.tiers.set(A,'premium');await a.page.evaluate(async()=>{await (await import('/js/account-access.js')).refreshAccess(true);});
+    assert.equal(await a.page.evaluate(async()=> (await import('/js/premium.js')).isPremium()),true);
+    await a.page.evaluate(async()=>{const {state,saveEntries}=await import('/js/state.js');state.entries.push({...state.entries[0],id:crypto.randomUUID(),symptoms:['fatigue'],notes:'Filter fixture'});saveEntries();window.goTo('history');window.historySetFilter('headache');});
+    assert.equal(await a.page.locator('#history-list .entry-card').count(),1);assert.equal(await a.page.locator('#history-list .limit-banner').count(),0);
+    backend.tiers.delete(A);await a.page.evaluate(async()=>{await (await import('/js/account-access.js')).refreshAccess(true);});
+    await a.page.evaluate(()=>window.goTo('upgrade'));assert.ok(!(await a.page.locator('#upgrade-content').innerText()).includes('$'));assert.equal(await a.page.locator('#upgrade-code-input').count(),0);
+    await a.page.evaluate(()=>window.goTo('ai'));
+    a.page.removeAllListeners('dialog');a.page.on('dialog',d=>d.dismiss());
+    await a.page.evaluate(()=>window.runAI('analyze'));assert.equal(backend.providerCalls,0,'declined consent sent no journal');
+    a.page.removeAllListeners('dialog');a.page.on('dialog',d=>d.accept());
+    await a.page.evaluate(()=>window.runAI('analyze'));assert.equal(backend.providerCalls,1);
+    assert.ok((await a.page.locator('#ai-result-area').innerText()).includes('<img'));
+    assert.equal(await a.page.locator('#ai-result-area img').count(),0);assert.equal(await a.page.evaluate(()=>window.__xss),undefined);
+    backend.used.set(A,3);await a.page.evaluate(()=>window.runAI('report'));assert.equal(backend.providerCalls,1);assert.ok((await a.page.locator('#ai-result-area').innerText()).includes('allowance'));
+    console.log('PASS security browser: forged Premium rejected, server restoration, consent, quotas and plain-text AI output');
+    await a.page.evaluate(()=>window.goTo('settings'));
+    await a.page.locator('[data-account-privacy]').getByRole('button',{name:'Send password reset email',exact:true}).click();
+    assert.equal(await a.page.evaluate(()=>window.testReset.email),'a@example.test');
+    await a.page.evaluate(()=>window.testAuth.recover());await a.page.locator('[data-password-recovery]').waitFor();
+    await a.page.locator('[data-password-recovery] input').nth(0).fill('new-secure-password');await a.page.locator('[data-password-recovery] input').nth(1).fill('new-secure-password');
+    await a.page.locator('[data-password-recovery] button').click();assert.equal(await a.page.evaluate(()=>window.testPasswordUpdated),19);
+    await a.page.evaluate(A=>window.testAuth.setUser({id:A,email:'a@example.test'}),A);await wait(a.page,async()=> (await import('/js/state.js')).state.accountId!==null);
+    await a.page.evaluate(()=>window.goTo('settings'));
+    const download=await Promise.all([a.page.waitForEvent('download'),a.page.locator('[data-account-privacy]').getByRole('button',{name:'Export all my data',exact:true}).click()]);
+    assert.equal(download[0].suggestedFilename(),'ambrosia-data.json');
+    console.log('PASS security browser: password reset/recovery, session logout and full data export');
     const readOnly=await a.ctx.newPage();readOnly.on('dialog',d=>d.accept());
     await readOnly.goto(base,{waitUntil:'domcontentloaded'});
     await wait(readOnly,()=>document.querySelector('#sync-status').textContent.includes('Another Ambrosia tab'));
@@ -149,6 +181,12 @@ const wait = (page, fn) => page.waitForFunction(fn, null, {timeout:15000});
     assert.equal(await gp.evaluate(()=>JSON.parse(localStorage.getItem('ambrosia_entries'))[0].statusUpdates),undefined);
     assert.equal(await gp.evaluate(async()=> (await import('/js/state.js')).state.entries[0].statusUpdates.length),1);
     await guest.close();
+    await a.page.evaluate(()=>window.goTo('settings'));await a.page.locator('[data-account-privacy] details summary').click();
+    const deletion=a.page.locator('[data-account-privacy] details form');await deletion.locator('input[type=password]').fill('correct-current-password');await deletion.locator('input[pattern=DELETE]').fill('DELETE');await deletion.locator('input[type=checkbox]').check();
+    await deletion.locator('button').click();await wait(a.page,async()=> (await import('/js/state.js')).state.accountId===null);
+    assert.equal([...rows.values()].filter(r=>r.user_id===A).length,0);assert.equal(await a.page.evaluate(()=>localStorage.getItem('ambrosia_sync_v2:aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa')),null);
+    assert.equal(await a.page.evaluate(()=>localStorage.getItem('ambrosia_entries')),null);
+    console.log('PASS security browser: confirmed account deletion clears cloud fixture and browser records');
     assert.deepEqual(errors,[]);
     console.log('PASS browser: secondary tab read-only, legacy numeric modal compatibility, immutable original keys; no JS errors');
   } finally { await browser.close(); if(staticServer) await new Promise(resolve=>staticServer.close(resolve)); }

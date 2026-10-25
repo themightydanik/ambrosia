@@ -1,4 +1,4 @@
-name: Synchronization checks
+name: Security and synchronization checks
 on:
   pull_request:
   push:

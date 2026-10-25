@@ -2,7 +2,7 @@
   "name": "ambrosia",
   "private": true,
   "scripts": {
-    "test": "node --test tests/sync.test.mjs",
+    "test": "node --test tests/sync.test.mjs tests/security.test.cjs",
     "test:browser": "node tests/browser.cjs",
     "test:db": "bash tests/database.sh"
   }

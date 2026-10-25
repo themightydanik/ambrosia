@@ -1,3 +1,4 @@
+import { clearAccess, refreshAccess } from '../account-access.js';
 import { state, setPersistence } from '../state.js';
 import { getSupabaseClient } from '../supabase-client.js';
 import { SyncStore, defaultProfile, PROFILE_ID } from './store.js';
@@ -56,9 +57,10 @@ export function switchAccount(user) {
     return;
   }
   const accountChanged = !!store;
-  generation++; engine = null; draft = null; status('switching');
+  generation++; engine = null; draft = null; clearAccess(); status('switching');
   // Clear memory before reading another partition; failures must never leave the previous account visible.
   state.accountId = user?.id || null;
+  if (!user) state.recoveringPassword = false;
   state.entries = []; state.profile = defaultProfile(); state.historyFilter = null;
   document.querySelectorAll('#entry-modal, #daily-streak-modal, .critical-warning-overlay, .insufficient-points-overlay').forEach(el => { if (el.id === 'entry-modal') el.classList.remove('active'); else el.remove(); });
   document.body.style.overflow = '';
@@ -74,6 +76,7 @@ export function switchAccount(user) {
     apply(accountChanged);
     if (user && client && writable) {
       startEngine();
+      void refreshAccess();
     } else status(user ? (navigator.onLine ? 'error' : 'offline') : 'local');
   } catch (error) { store = null; status('error'); emit(true); }
 }
@@ -98,10 +101,11 @@ export async function initializeSync() {
     try { cached = JSON.parse(localStorage.getItem('ambrosia_sync_last_account') || 'null'); } catch { /* fail closed */ }
     switchAccount(cached);
   } else await connectCloud();
-  window.addEventListener('online', () => { if (client && !localStorage.getItem('ambrosia_sync_logout_requested')) void engine?.run(); else void connectCloud(); });
-  window.addEventListener('offline', () => { if (store?.user) status('offline'); });
-  window.addEventListener('focus', () => void engine?.run());
+  window.addEventListener('online', () => { void refreshAccess(true); if (client && !localStorage.getItem('ambrosia_sync_logout_requested')) void engine?.run(); else void connectCloud(); });
+  window.addEventListener('offline', () => { clearAccess();window.dispatchEvent(new Event('access-changed')); if (store?.user) status('offline'); });
+  window.addEventListener('focus', () => { void engine?.run();void refreshAccess(); });
   window.addEventListener('storage', event => {
+    if (event.key === 'ambrosia_account_deleted' && event.newValue) { void eraseDeletedAccount(event.newValue,[],false); return; }
     if (event.key === 'ambrosia_sync_logout_requested' && event.newValue) { void requestSignOut(); return; }
     if (event.key === 'ambrosia_sync_last_account' && (!writable || !client)) {
       try { switchAccount(JSON.parse(event.newValue || 'null')); } catch { switchAccount(null); }
@@ -125,12 +129,16 @@ async function connectCloud() {
         if (error) { switchAccount(null); throw error; }
         localStorage.removeItem('ambrosia_sync_logout_requested');
       }
-      const { data, error } = await client.auth.getSession(); if (error) throw error;
-      switchAccount(data.session?.user || null);
       if (!subscribed) {
-        client.auth.onAuthStateChange((_event, session) => switchAccount(session?.user || null));
+        client.auth.onAuthStateChange((event, session) => {
+          if(event === 'PASSWORD_RECOVERY') state.recoveringPassword = true;
+          switchAccount(session?.user || null);
+          if(event === 'PASSWORD_RECOVERY') queueMicrotask(() => window.dispatchEvent(new Event('password-recovery')));
+        });
         subscribed = true;
       }
+      const { data, error } = await client.auth.getSession(); if (error) throw error;
+      switchAccount(data.session?.user || null);
     } catch {
       // A network failure cannot grant another account access to cached records.
       if (!store) switchAccount(null);
@@ -195,4 +203,22 @@ function downloadRecovery() {
   if (!store || !confirm(t().archive)) return;
   const url = URL.createObjectURL(new Blob([JSON.stringify({ account:store.user, data:store.doc, unsavedDraft:draft },null,2)], {type:'application/json'}));
   const a = document.createElement('a'); a.href = url; a.download = 'ambrosia-recovery.json'; a.click(); setTimeout(() => URL.revokeObjectURL(url),1000);
+}
+
+export function localAccountArchive() {
+  return {account:store?.user || null,data:store?.doc || null,unsavedDraft:draft};
+}
+export async function eraseDeletedAccount(userId,snapshot=[],broadcast=true) {
+  const active=state.accountId===userId;
+  if(active){generation++;engine=null;store=null;draft=null;unsavedDrafts.clear();clearAccess();state.entries=[];state.profile=defaultProfile();}
+  else snapshot=[]; // Never erase another account's newly active journal after a slow delete response.
+  unsavedDrafts.delete(`ambrosia_sync_v2:${userId}`);
+  localStorage.removeItem(`ambrosia_sync_v2:${userId}`);
+  for(const [key,value] of snapshot)if(localStorage.getItem(key)===value)localStorage.removeItem(key);
+  if(broadcast)localStorage.setItem('ambrosia_account_deleted',userId);
+  if(active){
+    // Persist local sign-out even if Auth has become unavailable after hard deletion.
+    localStorage.setItem('ambrosia_sync_logout_requested','1');switchAccount(null);
+    try { await client?.auth.signOut({scope:'local'}); } catch { /* deferred sign-out remains */ }
+  }
 }
