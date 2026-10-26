@@ -25,3 +25,5 @@ This PR adds database structure only. **It does not enable login, cloud sync or 
 - Current `state.entries` is local-only; cloud entries will use UUID IDs, not JavaScript timestamps.
 - Entry `statusUpdates` will map to `entry_status_updates`.
 - Offline/local data will not be uploaded without an explicit user choice and a duplicate-safe migration.
+
+For Google Play/RevenueCat billing, apply **006_google_play_billing.sql** once after 005, only after owner review. It adds service-only billing metadata/RPCs and extends owner exports; health RLS is unchanged. See [billing setup and retention](../docs/premium-billing.md).

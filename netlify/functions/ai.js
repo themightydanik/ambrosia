@@ -9,6 +9,7 @@ const INSTRUCTIONS = {
   doctor_visit:'Prepare a factual appointment briefing with a timeline and questions for a clinician.'
 };
 exports.createHandler = ({ env = process.env, fetcher = fetch } = {}) => async event => {
+  if(event.httpMethod==='OPTIONS')return json(204,{});
   try {
     method(event,'POST');
     const auth = await authenticate(event,env,fetcher);

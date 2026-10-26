@@ -68,6 +68,7 @@ function selectedPayload(row, notes, fields = {}) {
 exports.createHandler =
   ({ env = process.env, fetcher = fetch } = {}) =>
   async (event) => {
+  if(event.httpMethod==='OPTIONS')return json(204,{});
     let auth,
       input,
       began = false;

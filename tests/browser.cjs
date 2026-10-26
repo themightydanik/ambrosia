@@ -158,6 +158,7 @@ const wait = async (page, fn) => {const until=Date.now()+15000;while(Date.now()<
     assert.equal(await a.page.locator('#ai-result-area img').count(),0);assert.equal(await a.page.evaluate(()=>window.__xss),undefined);
     backend.used.set(A,3);await a.page.evaluate(()=>window.runAI('report'));assert.equal(backend.providerCalls,1);assert.ok((await a.page.locator('#ai-result-area').innerText()).includes('allowance'));
     console.log('PASS security browser: forged Premium rejected, server restoration, consent, quotas and plain-text AI output');
+    await require('./billing-browser.cjs')({a,backend,wait,base});
     await require('./wellness-browser.cjs')({a,b,rows,backend,wait});
     await a.page.evaluate(()=>window.goTo('settings'));
     await a.page.locator('[data-account-privacy]').getByRole('button',{name:'Send password reset email',exact:true}).click();
