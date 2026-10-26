@@ -15,6 +15,7 @@ function status(next) {
 }
 function apply(accountChanged = false) {
   state.entries = store.entries();
+  state.checkins = store.records('checkin');state.episodes=store.records('episode');
   const { language, ...profile } = store.profile(); state.profile = profile; state.lang = language;
   emit(accountChanged);
 }
@@ -56,10 +57,10 @@ export function switchAccount(user) {
   // Clear memory before reading another partition; failures must never leave the previous account visible.
   state.accountId = user?.id || null;
   if (!user) state.recoveringPassword = false;
-  state.entries = []; state.profile = defaultProfile(); state.historyFilter = null;
+  state.entries = []; state.checkins=[];state.episodes=[];state.checkinDay=null;state.selectedEpisode=null;state.historyDay=null;state.profile = defaultProfile(); state.historyFilter = null;
   document.querySelectorAll('#entry-modal, #daily-streak-modal, .critical-warning-overlay, .insufficient-points-overlay').forEach(el => { if (el.id === 'entry-modal') el.classList.remove('active'); else el.remove(); });
   document.body.style.overflow = '';
-  for (const id of ['ai-result-area','history-list','home-recent','today-chips','history-filter','home-chart','home-profile-header','modal-body','profile-section','cloud-account']) { const el = document.getElementById(id); if (el) el.replaceChildren(); }
+  for (const id of ['ai-result-area','history-list','home-recent','today-chips','history-filter','home-chart','home-profile-header','modal-body','screen-checkin','screen-episode','companion-content','profile-section','cloud-account']) { const el = document.getElementById(id); if (el) el.replaceChildren(); }
   const notes = document.getElementById('log-notes'); if (notes) notes.value = '';
   state.logCat = null; state.logSymptoms = []; state.logTriggers = [];
   try {
@@ -83,8 +84,8 @@ function startEngine() {
   queueMicrotask(() => { if (generation === token) void engine?.run(); });
 }
 export async function initializeSync() {
-  setPersistence({ entries:() => persist('entries'), profile:version => persist('profile', version) });
-  state.entries = []; state.profile = defaultProfile();
+  setPersistence({ entries:() => persist('entries'), profile:version => persist('profile', version), clear:clearWellnessJournal });
+  state.entries = []; state.checkins=[];state.episodes=[];state.checkinDay=null;state.selectedEpisode=null;state.historyDay=null;state.profile = defaultProfile();
   if (navigator.locks) await new Promise(resolve => {
     navigator.locks.request('ambrosia-journal-writer', { ifAvailable:true }, lock => {
       writable = !!lock; resolve();
@@ -165,7 +166,7 @@ export function renderSyncControls(root) {
 function populate(panel) {
   panel.replaceChildren(); if (!store?.user) return;
   const labels = t();
-  const text = document.createElement('p'); text.textContent = `${labels[phase] || labels.error} · ${store.pending().length} ${labels.count}`; text.setAttribute('role','status'); panel.append(text);
+  const text = document.createElement('p'); text.textContent = `${!writable ? labels.locked : labels[phase] || labels.error} · ${store.pending().length} ${labels.count}`; text.setAttribute('role','status'); panel.append(text);
   if (writable) {
     button(panel, labels.retry, () => client ? engine?.run() : connectCloud());
     button(panel, labels.migration, async () => {
@@ -175,7 +176,7 @@ function populate(panel) {
       const guest = new SyncStore(localStorage);
       const entries = localStorage.getItem(guest.key) ? guest.entries() : JSON.parse(localStorage.getItem('ambrosia_entries') || '[]');
       const profile = localStorage.getItem(guest.key) ? guest.profile() : { ...defaultProfile(), ...JSON.parse(localStorage.getItem('ambrosia_profile') || '{}'), language:localStorage.getItem('ambrosia_lang') || 'en' };
-      await target.migrate(entries, profile, () => token === generation);
+      await target.migrate(entries, profile, () => token === generation, Object.values(guest.doc.records));
       if (token !== generation) return;
       apply(); status('pending'); await engine?.run();
     });
@@ -201,7 +202,8 @@ function downloadRecovery() {
 }
 
 export function localAccountArchive() {
-  return {account:store?.user || null,data:store?.doc || null,unsavedDraft:draft};
+  const rawChat=localStorage.getItem(`ambrosia_chat_v1:${store?.user||'guest'}`);let chat;try{chat=JSON.parse(rawChat||'null');}catch{chat={unreadableCache:rawChat};}
+  return {account:store?.user || null,data:store?.doc || null,unsavedDraft:draft,chat};
 }
 export async function eraseDeletedAccount(userId,snapshot=[],broadcast=true) {
   const active=state.accountId===userId;
@@ -217,3 +219,21 @@ export async function eraseDeletedAccount(userId,snapshot=[],broadcast=true) {
     try { await client?.auth.signOut({scope:'local'}); } catch { /* deferred sign-out remains */ }
   }
 }
+
+export function saveWellness(kind,payload,deleted=false,expectedVersion) {
+  if(!writable||!store)throw Error('READ_ONLY');
+  try {
+    store.putExpected(payload.id,kind,payload,expectedVersion,deleted);
+    apply();status(store.user?(navigator.onLine?'pending':'offline'):'local');if(store.user)void engine?.run();
+  }catch(error){status('error');throw error;}
+}
+export function recordVersion(id){return store?.doc.records[id]?.version||0;}
+export function syncedSources(sources){return sources.map(s=>({...s,version:store?.doc.records[s.id]?.pending||store?.doc.records[s.id]?.conflict?0:recordVersion(s.id)}));}
+
+function clearWellnessJournal(){
+ if(!writable||!store)throw Error('READ_ONLY');
+ store.commit(doc=>{for(const r of Object.values(doc.records))if(['entry','checkin','episode'].includes(r.kind)&&!r.deleted)store.edit(doc,r.id,r.kind,r.payload,true);});
+ apply();status(store.user?'pending':'local');if(store.user)void engine?.run();
+}
+
+export function syncStatus(){return {phase,writable,pending:store?.pending().length||0,conflicts:store?.conflicts().length||0};}

@@ -1,3 +1,4 @@
+import {v} from './wellness/copy.js';
 // ─────────────────────────────────────────────
 // ENTRY DETAIL MODAL
 // Bottom sheet: view details, update status, delete
@@ -68,13 +69,13 @@ function renderDetailPhase(body, entry) {
 
   const trigsHTML = entry.triggers.length
     ? `<div class="modal-row">
-        <div class="modal-label">Triggers</div>
+        <div class="modal-label">${v('details')}</div>
         <div style="display:flex;flex-wrap:wrap;gap:6px">${entry.triggers.map(tr => `<div class="trig-tag">⚡ ${escapeHTML(t(tr))}</div>`).join('')}</div>
       </div>` : '';
 
   const notesHTML = entry.notes
     ? `<div class="modal-row">
-        <div class="modal-label">Notes</div>
+        <div class="modal-label">${v('note')}</div>
         <div class="modal-notes">"${escapeHTML(entry.notes)}"</div>
       </div>` : '';
 
@@ -121,7 +122,7 @@ function renderDetailPhase(body, entry) {
     ${updateBadge}
     ${criticalBadge}
     <div class="modal-row">
-      <div class="modal-label">Date & Time</div>
+      <div class="modal-label">${v('date')}</div>
       <div class="modal-value">${date}${timeStr}</div>
     </div>
     <div class="modal-row">
@@ -129,7 +130,7 @@ function renderDetailPhase(body, entry) {
       <div class="modal-value" style="color:${color}">${escapeHTML(entry.intensity)} / 10</div>
     </div>
     <div class="modal-row">
-      <div class="modal-label">Symptoms</div>
+      <div class="modal-label">${v('symptoms')}</div>
       <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:4px">${symsHTML}</div>
     </div>
     ${trigsHTML}
@@ -137,6 +138,7 @@ function renderDetailPhase(body, entry) {
     ${timelineHTML}
 
     <div class="modal-actions">
+      <button class="modal-btn" id="entry-to-chat">✧ ${v('chatFrom')}</button>
       <button class="modal-btn modal-btn--update" onclick="modalPickStatus()">
         ↻ ${t('modalUpdateBtn')}
       </button>
@@ -150,6 +152,7 @@ function renderDetailPhase(body, entry) {
         ${t('modalCloseBtn')}
       </button>
     </div>`;
+  body.querySelector('#entry-to-chat').onclick=()=>{closeEntryModal();window.startContextChat({period:'all',entryIds:[String(entry.id)]});};
 }
 
 function renderStatusPhase(body, entry) {
@@ -177,7 +180,7 @@ function renderStatusPhase(body, entry) {
         style="height:70px;margin-top:12px"></textarea>
     </div>
     <div class="modal-actions">
-      <button class="modal-btn modal-btn--close" onclick="modalBackToDetail()">← Back</button>
+      <button class="modal-btn modal-btn--close" onclick="modalBackToDetail()">← ${v('back')}</button>
     </div>`;
 }
 

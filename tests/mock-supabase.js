@@ -22,7 +22,7 @@ export function createClient() {
   }
   return {auth,from(table) {
     const params=new URLSearchParams({table});
-    const query={select(){return query;},eq(k,v){params.set(k,v);return query;},order(){return query;},limit(n){params.set('limit',n);return query;},gt(k,v){params.set('after',v);return query;},then(ok,fail){return request('/__test/page?'+params).then(ok,fail);}};
+    const query={select(){return query;},eq(k,v){params.set(k,v);return query;},order(k,v){params.set('order',k);params.set('ascending',String(v?.ascending!==false));return query;},limit(n){params.set('limit',n);return query;},gt(k,v){params.set('after',v);return query;},lt(k,v){params.set('before',v);return query;},then(ok,fail){return request('/__test/page?'+params).then(ok,fail);}};
     return query;
-  },rpc(name,payload){if(name==='export_account_data')return request('/__test/export');return request('/__test/write',{method:'POST',body:JSON.stringify(payload)});}};
+  },rpc(name,payload){if(name.startsWith('chat_'))return request('/__test/rpc/'+name,{method:'POST',body:JSON.stringify(payload)});if(name==='export_account_data')return request('/__test/export');return request('/__test/write',{method:'POST',body:JSON.stringify(payload)});}};
 }

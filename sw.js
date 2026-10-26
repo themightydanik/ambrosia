@@ -1,13 +1,16 @@
-const CACHE = 'ambrosia-shell-security-v3-2';
+const CACHE = 'ambrosia-shell-v2-product-2';
 const SHELL = [
   "/",
   "/index.html",
   "/css/main.css",
+  "/css/product.css",
   "/js/account-access.js",
   "/js/account-management.js",
   "/js/app.js",
   "/js/cloud-import.js",
   "/js/cloud-restore.js",
+  "/js/companion/store.js",
+  "/js/companion/ui.js",
   "/js/config.js",
   "/js/data.js",
   "/js/i18n.js",
@@ -15,6 +18,8 @@ const SHELL = [
   "/js/navigation.js",
   "/js/premium.js",
   "/js/screens/ai.js",
+  "/js/screens/checkin.js",
+  "/js/screens/episode.js",
   "/js/screens/history.js",
   "/js/screens/home.js",
   "/js/screens/log.js",
@@ -29,7 +34,12 @@ const SHELL = [
   "/js/sync/engine.js",
   "/js/sync/runtime.js",
   "/js/sync/store.js",
-  "/js/utils/escape.js"
+  "/js/utils/escape.js",
+  "/js/wellness/charts.js",
+  "/js/wellness/context.js",
+  "/js/wellness/copy.js",
+  "/js/wellness/dom.js",
+  "/js/wellness/model.js"
 ];
 
 self.addEventListener('install', event => {

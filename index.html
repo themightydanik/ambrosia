@@ -2,109 +2,20 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
 <title>Ambrosia</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/main.css">
+<link rel="stylesheet" href="css/product.css">
 </head>
 <body>
 <div id="app">
 
-<!-- ══════════ ONBOARDING ══════════ -->
-<div id="screen-onboarding" class="screen active">
-<div class="ob-wrap">
-  <div class="ob-logo"><div class="ob-logo-mark">🌿</div><div class="ob-logo-name">Ambrosia</div></div>
-  <div class="ob-steps">
-    <div class="ob-dot active" id="ob-d0"></div><div class="ob-dot" id="ob-d1"></div><div class="ob-dot" id="ob-d2"></div>
-  </div>
-  <div id="ob-slide-0" class="active ob-slide">
-    <div class="ob-icon">🩺</div>
-    <h1 class="ob-title">Your personal <em>health chronicle</em></h1>
-    <p class="ob-desc">Track symptoms, discover patterns, and arrive at your doctor's appointment fully prepared — with months of detailed health data.</p>
-    <div class="ob-features">
-      <div class="ob-feat"><div class="ob-feat-icon">📋</div><div class="ob-feat-text"><strong>Symptom Logging</strong><span>Record any symptom in seconds with intensity, triggers, and notes.</span></div></div>
-      <div class="ob-feat"><div class="ob-feat-icon">🔗</div><div class="ob-feat-text"><strong>Correlation Engine</strong><span>Review recorded patterns with optional AI observations.</span></div></div>
-      <div class="ob-feat"><div class="ob-feat-icon">🏥</div><div class="ob-feat-text"><strong>Doctor Visit Briefing</strong><span>AI prepares the perfect summary before every appointment.</span></div></div>
-    </div>
-  </div>
-  <div id="ob-slide-1" class="ob-slide">
-    <div class="ob-icon">📊</div>
-    <h1 class="ob-title">A <em>map</em> of your health</h1>
-    <p class="ob-desc">Before you get sick, during recovery, and everything in between — Ambrosia builds a precise timeline your doctor will thank you for.</p>
-    <div class="ob-features">
-      <div class="ob-feat"><div class="ob-feat-icon">📈</div><div class="ob-feat-text"><strong>Trend Visualization</strong><span>See how symptoms evolve day by day with intuitive charts.</span></div></div>
-      <div class="ob-feat"><div class="ob-feat-icon">⚡</div><div class="ob-feat-text"><strong>Trigger Tracking</strong><span>Identify what triggers your symptoms: stress, food, sleep, weather.</span></div></div>
-      <div class="ob-feat"><div class="ob-feat-icon">📄</div><div class="ob-feat-text"><strong>Doctor Reports</strong><span>AI generates a comprehensive health summary for your appointments.</span></div></div>
-    </div>
-  </div>
-  <div id="ob-slide-2" class="ob-slide">
-    <div class="ob-icon">🛡️</div>
-    <h1 class="ob-title">Private by <em>design</em></h1>
-    <p class="ob-desc">Your health data stays on your device. No accounts required. You control everything — including what you share with your doctor.</p>
-    <div class="ob-features">
-      <div class="ob-feat"><div class="ob-feat-icon">🔒</div><div class="ob-feat-text"><strong>Local Storage</strong><span>All data lives on your device. Nothing sent to servers.</span></div></div>
-      <div class="ob-feat"><div class="ob-feat-icon">🌍</div><div class="ob-feat-text"><strong>3 Languages</strong><span>English, Русский, Українська — switch anytime.</span></div></div>
-      <div class="ob-feat"><div class="ob-feat-icon">💰</div><div class="ob-feat-text"><strong>Private wellness journal</strong><span>Offline records and optional AI observations with account usage limits.</span></div></div>
-    </div>
-  </div>
-  <div class="ob-actions">
-    <button class="btn-primary" id="ob-next-btn" onclick="obNext()">Continue</button>
-    <button class="btn-ghost" onclick="startApp()">Skip intro</button>
-  </div>
-</div>
-</div>
-
-<!-- ══════════ HOME ══════════ -->
-<div id="screen-home" class="screen">
-<div class="home-top">
-  <div class="home-top-row">
-    <div class="home-top-left">
-      <div class="home-greeting" id="home-greeting">GOOD MORNING</div>
-      <div class="home-date" id="home-date">Sunday, March 29</div>
-    </div>
-    <div class="home-top-right" id="home-profile-header">
-      <!-- Profile avatar renders here -->
-    </div>
-  </div>
-</div>
-  <div class="home-status-card">
-    <div class="status-label" id="sl-overall">OVERALL FEELING TODAY</div>
-    <div class="status-value" id="home-feeling">Mild discomfort</div>
-    <div class="status-bar-wrap">
-      <div class="status-bar" style="background:var(--mint);flex:3"></div>
-      <div class="status-bar" style="background:var(--gold);flex:4"></div>
-      <div class="status-bar" style="background:var(--coral);flex:2"></div>
-      <div class="status-bars-label" id="home-score">Score — / 10</div>
-    </div>
-  </div>
-  <div class="section-head">
-    <div class="section-title" id="ht-today">TODAY'S SYMPTOMS</div>
-    <div class="section-link" onclick="goTo('log')" id="ht-log">+ Log</div>
-  </div>
-  <div class="symptom-chips" id="today-chips"></div>
-  <div class="ai-card" onclick="goTo('ai')">
-    <div class="ai-card-label">🤖 AI INSIGHT</div>
-    <div class="ai-card-text" id="home-ai-insight">Tap to analyze your symptom patterns →</div>
-  </div>
-  <!-- Doctor visit CTA — killer feature entry point -->
-  <div class="doctor-visit-card" onclick="goTo('ai')">
-    <div class="dv-card-icon">🏥</div>
-    <div class="dv-card-body">
-      <div class="dv-card-title" id="dv-card-title">Before your next appointment</div>
-      <div class="dv-card-sub" id="dv-card-sub">AI prepares a briefing your doctor will love →</div>
-    </div>
-  </div>
-  <div class="mini-chart">
-    <div class="mini-chart-title" id="chart-title">7-DAY SYMPTOM INTENSITY</div>
-    <div class="chart-bars" id="home-chart"></div>
-  </div>
-  <div class="section-head">
-    <div class="section-title" id="ht-recent">RECENT ENTRIES</div>
-    <div class="section-link" onclick="goTo('history')" id="ht-all">See all</div>
-  </div>
-  <div id="home-recent" style="padding:0 24px;padding-bottom:96px"></div>
-</div>
+<section id="screen-onboarding" class="screen active"></section>
+<section id="screen-home" class="screen"></section>
+<section id="screen-checkin" class="screen"></section>
+<section id="screen-episode" class="screen"></section>
 
 <!-- ══════════ LOG ══════════ -->
 <div id="screen-log" class="screen">
@@ -146,63 +57,8 @@
   </div>
 </div>
 
-<!-- ══════════ HISTORY ══════════ -->
-<div id="screen-history" class="screen">
-  <div class="screen-header">
-    <div class="screen-title" id="hist-title">Health History</div>
-    <div class="screen-subtitle" id="hist-sub">Your complete symptom timeline</div>
-  </div>
-  <div class="history-filter" id="history-filter"></div>
-  <div class="history-entries pb80" id="history-list"></div>
-</div>
-
-<!-- ══════════ AI ══════════ -->
-<div id="screen-ai" class="screen">
-  <div class="ai-top">
-    <div class="ai-tagline" id="ai-tag">AI HEALTH ASSISTANT</div>
-    <div class="ai-headline"><span id="ai-headline-main">What does your body</span> <em id="ai-headline-em" style="font-style:italic;color:var(--gold)">tell us?</em></div>
-
-    <!-- Doctor Visit Briefing — KILLER FEATURE -->
-    <div class="dv-feature-card">
-      <div class="dv-feature-header">
-        <div class="dv-feature-icon">🏥</div>
-        <div>
-          <div class="dv-feature-title">Before Your Doctor Visit</div>
-          <div class="dv-feature-sub">AI prepares everything your doctor needs to know</div>
-        </div>
-
-      </div>
-      <div id="dv-form"></div>
-    </div>
-
-    <div class="ai-divider" id="ai-divider-text">OTHER AI TOOLS</div>
-
-    <div id="ai-period-container" style="padding:0 24px 18px"></div>
-    <div class="ai-action-btns">
-      <button class="ai-action-btn primary-action" onclick="runAI('analyze')">
-        <div class="ai-action-icon">🔬</div>
-        <div class="ai-action-info"><div class="ai-action-title" id="ai-btn1t">Analyze My Symptoms</div><div class="ai-action-desc" id="ai-btn1d">Get AI insights on patterns and possible conditions</div></div>
-
-      </button>
-      <button class="ai-action-btn" onclick="runAI('correlations')">
-        <div class="ai-action-icon">🔗</div>
-        <div class="ai-action-info"><div class="ai-action-title" id="ai-btn2t">Find Correlations</div><div class="ai-action-desc" id="ai-btn2d">Discover hidden connections between your symptoms</div></div>
-
-      </button>
-      <button class="ai-action-btn" onclick="runAI('report')">
-        <div class="ai-action-icon">📋</div>
-        <div class="ai-action-info"><div class="ai-action-title" id="ai-btn3t">Generate Doctor Report</div><div class="ai-action-desc" id="ai-btn3d">Create a comprehensive summary for your appointment</div></div>
-
-      </button>
-      <button class="ai-action-btn" onclick="runAI('recommend')">
-        <div class="ai-action-icon">💊</div>
-        <div class="ai-action-info"><div class="ai-action-title" id="ai-btn4t">Get Recommendations</div><div class="ai-action-desc" id="ai-btn4d">What to do now and which doctor to see</div></div>
-
-      </button>
-    </div>
-  </div>
-  <div id="ai-result-area" style="padding-bottom:96px"></div>
-</div>
+<section id="screen-history" class="screen"></section>
+<section id="screen-ai" class="screen"><div id="companion-content"></div></section>
 
 <!-- ══════════ SETTINGS ══════════ -->
 <div id="screen-settings" class="screen">
@@ -233,12 +89,6 @@
     </div>
   </div>
 
-  <div class="settings-section">
-    <div class="settings-section-title" id="set-pref-title">PREFERENCES</div>
-    <div class="setting-row"><div class="setting-row-left"><div class="setting-icon">🔔</div><div class="setting-label" id="set-notif">Reminders</div></div><div class="setting-value">Daily 20:00</div></div>
-    <div class="setting-row"><div class="setting-row-left"><div class="setting-icon">🎨</div><div class="setting-label" id="set-theme">Theme</div></div><div class="setting-value">Dark Forest</div></div>
-  </div>
-
   <div class="settings-section" id="cloud-account"></div>
 
   <div class="settings-section">
@@ -247,9 +97,7 @@
     <div class="setting-row" onclick="clearData()"><div class="setting-row-left"><div class="setting-icon">🗑️</div><div class="setting-label" id="set-clear" style="color:var(--coral)">Clear All Data</div></div><div style="color:var(--cream30)">→</div></div>
   </div>
 
-  <div style="padding:0 24px 100px;text-align:center">
-    <div style="font-size:13px;color:var(--cream30);line-height:1.6">Ambrosia v1.2 · <em>Not a medical device</em><br>Always consult a qualified healthcare professional.</div>
-  </div>
+  <p id="product-disclaimer" class="page-footnote"></p>
 </div>
 
 
@@ -275,21 +123,17 @@
 <!-- ══════════ BOTTOM NAV ══════════ -->
 <nav id="bottom-nav">
   <div class="nav-tabs">
-    <div class="nav-tab active" id="nav-home" onclick="goTo('home')">
-      <div class="nav-icon">🏠</div><div class="nav-label" id="nav-l-home">Home</div>
-    </div>
-    <div class="nav-tab" id="nav-history" onclick="goTo('history')">
-      <div class="nav-icon">📊</div><div class="nav-label" id="nav-l-hist">History</div>
-    </div>
+    <button type="button" class="nav-tab active" id="nav-home" onclick="goTo('home')">
+      <div class="nav-icon">⌂</div><div class="nav-label" id="nav-l-home">Home</div></button>
+    <button type="button" class="nav-tab" id="nav-history" onclick="goTo('history')">
+      <div class="nav-icon">◴</div><div class="nav-label" id="nav-l-hist">History</div></button>
     <div class="nav-tab-log-wrap">
-      <div class="nav-tab-log" onclick="goTo('log')">➕</div>
+      <button type="button" class="nav-tab-log" id="nav-log" onclick="goTo('log')">＋</button>
     </div>
-    <div class="nav-tab" id="nav-ai" onclick="goTo('ai')">
-      <div class="nav-icon">🤖</div><div class="nav-label" id="nav-l-ai">AI</div>
-    </div>
-    <div class="nav-tab" id="nav-settings" onclick="goTo('settings')">
-      <div class="nav-icon">👤</div><div class="nav-label" id="nav-l-set">Profile</div>
-    </div>
+    <button type="button" class="nav-tab" id="nav-ai" onclick="goTo('ai')">
+      <div class="nav-icon">✧</div><div class="nav-label" id="nav-l-ai">AI</div></button>
+    <button type="button" class="nav-tab" id="nav-settings" onclick="goTo('settings')">
+      <div class="nav-icon">◉</div><div class="nav-label" id="nav-l-set">Profile</div></button>
   </div>
 </nav>
 

@@ -1,15 +1,22 @@
-import { profileVersion } from '../sync/runtime.js';
-import { state, saveLang, clearAllData, saveProfile, AVATAR_OPTIONS } from '../state.js';
-import { applyLang, t } from '../i18n.js';
-import { registerScreen, goTo } from '../navigation.js';
-import { renderHome } from './home.js';
-import { renderHistory } from './history.js';
-import { isPremium } from '../premium.js';
-import { escapeHTML } from '../utils/escape.js';
-import { accountAccess } from '../account-access.js';
-import { securityText } from '../security-copy.js';
-import { exportUserData } from '../account-management.js';
-import { renderCloudAccount } from '../supabase-auth.js';
+import { v } from "../wellness/copy.js";
+import { profileVersion } from "../sync/runtime.js";
+import {
+  state,
+  saveLang,
+  clearAllData,
+  saveProfile,
+  AVATAR_OPTIONS,
+} from "../state.js";
+import { applyLang, t } from "../i18n.js";
+import { registerScreen, goTo } from "../navigation.js";
+import { renderHome } from "./home.js";
+import { renderHistory } from "./history.js";
+import { isPremium } from "../premium.js";
+import { escapeHTML } from "../utils/escape.js";
+import { accountAccess } from "../account-access.js";
+import { securityText } from "../security-copy.js";
+import { exportUserData } from "../account-management.js";
+import { renderCloudAccount } from "../supabase-auth.js";
 
 let _editingProfile = false;
 let _profileDraft, _profileVersion;
@@ -18,15 +25,22 @@ let _profileDraft, _profileVersion;
 // RENDER SETTINGS / PROFILE
 // ─────────────────────────────────────────────
 export function renderSettings() {
-  const totalSyms  = state.entries.reduce((acc, e) => acc + e.symptoms.length, 0);
-  const uniqueDays = new Set(state.entries.map(e => e.date)).size;
+  const totalSyms = state.entries.reduce(
+    (acc, e) => acc + e.symptoms.length,
+    0,
+  );
+  const uniqueDays = new Set([
+    ...state.entries.map((e) => e.date),
+    ...state.checkins.map((c) => c.date),
+  ]).size;
 
-  const entriesEl = document.getElementById('stat-entries');
-  const daysEl    = document.getElementById('stat-days');
-  const symsEl    = document.getElementById('stat-syms');
-  if (entriesEl) entriesEl.textContent = state.entries.length;
-  if (daysEl)    daysEl.textContent    = uniqueDays;
-  if (symsEl)    symsEl.textContent    = totalSyms;
+  const entriesEl = document.getElementById("stat-entries");
+  const daysEl = document.getElementById("stat-days");
+  const symsEl = document.getElementById("stat-syms");
+  if (entriesEl)
+    entriesEl.textContent = state.entries.length + state.checkins.length;
+  if (daysEl) daysEl.textContent = uniqueDays;
+  if (symsEl) symsEl.textContent = totalSyms;
 
   // Profile display
   renderProfileSection();
@@ -36,26 +50,45 @@ export function renderSettings() {
 }
 
 function renderAccessBadge() {
-  const el=document.getElementById('set-premium-badge');if(!el)return;
-  const t=securityText(state.lang),access=accountAccess();el.replaceChildren();
-  const button=document.createElement('button');button.className='btn-ghost';button.textContent=access?t[access.state]:t.unknown;button.onclick=()=>goTo('upgrade');el.append(button);
+  const el = document.getElementById("set-premium-badge");
+  if (!el) return;
+  const t = securityText(state.lang),
+    access = accountAccess();
+  el.replaceChildren();
+  const button = document.createElement("button");
+  button.className = "btn-ghost";
+  button.textContent = access ? t[access.state] : t.unknown;
+  button.onclick = () => goTo("upgrade");
+  el.append(button);
 }
 
 export function refreshSettingsData() {
   renderAccessBadge();
   if (!_editingProfile) renderProfileSection();
-  const counts = { 'stat-entries':state.entries.length, 'stat-days':new Set(state.entries.map(e => e.date)).size, 'stat-syms':state.entries.reduce((n,e) => n + e.symptoms.length,0) };
-  for (const [id,count] of Object.entries(counts)) { const el = document.getElementById(id); if (el) el.textContent = count; }
+  const counts = {
+    "stat-entries": state.entries.length + state.checkins.length,
+    "stat-days": new Set([
+      ...state.entries.map((e) => e.date),
+      ...state.checkins.map((c) => c.date),
+    ]).size,
+    "stat-syms": state.entries.reduce((n, e) => n + e.symptoms.length, 0),
+  };
+  for (const [id, count] of Object.entries(counts)) {
+    const el = document.getElementById(id);
+    if (el) el.textContent = count;
+  }
 }
 
 function renderProfileSection() {
-  const el = document.getElementById('profile-section');
+  const el = document.getElementById("profile-section");
   if (!el) return;
 
-  const { name, age, occupation, avatar } = _editingProfile ? _profileDraft : state.profile;
-  const displayName = name || t('profileNamePlaceholder');
-  const displayAge = age ? `, ${age} ${t('yearsOld')}` : '';
-  const displayOccupation = occupation || t('profileOccupationPlaceholder');
+  const { name, age, occupation, avatar } = _editingProfile
+    ? _profileDraft
+    : state.profile;
+  const displayName = name || t("profileNamePlaceholder");
+  const displayAge = age ? `, ${age} ${t("yearsOld")}` : "";
+  const displayOccupation = occupation || t("profileOccupationPlaceholder");
 
   if (_editingProfile) {
     el.innerHTML = `
@@ -63,30 +96,32 @@ function renderProfileSection() {
         <div class="profile-avatar-selector">
           <div class="profile-avatar-current">${escapeHTML(avatar)}</div>
           <div class="avatar-grid" id="avatar-grid">
-            ${AVATAR_OPTIONS.map(a => `
-              <button class="avatar-option ${a === avatar ? 'selected' : ''}" 
+            ${AVATAR_OPTIONS.map(
+              (a) => `
+              <button class="avatar-option ${a === avatar ? "selected" : ""}"
                 onclick="selectAvatar('${a}')">${a}</button>
-            `).join('')}
+            `,
+            ).join("")}
           </div>
         </div>
         <div class="profile-edit-field">
-          <label class="profile-edit-label">${t('profileName')}</label>
-          <input type="text" id="profile-name-input" class="profile-edit-input" 
-            value="${escapeHTML(name)}" placeholder="${t('profileNamePlaceholder')}">
+          <label class="profile-edit-label">${t("profileName")}</label>
+          <input type="text" id="profile-name-input" class="profile-edit-input"
+            value="${escapeHTML(name)}" placeholder="${t("profileNamePlaceholder")}">
         </div>
         <div class="profile-edit-field">
-          <label class="profile-edit-label">${t('profileAge')}</label>
-          <input type="number" id="profile-age-input" class="profile-edit-input" 
-            value="${escapeHTML(age || '')}" placeholder="25" min="1" max="120">
+          <label class="profile-edit-label">${t("profileAge")}</label>
+          <input type="number" id="profile-age-input" class="profile-edit-input"
+            value="${escapeHTML(age || "")}" placeholder="25" min="1" max="120">
         </div>
         <div class="profile-edit-field">
-          <label class="profile-edit-label">${t('profileOccupation')}</label>
-          <input type="text" id="profile-occupation-input" class="profile-edit-input" 
-            value="${escapeHTML(occupation)}" placeholder="${t('profileOccupationPlaceholder')}">
+          <label class="profile-edit-label">${t("profileOccupation")}</label>
+          <input type="text" id="profile-occupation-input" class="profile-edit-input"
+            value="${escapeHTML(occupation)}" placeholder="${t("profileOccupationPlaceholder")}">
         </div>
         <div class="profile-edit-actions">
-          <button class="btn-primary" onclick="saveProfileEdit()">${t('saveBtn')}</button>
-          <button class="btn-ghost" onclick="cancelProfileEdit()">${t('cancelBtn')}</button>
+          <button class="btn-primary" onclick="saveProfileEdit()">${t("saveBtn")}</button>
+          <button class="btn-ghost" onclick="cancelProfileEdit()">${t("cancelBtn")}</button>
         </div>
       </div>
     `;
@@ -96,14 +131,15 @@ function renderProfileSection() {
         <div class="profile-avatar">${escapeHTML(avatar)}</div>
         <div class="profile-name">${escapeHTML(displayName)}${escapeHTML(displayAge)}</div>
         <div class="profile-sub">${escapeHTML(displayOccupation)}</div>
-        <button class="profile-edit-btn" onclick="editProfile()">✏️ ${t('editProfileBtn')}</button>
+        <button class="profile-edit-btn" onclick="editProfile()">✏️ ${t("editProfileBtn")}</button>
       </div>
     `;
   }
 }
 
 export function editProfile() {
-  _profileDraft = { ...state.profile }; _profileVersion = profileVersion();
+  _profileDraft = { ...state.profile };
+  _profileVersion = profileVersion();
   _editingProfile = true;
   renderProfileSection();
 }
@@ -114,29 +150,40 @@ export function cancelProfileEdit() {
 }
 
 export function selectAvatar(emoji) {
-  _profileDraft = { ..._profileDraft, name:document.getElementById('profile-name-input').value, age:document.getElementById('profile-age-input').value, occupation:document.getElementById('profile-occupation-input').value, avatar:emoji };
+  _profileDraft = {
+    ..._profileDraft,
+    name: document.getElementById("profile-name-input").value,
+    age: document.getElementById("profile-age-input").value,
+    occupation: document.getElementById("profile-occupation-input").value,
+    avatar: emoji,
+  };
   // Re-render to update selection
   renderProfileSection();
 }
 
 export function saveProfileEdit() {
-  const nameInput = document.getElementById('profile-name-input');
-  const ageInput = document.getElementById('profile-age-input');
-  const occupationInput = document.getElementById('profile-occupation-input');
+  const nameInput = document.getElementById("profile-name-input");
+  const ageInput = document.getElementById("profile-age-input");
+  const occupationInput = document.getElementById("profile-occupation-input");
 
   if (ageInput && ageInput.value && !ageInput.reportValidity()) return;
-  saveProfile({
-    avatar: _profileDraft.avatar,
-    name: nameInput ? nameInput.value.trim() : state.profile.name,
-    age: ageInput ? parseInt(ageInput.value) || null : state.profile.age,
-    occupation: occupationInput ? occupationInput.value.trim() : state.profile.occupation
-  }, _profileVersion);
+  saveProfile(
+    {
+      avatar: _profileDraft.avatar,
+      name: nameInput ? nameInput.value.trim() : state.profile.name,
+      age: ageInput ? parseInt(ageInput.value) || null : state.profile.age,
+      occupation: occupationInput
+        ? occupationInput.value.trim()
+        : state.profile.occupation,
+    },
+    _profileVersion,
+  );
 
   _editingProfile = false;
   renderProfileSection();
-  
+
   // Update home screen greeting
-  if (state.screen === 'home') {
+  if (state.screen === "home") {
     renderHome();
   }
 }
@@ -148,25 +195,29 @@ export function setLang(lang) {
   state.lang = lang;
   saveLang();
   applyLang();
-  if (state.screen === 'home')     renderHome();
-  if (state.screen === 'history')  renderHistory();
-  if (state.screen === 'settings') renderSettings();
+  if (state.screen === "home") renderHome();
+  if (state.screen === "history") renderHistory();
+  if (state.screen === "settings") renderSettings();
 }
 
 // ─────────────────────────────────────────────
 // DATA EXPORT (premium only)
 // ─────────────────────────────────────────────
 export async function exportData() {
-  try { await exportUserData(); } catch { alert(securityText(state.lang).error); }
+  try {
+    await exportUserData();
+  } catch {
+    alert(securityText(state.lang).error);
+  }
 }
 
 // ─────────────────────────────────────────────
 // CLEAR DATA
 // ─────────────────────────────────────────────
 export function clearData() {
-  if (!confirm(({en:'Delete all entries from this journal? When signed in, deletions synchronize to your other devices.',uk:'Видалити всі записи цього журналу? Після входу видалення синхронізуються з іншими пристроями.',ru:'Удалить все записи этого журнала? После входа удаления синхронизируются с другими устройствами.'})[state.lang] || 'Delete all entries?')) return;
+  if (!confirm(v("clearConfirm"))) return;
   clearAllData();
   renderSettings();
 }
 
-registerScreen('settings', renderSettings);
+registerScreen("settings", renderSettings);

@@ -49,14 +49,15 @@ export class SyncStore {
     this.storage.setItem(this.key, JSON.stringify(next)); this.doc = next;
   }
   entries() { return Object.values(this.doc.records).filter(r => r.kind === 'entry' && !r.deleted).map(r => clone(r.payload)).sort((a,b) => a.timestamp.localeCompare(b.timestamp) || String(a.id).localeCompare(String(b.id))); }
+  records(kind) { return Object.values(this.doc.records).filter(r=>r.kind===kind&&!r.deleted).map(r=>clone(r.payload)); }
   profile() { return clone(this.doc.records[PROFILE_ID]?.payload || defaultProfile()); }
   put(id, kind, payload, deleted = false) {
     this.commit(doc => this.edit(doc, id, kind, payload, deleted));
   }
-  putExpected(id, kind, payload, expectedVersion) {
+  putExpected(id, kind, payload, expectedVersion, deleted = false) {
     this.commit(doc => {
       const old = doc.records[id];
-      this.edit(doc, id, kind, payload, false);
+      this.edit(doc, id, kind, payload, deleted);
       if (expectedVersion !== undefined && old && old.version !== expectedVersion) doc.records[id].conflict = clone(old);
     });
   }
@@ -120,7 +121,7 @@ export class SyncStore {
       } else throw new Error('Unknown conflict choice');
     });
   }
-  async migrate(entries, profile, valid = () => true) {
+  async migrate(entries, profile, valid = () => true, extraRecords = []) {
     // Consent is required by the caller. Stage the complete mapping locally before any upload.
     const mapped = [];
     for (const e of entries.filter(e => !e.isUpdate)) {
@@ -147,12 +148,18 @@ export class SyncStore {
             pending:{op:crypto.randomUUID(),base:existing.version,payload:entry,deleted:false}, conflict:clone(existing) };
         }
       }
+      for(const r of extraRecords.filter(r=>['checkin','episode'].includes(r.kind)&&!r.deleted)) {
+        if(doc.migration?.extraSources?.[r.id]===JSON.stringify(canonical(r.payload)))continue;
+        const old=doc.records[r.id];
+        if(!old)this.edit(doc,r.id,r.kind,r.payload,false);
+        else if(!equal(old.payload,r.payload))doc.records[r.id]={...old,payload:clone(r.payload),deleted:false,pending:{op:crypto.randomUUID(),base:old.version,payload:clone(r.payload),deleted:false},conflict:clone(old)};
+      }
       if (!doc.migration?.profile) {
         const old = doc.records[PROFILE_ID];
         if (!old) this.edit(doc, PROFILE_ID, 'profile', profile, false);
         else if (!equal(old.payload, profile)) doc.records[PROFILE_ID] = { ...old, payload:clone(profile), pending:{op:crypto.randomUUID(),base:old.version,payload:clone(profile),deleted:false}, conflict:clone(old) };
       }
-      doc.migration = { profile:true, ids: [...new Set([...(doc.migration?.ids || []), ...mapped.map(e => e.id)])], stagedAt:new Date().toISOString() };
+      doc.migration = { extraSources:{...(doc.migration?.extraSources||{}),...Object.fromEntries(extraRecords.filter(r=>['checkin','episode'].includes(r.kind)).map(r=>[r.id,JSON.stringify(canonical(r.payload))]))}, extraIds:[...new Set([...(doc.migration?.extraIds||[]),...extraRecords.map(r=>r.id)])], profile:true, ids: [...new Set([...(doc.migration?.ids || []), ...mapped.map(e => e.id)])], stagedAt:new Date().toISOString() };
     });
   }
 }

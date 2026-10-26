@@ -1,42 +1,68 @@
-import { markOnboardingDone } from '../state.js';
-import { goTo } from '../navigation.js';
-
-let _obStep = 0;
-
-// ─────────────────────────────────────────────
-// ADVANCE ONBOARDING STEP
-// ─────────────────────────────────────────────
-export function obNext() {
-  if (_obStep < 2) {
-    const current = document.getElementById('ob-slide-' + _obStep);
-    if (current) current.classList.remove('active');
-
-    _obStep++;
-
-    const next = document.getElementById('ob-slide-' + _obStep);
-    if (next) next.classList.add('active');
-
-    // Update progress dots
-    for (let i = 0; i <= 2; i++) {
-      const d = document.getElementById('ob-d' + i);
-      if (d) d.classList.toggle('active', i === _obStep);
-    }
-
-    // Last step: change button text
-    const btn = document.getElementById('ob-next-btn');
-    if (_obStep === 2 && btn) btn.textContent = 'Get Started';
-  } else {
-    startApp();
-  }
+import { state, markOnboardingDone, saveLang } from "../state.js";
+import { goTo } from "../navigation.js";
+import { v } from "../wellness/copy.js";
+import { el, button } from "../wellness/dom.js";
+export function renderOnboarding() {
+  const root = document.getElementById("screen-onboarding");
+  root.replaceChildren();
+  const languages = el("div", { class: "onboarding-languages" });
+  for (const [lang, label] of [
+    ["en", "EN"],
+    ["uk", "УКР"],
+    ["ru", "РУ"],
+  ])
+    languages.append(
+      button(
+        label,
+        () => {
+          state.lang = lang;
+          saveLang();
+          renderOnboarding();
+        },
+        { "aria-pressed": String(state.lang === lang) },
+      ),
+    );
+  root.append(
+    el(
+      "div",
+      { class: "onboarding-v2" },
+      el(
+        "div",
+        { class: "brand-line" },
+        el("span", { class: "brand-mark" }, "✳"),
+        "AMBROSIA",
+        languages,
+      ),
+      el(
+        "div",
+        { class: "welcome-art", "aria-hidden": "true" },
+        el("span", {}, "◯"),
+        el("span", {}, "✳"),
+        el("span", {}, "◕"),
+      ),
+      el("p", { class: "eyebrow" }, v("privacy")),
+      el("h1", {}, v("onboardTitle")),
+      el("p", { class: "lead" }, v("onboardBody")),
+      el(
+        "div",
+        { class: "onboarding-points" },
+        el("p", {}, "◕  " + v("onboardHealthy")),
+        el("p", {}, "⌁  " + v("onboardSymptoms")),
+      ),
+      el("p", { class: "privacy-note" }, v("onboardPrivacy")),
+      button(v("startApp"), startApp, {
+        class: "btn-primary",
+        id: "ob-next-btn",
+      }),
+    ),
+  );
 }
-
-// ─────────────────────────────────────────────
-// SKIP / FINISH ONBOARDING → ENTER APP
-// ─────────────────────────────────────────────
+export function obNext() {
+  startApp();
+}
 export function startApp() {
   markOnboardingDone();
-  goTo('home');
+  goTo("home");
 }
-
 window.obNext = obNext;
 window.startApp = startApp;
