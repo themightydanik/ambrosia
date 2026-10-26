@@ -17,7 +17,7 @@ do $$ declare a uuid:='11111111-1111-4111-8111-111111111111';b uuid:='22222222-2
  if public.billing_apply(a,g,stamp,'expired',now(),'fixture_month','SANDBOX','[]') then raise exception 'out of order expiry accepted';end if;
  if public.account_snapshot(a)->>'tier'<>'premium' then raise exception 'stale expiry downgraded';end if;
  if public.billing_apply(a,g-1,stamp+interval '2 seconds','expired',now(),'fixture_month','SANDBOX','[]') then raise exception 'stale generation applied';end if;
- -- Cancellation is access through the verified expiry. Refund revokes immediately.
+ -- Cancellation retains verified paid access. A verified revoked state removes it.
  update public.billing_accounts set checked_at=null,attempted_at=null where user_id=a;
  r:=public.billing_start(a,true);g:=(r->'account'->>'generation')::bigint;
  perform public.billing_apply(a,g,stamp+interval '2 seconds','cancelled',now()+interval '30 days','fixture_month','SANDBOX',h);
