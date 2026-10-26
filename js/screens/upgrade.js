@@ -58,7 +58,19 @@ async function action(work, kind) {
   } catch (e) {
     if (token !== epoch || user !== state.accountId) return;
     notice = message(e, billingCopy(state.lang));
-    if (kind === "purchase" && !e.userCancelled && String(e.code) !== "1")
+    if (
+      kind === "purchase" &&
+      !e.userCancelled &&
+      String(e.code) !== "1" &&
+      ![
+        "PRICE_CHANGED",
+        "PRODUCTS_UNAVAILABLE",
+        "ACCOUNT_CHANGED",
+        "SIGN_IN_REQUIRED",
+        "EMAIL_CONFIRMATION_REQUIRED",
+        "BILLING_NOT_CONFIGURED",
+      ].includes(e.message)
+    )
       uncertain = true;
   } finally {
     if (token === epoch) {

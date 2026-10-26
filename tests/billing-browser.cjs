@@ -84,8 +84,8 @@ module.exports = async ({ a, backend, wait, base }) => {
       : path.join(os.tmpdir(), "ambrosia-mobile-screenshots");
   fs.mkdirSync(shotDir, { recursive: true });
   await a.page.setViewportSize({ width: 390, height: 844 });
-  await wait(a.page,()=>!document.querySelector('#app-toast.visible'));
-  await a.page.locator('.purchase-plan').first().scrollIntoViewIfNeeded();
+  await wait(a.page, () => !document.querySelector("#app-toast.visible"));
+  await a.page.locator(".purchase-plan").first().scrollIntoViewIfNeeded();
   await a.page.screenshot({
     path: path.join(shotDir, "premium-plans-390.png"),
     fullPage: true,
