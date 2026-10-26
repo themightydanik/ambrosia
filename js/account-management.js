@@ -1,3 +1,6 @@
+import {downloadBlob} from './download.js';
+import {billingCopy} from './billing/copy.js';
+import {authRedirect} from './platform.js';
 import { state } from './state.js';
 import { getSupabaseClient } from './supabase-client.js';
 import { authenticatedFetch, accountAccess, refreshAccess } from './account-access.js';
@@ -16,7 +19,7 @@ export async function exportUserData() {
     if(state.accountId!==user || data.userId!==user)throw Error('SESSION_EXPIRED');cloud={...data,auth:authData.user};
   }
   const blob=new Blob([JSON.stringify({format:'ambrosia-full-export-v1',exportedAt:new Date().toISOString(),cloud,local},null,2)],{type:'application/json'});
-  const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='ambrosia-data.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+  await downloadBlob(blob,'ambrosia-data.json');
 }
 export async function sendPasswordReset(email,client,redirectTo) {
   // Supabase handles rate limits and enumeration protection. Show the same result for all addresses.
@@ -30,9 +33,10 @@ export function renderAccountManagement(root,user,lang) {
   control(section,t.restore,async()=>{await refreshAccess(true);const access=accountAccess();status.textContent=access?`${t[access.state]} · ${access.remaining} ${t.remaining} · ${t.renew}: ${new Date(access.renewsAt).toISOString()}`:t.unavailable;});
   const status=document.createElement('p');status.setAttribute('role','status');section.append(status);
   control(section,t.export,exportUserData);
-  control(section,t.reset,async()=>{const client=await getSupabaseClient();await sendPasswordReset(user.email,client,location.origin+location.pathname);status.textContent=t.resetSent;});
+  control(section,t.reset,async()=>{const client=await getSupabaseClient();await sendPasswordReset(user.email,client,await authRedirect());status.textContent=t.resetSent;});
   const details=document.createElement('details');const summary=document.createElement('summary');summary.textContent=t.delete;details.append(summary);section.append(details);
   const warning=document.createElement('p');warning.textContent=t.deleteWarning;details.append(warning);
+  const billingWarning=document.createElement('p');billingWarning.textContent=billingCopy(state.lang).noRenew;details.append(billingWarning);
   const form=document.createElement('form');form.className='account-form';details.append(form);
   const password=document.createElement('input');password.type='password';password.required=true;password.maxLength=1024;password.autocomplete='current-password';password.placeholder=t.password;password.className='profile-edit-input';
   const confirmation=document.createElement('input');confirmation.required=true;confirmation.pattern='DELETE';confirmation.placeholder=t.deleteConfirm;confirmation.className='profile-edit-input';

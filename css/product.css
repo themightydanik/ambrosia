@@ -1051,3 +1051,15 @@ h3 {
   line-height: 1.6;
   color: var(--cream60);
 }
+
+/* Prices and terms come from the store; never hide consent copy behind a purchase button. */
+.premium-hero { padding: 24px 0 12px; }
+.premium-hero h1 { font-size: clamp(25px,7vw,34px); line-height: 1.14; margin: 10px 0; }
+.premium-hero p { color: var(--text-muted, #a5b8ad); line-height: 1.55; }
+.premium-benefits { padding-left: 20px; margin: 12px 0 0; }
+.premium-benefits li { margin: 10px 0; line-height: 1.5; }
+.plan-price { font-size: 21px; font-weight: 700; line-height: 1.4; }
+.purchase-plan .btn-primary { margin-top: 14px; width: 100%; }
+.billing-notice { min-height: 24px; line-height: 1.55; overflow-wrap: anywhere; }
+#upgrade-content { display: grid; gap: 16px; padding-bottom: 36px; }
+#upgrade-content .context-caption { line-height: 1.6; }

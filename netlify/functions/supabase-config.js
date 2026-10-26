@@ -1,3 +1,4 @@
+const {json}=require('./lib/backend.js');
 function publicConfig(env) {
   let key=env.SUPABASE_PUBLISHABLE_KEY || '';
   if (!key.startsWith('sb_publishable_')) {
@@ -8,4 +9,4 @@ function publicConfig(env) {
   return {url: key?url:'',publishableKey:url?key:''};
 }
 exports.publicConfig=publicConfig;
-exports.handler=async()=>({statusCode:200,headers:{'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'},body:JSON.stringify(publicConfig(process.env))});
+exports.handler=async event=>json(event?.httpMethod==='OPTIONS'?204:200,event?.httpMethod==='OPTIONS'?{}:publicConfig(process.env));

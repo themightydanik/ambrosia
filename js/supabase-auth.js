@@ -1,3 +1,4 @@
+import {authRedirect} from './platform.js';
 import { renderAccountManagement, renderRecovery, sendPasswordReset } from './account-management.js';
 import { securityText } from './security-copy.js';
 import { getSupabaseClient } from './supabase-client.js';
@@ -53,7 +54,7 @@ export async function renderCloudAccount(lang = 'en') {
     try {
       const credentials = { email: email.value.trim(), password: password.value };
       const result = mode === 'signup'
-        ? await supabase.auth.signUp({ ...credentials, options: { emailRedirectTo: location.origin + location.pathname } })
+        ? await supabase.auth.signUp({ ...credentials, options: { emailRedirectTo: await authRedirect() } })
         : await supabase.auth.signInWithPassword(credentials);
       if (result.error) throw result.error;
       password.value = '';
@@ -65,6 +66,6 @@ export async function renderCloudAccount(lang = 'en') {
   form.onsubmit = e => { e.preventDefault(); perform('login'); };
   signup.onclick = () => { if (form.reportValidity()) perform('signup'); };
   const reset=document.createElement('button');reset.type='button';reset.className='btn-ghost';reset.textContent=security.reset;
-  reset.onclick=async()=>{if(!email.reportValidity())return;reset.disabled=true;try{await sendPasswordReset(email.value.trim(),supabase,location.origin+location.pathname);status.textContent=security.resetSent;}catch{status.textContent=security.error;}finally{reset.disabled=false;}};
+  reset.onclick=async()=>{if(!email.reportValidity())return;reset.disabled=true;try{await sendPasswordReset(email.value.trim(),supabase,await authRedirect());status.textContent=security.resetSent;}catch{status.textContent=security.error;}finally{reset.disabled=false;}};
   form.append(email,password,login,signup,reset); root.append(form);
 }

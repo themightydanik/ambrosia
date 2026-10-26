@@ -4,6 +4,21 @@
   "scripts": {
     "test": "node --test tests/*.test.mjs tests/*.test.cjs",
     "test:browser": "node tests/browser.cjs",
-    "test:db": "bash tests/database.sh"
+    "test:db": "bash tests/database.sh",
+    "native:build": "node scripts/build-native.cjs",
+    "android:prepare": "npm run native:build && node scripts/prepare-android.cjs"
+  },
+  "dependencies": {
+    "@capacitor/android": "8.5.3",
+    "@capacitor/app": "8.1.0",
+    "@capacitor/browser": "8.0.3",
+    "@capacitor/core": "8.5.3",
+    "@capacitor/filesystem": "8.1.5",
+    "@capacitor/share": "8.0.3",
+    "@revenuecat/purchases-capacitor": "13.7.6"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "8.5.3",
+    "esbuild": "0.25.12"
   }
 }

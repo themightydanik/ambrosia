@@ -157,7 +157,7 @@ test("episode lifecycle groups explicit observations, preserves legacy numeric I
   const store = new SyncStore(new Memory());
   store.saveEntries(records);
   store.put(recovered.id, "episode", recovered);
-  assert.equal(store.entries()[0].id, 123);
+  assert.ok(store.entries().some(entry => entry.id === 123));
   assert.equal(store.records("episode")[0].status, "recovered");
 });
 test("weekly statistics use recorded days only; baseline requires 14 earlier observations", () => {

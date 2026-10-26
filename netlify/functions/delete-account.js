@@ -1,5 +1,6 @@
 const { HttpError,json,method,body,authenticate,request,failure } = require('./lib/backend.js');
 exports.createHandler = ({env=process.env,fetcher=fetch}={}) => async event => {
+  if(event.httpMethod==='OPTIONS')return json(204,{});
   try {
     method(event,'POST');const auth=await authenticate(event,env,fetcher);const input=body(event,3000);
     if (Object.keys(input).some(k=>!['password','confirmation'].includes(k)) || input.confirmation !== 'DELETE' || typeof input.password !== 'string' || input.password.length<1 || input.password.length>1024) throw new HttpError(400,'INVALID_INPUT');
