@@ -1,7 +1,9 @@
-# Ambrosia
+# Ambrosia 2.0
 
-A static, offline-first wellness journal with optional Supabase account synchronization and a server-side Groq proxy. Open it through Netlify to use the functions and redirects in `netlify.toml`; no application build or application npm dependencies are required.
+A mobile-first, offline-first daily wellness and symptom journal with optional Supabase account synchronization and a server-side Groq proxy. Open it through Netlify to use the functions and redirects in `netlify.toml`; no application build or application npm dependencies are required.
 
+- [Product audit, competitor sources and mobile screenshots](docs/product-audit-2.md)
+- [Ambrosia 2.0 setup, Companion architecture and release checklist](docs/ambrosia-2-release.md)
 - [Production security, AI/Premium configuration and privacy checklist](docs/security-production.md)
 - [Browser-only deployment and manual acceptance checklist](docs/deployment.md)
 - [Synchronization architecture, consent, conflicts and limitations](docs/synchronization.md)

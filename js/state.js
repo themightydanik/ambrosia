@@ -5,6 +5,12 @@ export function setPersistence(adapter) { persistence = adapter; }
 // ─────────────────────────────────────────────
 export const state = {
   accountId: null,
+  checkins: [],
+  episodes: [],
+  checkinDay: null,
+  selectedEpisode: null,
+  historyDay: null,
+  logMode: 'quick',
   screen:        'onboarding',
   onboardingDone: false,
   lang:          'en',
@@ -153,7 +159,7 @@ export function addBonusPoints(amount) {
 }
 
 export function clearAllData() {
-  if (persistence) { state.entries = []; return persistence.entries(); }
+  if (persistence) { if(persistence.clear)return persistence.clear();state.entries = []; return persistence.entries(); }
   try {
     localStorage.removeItem('ambrosia_entries');
     state.entries = [];

@@ -1,3 +1,5 @@
+> Ambrosia 2.0 adds separate chat allowances and wellness records. For current migrations 004/005 and product behavior, see [ambrosia-2-release.md](ambrosia-2-release.md). This guide describes the security foundation retained by that release.
+
 # Security, AI quotas and Premium foundation
 
 This milestone follows synchronization PR #17. Apply **003 after 001 and 002**; do not rerun or edit the applied migrations. The application owner can configure everything through GitHub, Supabase Dashboard and Netlify Dashboard. A separate Supabase project, local CLI and manual file downloads are not required.

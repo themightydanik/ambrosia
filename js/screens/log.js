@@ -1,3 +1,6 @@
+import {el,button,field} from '../wellness/dom.js';
+import {v} from '../wellness/copy.js';
+import {localDay,validDay} from '../wellness/model.js';
 import { state, saveEntries } from '../state.js';
 import { t } from '../i18n.js';
 import { CATEGORIES, CAT_NAMES, TRIGGERS, TRIGGER_ICONS } from '../data.js';
@@ -22,10 +25,15 @@ export function initLog() {
   const sliderEl = document.getElementById('intensity-slider');
   if (sliderEl) sliderEl.value = 5;
 
+  const root=document.getElementById('screen-log');
+  root.querySelector('#log-modes')?.remove();const modes=el('div',{id:'log-modes',class:'segmented'},button(v('quick'),()=>setLogMode('quick'),{'data-mode':'quick'}),button(v('advanced'),()=>setLogMode('advanced'),{'data-mode':'advanced'}));root.querySelector('.log-header').after(modes);
+  root.querySelector('#log-extra')?.remove();
+  const extra=el('details',{id:'log-extra'},el('summary',{},v('details'))),start=el('input',{type:'date',id:'symptom-start',value:localDay()}),end=el('input',{type:'date',id:'symptom-end'}),episode=el('select',{id:'symptom-episode'},el('option',{value:''},v('noEpisode')));for(const e of state.episodes)episode.append(el('option',{value:e.id},e.title));extra.append(field(v('start'),start),field(v('end'),end),field(v('episode'),episode));root.querySelector('#log-notes').before(extra);
   updateIntensityDisplay(5);
   renderCatGrid();
   renderTriggers();
   showLogStep(0);
+  setLogMode(state.logMode||'quick');
 }
 
 export function showLogStep(n) {
@@ -49,7 +57,7 @@ function updateStepDots() {
 
 export function logNextStep(n) {
   if (n === 2 && state.logSymptoms.length === 0) {
-    alert('Please select at least one symptom.');
+    alert(v('selectSymptom'));
     return;
   }
   showLogStep(n);
@@ -127,7 +135,12 @@ function updateIntensityDisplay(v) {
   if (sliderEl)  sliderEl.value        = v;
 }
 
+export function setLogMode(mode){state.logMode=mode;const root=document.getElementById('screen-log');root.classList.toggle('log-mode-quick',mode==='quick');root.querySelectorAll('[data-mode]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mode===mode)));}
+window.setLogMode=setLogMode;
 export function saveLog() {
+  if(!state.logCat||!state.logSymptoms.length){alert(v('selectSymptom'));return;}
+  const start=document.getElementById('symptom-start').value,end=document.getElementById('symptom-end').value;
+  if(!validDay(start)||end&&(!validDay(end)||end<start)){alert(v('episodeInvalid'));return;}
   if (!canLogEntry()) { showPaywall('entries'); return; }
 
   const notesEl = document.getElementById('log-notes');
@@ -149,6 +162,7 @@ export function saveLog() {
     parentId:     null,
     updateStatus: null,
     statusUpdates: [],
+    symptomStart:start,symptomEnd:end||null,episodeId:document.getElementById('symptom-episode').value||null,
     // NEW: Auto-enable critical tracking for high intensity symptoms
     criticalTracking: state.logIntensity >= 7
   };

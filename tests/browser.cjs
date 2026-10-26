@@ -8,7 +8,7 @@ let staticServer;
 const A='aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',B='bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb';
 const rows=new Map(), errors=[];
 const backend=require('./browser-backend.cjs')(rows);
-const wait = (page, fn) => page.waitForFunction(fn, null, {timeout:15000});
+const wait = async (page, fn) => {const until=Date.now()+15000;while(Date.now()<until){if(await page.evaluate(fn))return;await new Promise(resolve=>setTimeout(resolve,30));}throw Error('Browser condition timed out: '+fn.toString());};
 (async()=>{
   if (!base) {
     const root = path.resolve('.');
@@ -32,13 +32,15 @@ const wait = (page, fn) => page.waitForFunction(fn, null, {timeout:15000});
         }
       },{A,legacy});
       await ctx.route('**/api/supabase-config',r=>r.fulfill({json:{url:'https://test.supabase.invalid',publishableKey:'public-test-only'}}));
-      for(const endpoint of ['ai','account-status','delete-account'])await ctx.route('**/api/'+endpoint,route=>backend.route(route));
+      for(const endpoint of ['ai','chat','account-status','delete-account'])await ctx.route('**/api/'+endpoint,route=>backend.route(route));
       await ctx.route('https://esm.sh/**',r=>r.fulfill({contentType:'application/javascript',body:fs.readFileSync('tests/mock-supabase.js','utf8')}));
       await ctx.route('**/__test/**',async route=>{
         const req=route.request(),url=new URL(req.url()),user=req.headers()['x-test-user'];
-        if(url.pathname.endsWith('/export'))return route.fulfill({json:{userId:user,journal:[...rows.values()].filter(r=>r.user_id===user)}});
+        if(url.pathname.endsWith('/export'))return route.fulfill({json:{userId:user,journal:[...rows.values()].filter(r=>r.user_id===user),...backend.exportChat(user)}});
+        if(url.pathname.includes('/rpc/'))return route.fulfill({json:backend.clientRpc(user,url.pathname.split('/').at(-1),req.postDataJSON())});
         if(url.pathname.endsWith('/page')) {
           assert.equal(url.searchParams.get('user_id'),user);
+          if(url.searchParams.get('table')!=='sync_records')return route.fulfill({json:backend.query(url.searchParams.get('table'),user,url.searchParams)});
           const data=[...rows.values()].filter(r=>r.user_id===user && (!url.searchParams.get('after') || r.id>url.searchParams.get('after'))).sort((a,b)=>a.id.localeCompare(b.id)).slice(0,500);
           return route.fulfill({json:data});
         }
@@ -49,7 +51,7 @@ const wait = (page, fn) => page.waitForFunction(fn, null, {timeout:15000});
       const page=await ctx.newPage();page.on('pageerror',e=>errors.push(e.message));
       page.on('dialog',d=>d.accept());
       await page.goto(base,{waitUntil:'domcontentloaded'});
-      await wait(page,()=>window.testAuth && document.querySelector('#sync-status').dataset.status==='synced');
+      await wait(page,async()=>window.testAuth && (await import('/js/sync/runtime.js')).syncStatus().phase==='synced'&&(await import('/js/sync/runtime.js')).syncStatus().pending===0);
       return {ctx,page};
     }
     const a=await device(true),b=await device();
@@ -57,7 +59,7 @@ const wait = (page, fn) => page.waitForFunction(fn, null, {timeout:15000});
     assert.equal(await a.page.evaluate(async()=> (await import('/js/state.js')).state.entries.length),0,'legacy journal hidden on login');
     await a.page.evaluate(()=>window.goTo('settings'));
     await a.page.getByRole('button',{name:'Merge device journal into this account',exact:true}).click();
-    await wait(a.page,()=>document.querySelector('#sync-status').dataset.status==='synced');
+    await wait(a.page,async()=>(await import('/js/state.js')).state.entries.length===1&&(await import('/js/sync/runtime.js')).syncStatus().phase==='synced'&&(await import('/js/sync/runtime.js')).syncStatus().pending===0);
     assert.equal(rows.size,2);assert.ok(await a.page.evaluate(()=>localStorage.getItem('ambrosia_entries')));
     await b.page.evaluate(async()=>{const {renderSyncControls}=await import('/js/sync/runtime.js');window.goTo('settings');});
     await b.page.getByRole('button',{name:'Sync now / retry',exact:true}).click();
@@ -66,15 +68,15 @@ const wait = (page, fn) => page.waitForFunction(fn, null, {timeout:15000});
     // Exercise real log form offline, not only store helpers.
     await a.page.evaluate(()=>navigator.serviceWorker.ready);
     await wait(a.page,()=>!!navigator.serviceWorker.controller);
-    await a.ctx.setOffline(true);await a.page.evaluate(()=>window.goTo('log'));
+    await a.ctx.setOffline(true);await a.page.evaluate(()=>{window.goTo('log');window.setLogMode('advanced');});
     await a.page.locator('.cat-btn').first().click();await a.page.locator('.sym-btn').first().click();
     await a.page.locator('#log-next1').click();await a.page.locator('#log-next2').click();await a.page.locator('#log-notes').fill('Offline browser entry');await a.page.locator('#log-save-btn').click();
-    await wait(a.page,()=>document.querySelector('#sync-status').dataset.status==='offline');
+    await wait(a.page,async()=>(await import('/js/sync/runtime.js')).syncStatus().phase==='offline');
     assert.equal(rows.size,2);
     await a.page.reload({waitUntil:'domcontentloaded'});
     await wait(a.page,async()=> (await import('/js/state.js')).state.entries.some(e=>e.notes==='Offline browser entry'));
-    assert.equal(await a.page.evaluate(()=>document.querySelector('#sync-status').dataset.status),'offline');
-    await a.ctx.setOffline(false);await wait(a.page,()=>document.querySelector('#sync-status').dataset.status==='synced');
+    assert.equal(await a.page.evaluate(async()=>(await import('/js/sync/runtime.js')).syncStatus().phase),'offline');
+    await a.ctx.setOffline(false);await wait(a.page,async()=>(await import('/js/sync/runtime.js')).syncStatus().phase==='synced'&&(await import('/js/sync/runtime.js')).syncStatus().pending===0);
     assert.equal(rows.size,3);
     console.log('PASS browser: offline form save, offline reload and automatic reconnect');
     // Download, open UUID card, append status through the actual modal, then delete on other device.
@@ -83,12 +85,12 @@ const wait = (page, fn) => page.waitForFunction(fn, null, {timeout:15000});
     await b.page.evaluate(()=>window.goTo('history'));
     await b.page.locator('#history-list .entry-card').filter({hasText:'Offline browser entry'}).click();
     await b.page.locator('.modal-btn--update').click();await b.page.locator('#modal-update-notes').fill('Browser status note');await b.page.locator('.modal-status-btn').first().click();
-    await wait(b.page,()=>document.querySelector('#sync-status').dataset.status==='synced');
+    await wait(b.page,async()=>(await import('/js/sync/runtime.js')).syncStatus().phase==='synced'&&(await import('/js/sync/runtime.js')).syncStatus().pending===0);
     assert.ok([...rows.values()].some(r=>r.payload.statusUpdates?.some(u=>u.notes==='Browser status note')));
     await a.page.evaluate(()=>window.goTo('settings'));await a.page.getByRole('button',{name:'Sync now / retry',exact:true}).click();
     await wait(a.page,async()=> (await import('/js/state.js')).state.entries.some(e=>e.statusUpdates.some(u=>u.notes==='Browser status note')));
     await a.page.evaluate(()=>window.goTo('history'));await a.page.locator('#history-list .entry-card').filter({hasText:'Offline browser entry'}).click();await a.page.locator('.modal-btn--delete').click();
-    await wait(a.page,()=>document.querySelector('#sync-status').dataset.status==='synced');
+    await wait(a.page,async()=>(await import('/js/sync/runtime.js')).syncStatus().phase==='synced'&&(await import('/js/sync/runtime.js')).syncStatus().pending===0);
     await b.page.evaluate(()=>window.goTo('settings'));await b.page.getByRole('button',{name:'Sync now / retry',exact:true}).click();await wait(b.page,async()=> (await import('/js/state.js')).state.entries.length===1);
     console.log('PASS browser: UUID card handlers, status update, deletion propagation');
     // Synchronize the actual profile form and language; cancel does not mutate persisted avatar.
@@ -100,15 +102,15 @@ const wait = (page, fn) => page.waitForFunction(fn, null, {timeout:15000});
     await a.page.locator('.avatar-option').nth(3).click();
     assert.equal(await a.page.locator('#profile-name-input').inputValue(),'Browser profile');
     await a.page.evaluate(()=>window.saveProfileEdit());
-    await wait(a.page,()=>document.querySelector('#sync-status').dataset.status==='synced');
+    await wait(a.page,async()=>(await import('/js/sync/runtime.js')).syncStatus().phase==='synced'&&(await import('/js/sync/runtime.js')).syncStatus().pending===0);
     await b.page.evaluate(()=>window.goTo('settings'));await b.page.getByRole('button',{name:'Sync now / retry',exact:true}).click();
     await wait(b.page,async()=> (await import('/js/state.js')).state.profile.name==='Browser profile');
     const avatar=await a.page.evaluate(async()=> (await import('/js/state.js')).state.profile.avatar);
     await a.page.locator('.profile-edit-btn').click();await a.page.locator('.avatar-option').nth(5).click();await a.page.evaluate(()=>window.cancelProfileEdit());
     assert.equal(await a.page.evaluate(async()=> (await import('/js/state.js')).state.profile.avatar),avatar);
-    await a.page.evaluate(()=>window.setLang('uk'));await wait(a.page,()=>document.querySelector('#sync-status').dataset.status==='synced');
+    await a.page.evaluate(()=>window.setLang('uk'));await wait(a.page,async()=>(await import('/js/sync/runtime.js')).syncStatus().phase==='synced'&&(await import('/js/sync/runtime.js')).syncStatus().pending===0);
     await b.page.getByRole('button',{name:'Sync now / retry',exact:true}).click();await wait(b.page,async()=> (await import('/js/state.js')).state.lang==='uk');
-    await a.page.evaluate(()=>window.setLang('en'));await wait(a.page,()=>document.querySelector('#sync-status').dataset.status==='synced');
+    await a.page.evaluate(()=>window.setLang('en'));await wait(a.page,async()=>(await import('/js/sync/runtime.js')).syncStatus().phase==='synced'&&(await import('/js/sync/runtime.js')).syncStatus().pending===0);
     await b.page.locator('[data-sync-panel] button').first().click();await wait(b.page,async()=> (await import('/js/state.js')).state.lang==='en');
     console.log('PASS browser: profile form, avatar cancel and account language synchronization');
     // Concurrent status edits use the real modal and conflict-review controls.
@@ -117,10 +119,10 @@ const wait = (page, fn) => page.waitForFunction(fn, null, {timeout:15000});
       await device.page.evaluate(()=>window.goTo('history'));await device.page.locator('#history-list .entry-card').first().click();
       await device.page.locator('.modal-btn--update').click();await device.page.locator('#modal-update-notes').fill(device===a?'Concurrent A':'Concurrent B');await device.page.locator('.modal-status-btn').nth(1).click();
     }
-    await wait(a.page,()=>document.querySelector('#sync-status').dataset.status==='synced');
-    await b.ctx.setOffline(false);await wait(b.page,()=>document.querySelector('#sync-status').dataset.status==='conflict');
+    await wait(a.page,async()=>(await import('/js/sync/runtime.js')).syncStatus().phase==='synced'&&(await import('/js/sync/runtime.js')).syncStatus().pending===0);
+    await b.ctx.setOffline(false);await wait(b.page,async()=>(await import('/js/sync/runtime.js')).syncStatus().phase==='conflict');
     await b.page.evaluate(()=>window.goTo('settings'));await b.page.locator('[data-sync-panel] details summary').click();
-    await b.page.getByRole('button',{name:'Use cloud version',exact:true}).click();await wait(b.page,()=>document.querySelector('#sync-status').dataset.status==='synced');
+    await b.page.getByRole('button',{name:'Use cloud version',exact:true}).click();await wait(b.page,async()=>(await import('/js/sync/runtime.js')).syncStatus().phase==='synced'&&(await import('/js/sync/runtime.js')).syncStatus().pending===0);
     assert.ok(await b.page.evaluate(()=>Object.values(JSON.parse(localStorage.getItem('ambrosia_sync_v2:aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa')).archives).length>0));
     console.log('PASS browser: simultaneous status updates retain both versions until explicit review');
     await b.ctx.setOffline(true);await b.page.evaluate(()=>window.goTo('settings'));
@@ -131,7 +133,7 @@ const wait = (page, fn) => page.waitForFunction(fn, null, {timeout:15000});
     console.log('PASS browser: offline sign-out stays signed out after reconnect');
     // Account changes erase journal, profile, modal and AI output. Guest never sees old restored keys.
     await a.page.evaluate(B=>window.testAuth.setUser({id:B,email:'b@example.test'}),B);
-    await wait(a.page,()=>document.querySelector('#sync-status').dataset.status==='synced');
+    await wait(a.page,async()=>(await import('/js/sync/runtime.js')).syncStatus().phase==='synced'&&(await import('/js/sync/runtime.js')).syncStatus().pending===0);
     assert.equal(await a.page.evaluate(async()=> (await import('/js/state.js')).state.entries.length),0);
     await a.page.evaluate(()=>window.testAuth.signOut());
     assert.equal(await a.page.evaluate(async()=> (await import('/js/state.js')).state.entries.length),0);
@@ -156,6 +158,7 @@ const wait = (page, fn) => page.waitForFunction(fn, null, {timeout:15000});
     assert.equal(await a.page.locator('#ai-result-area img').count(),0);assert.equal(await a.page.evaluate(()=>window.__xss),undefined);
     backend.used.set(A,3);await a.page.evaluate(()=>window.runAI('report'));assert.equal(backend.providerCalls,1);assert.ok((await a.page.locator('#ai-result-area').innerText()).includes('allowance'));
     console.log('PASS security browser: forged Premium rejected, server restoration, consent, quotas and plain-text AI output');
+    await require('./wellness-browser.cjs')({a,b,rows,backend,wait});
     await a.page.evaluate(()=>window.goTo('settings'));
     await a.page.locator('[data-account-privacy]').getByRole('button',{name:'Send password reset email',exact:true}).click();
     assert.equal(await a.page.evaluate(()=>window.testReset.email),'a@example.test');
@@ -169,7 +172,7 @@ const wait = (page, fn) => page.waitForFunction(fn, null, {timeout:15000});
     console.log('PASS security browser: password reset/recovery, session logout and full data export');
     const readOnly=await a.ctx.newPage();readOnly.on('dialog',d=>d.accept());
     await readOnly.goto(base,{waitUntil:'domcontentloaded'});
-    await wait(readOnly,()=>document.querySelector('#sync-status').textContent.includes('Another Ambrosia tab'));
+    await wait(readOnly,async()=>!(await import('/js/sync/runtime.js')).syncStatus().writable);
     assert.equal(await readOnly.evaluate(async()=>{const {saveProfile}=await import('/js/state.js');try{saveProfile({name:'forbidden secondary-tab edit'});return false;}catch{return true;}}),true);
     await readOnly.close();
     const guest=await browser.newContext();await guest.route('**/api/supabase-config',r=>r.fulfill({json:{url:'',publishableKey:''}}));

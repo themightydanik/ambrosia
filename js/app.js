@@ -1,3 +1,10 @@
+import './companion/ui.js';
+import { renderOnboarding } from './screens/onboarding.js';
+import { registerScreen } from './navigation.js';
+import './screens/checkin.js';
+import './screens/episode.js';
+import {v} from './wellness/copy.js';
+registerScreen('onboarding',renderOnboarding);
 import { initializeSync } from './sync/runtime.js';
 import { loadState, state } from './state.js';
 import { applyLang } from './i18n.js';
@@ -64,7 +71,8 @@ window.addEventListener('journal-changed', event => {
     cancelProfileEdit();
     closeEntryModal();
     goTo(state.screen === 'onboarding' ? 'onboarding' : 'settings');
-  } else if (state.screen === 'settings') refreshSettingsData();
+  } else if (['checkin','episode','log','ai'].includes(state.screen)) { /* preserve form drafts */ }
+  else if (state.screen === 'settings') refreshSettingsData();
   else if (state.screen !== 'log') goTo(state.screen);
 });
 
