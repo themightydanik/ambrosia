@@ -40,3 +40,24 @@
   to = "/.netlify/functions/chat"
   status = 200
   force = true
+
+[[redirects]]
+  from = "/api/billing-session"
+  to = "/.netlify/functions/billing-session"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/billing-refresh"
+  to = "/.netlify/functions/billing-refresh"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/revenuecat-webhook"
+  to = "/.netlify/functions/revenuecat-webhook"
+  status = 200
+  force = true
+
+[functions."billing-reconcile"]
+  schedule = "* * * * *"

@@ -1,3 +1,4 @@
+import {downloadBlob} from '../download.js';
 import { clearAccess, refreshAccess } from '../account-access.js';
 import { state, setPersistence } from '../state.js';
 import { getSupabaseClient } from '../supabase-client.js';
@@ -195,10 +196,9 @@ function populate(panel) {
   }
 }
 
-function downloadRecovery() {
+async function downloadRecovery() {
   if (!store || !confirm(t().archive)) return;
-  const url = URL.createObjectURL(new Blob([JSON.stringify({ account:store.user, data:store.doc, unsavedDraft:draft },null,2)], {type:'application/json'}));
-  const a = document.createElement('a'); a.href = url; a.download = 'ambrosia-recovery.json'; a.click(); setTimeout(() => URL.revokeObjectURL(url),1000);
+  await downloadBlob(new Blob([JSON.stringify({ account:store.user, data:store.doc, unsavedDraft:draft },null,2)], {type:'application/json'}),'ambrosia-recovery.json');
 }
 
 export function localAccountArchive() {

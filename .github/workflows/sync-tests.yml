@@ -29,3 +29,29 @@ jobs:
           if-no-files-found: ignore
       - name: PostgreSQL migrations and RLS
         run: npm run test:db
+
+  android-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: platform-tools platforms;android-36 build-tools;35.0.0 build-tools;36.0.0
+      - run: npm ci
+      - name: Prepare synthetic fixture package (no owner products or credentials)
+        env:
+          GOOGLE_PLAY_APPLICATION_ID: org.example.ambrosia.billingfixture
+          NATIVE_API_ORIGIN: https://example.invalid
+          NATIVE_VERSION_CODE: 1
+        run: npm run android:prepare
+      - name: Compile official Android plugins
+        working-directory: android
+        run: ./gradlew --no-daemon assembleDebug

@@ -1,10 +1,15 @@
-const CACHE = 'ambrosia-shell-v2-product-2';
+const CACHE = 'ambrosia-shell-v3-billing-1';
 const SHELL = [
   "/",
   "/index.html",
   "/css/main.css",
   "/css/product.css",
   "/js/account-access.js",
+  "/js/platform.js",
+  "/js/download.js",
+  "/js/billing/client.js",
+  "/js/billing/model.js",
+  "/js/billing/copy.js",
   "/js/account-management.js",
   "/js/app.js",
   "/js/cloud-import.js",

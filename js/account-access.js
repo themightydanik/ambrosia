@@ -1,3 +1,4 @@
+import { apiFetch } from './platform.js';
 import { state } from './state.js';
 import { getSupabaseClient } from './supabase-client.js';
 let access = null, epoch = 0, pending;
@@ -18,7 +19,7 @@ export async function authenticatedFetch(path, options = {}, allowAccountChange 
   const { data,error }=await client.auth.getSession();
   if (error || !data.session?.access_token || data.session.user.id!==id || epoch!==generation) throw new Error('SESSION_EXPIRED');
   let response;
-  try { response=await fetch(path,{...options,cache:'no-store',headers:{...options.headers,Authorization:`Bearer ${data.session.access_token}`},signal:AbortSignal.timeout(path==='/api/chat'?65000:35000)}); }
+  try { response=await apiFetch(path,{...options,cache:'no-store',headers:{...options.headers,Authorization:`Bearer ${data.session.access_token}`},signal:AbortSignal.timeout(path==='/api/chat'?65000:35000)}); }
   catch { throw new Error('SERVICE_UNAVAILABLE'); }
   if (!allowAccountChange && (state.accountId!==id || epoch!==generation)) throw new Error('SESSION_EXPIRED');
   const result=await response.json();

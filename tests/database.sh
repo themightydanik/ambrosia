@@ -79,3 +79,5 @@ do $$ begin
 end $$;
 select 'PASS: 36 concurrent chat/report requests obey separate allowances and one shared budget' as result;
 SQL
+sql < supabase/migrations/006_google_play_billing.sql
+sql < tests/db-billing.sql

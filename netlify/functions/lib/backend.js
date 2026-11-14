@@ -1,13 +1,13 @@
 // No SDK or secret values are ever sent to the browser. Tokens are validated by Supabase Auth.
 class HttpError extends Error { constructor(status, code) { super(code); this.status = status; this.code = code; } }
-const json = (statusCode, body) => ({ statusCode, headers:{'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'}, body:JSON.stringify(body) });
+const json = (statusCode, body) => ({ statusCode, headers:{'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store','Access-Control-Allow-Origin':'https://localhost','Access-Control-Allow-Headers':'Authorization, Content-Type','Access-Control-Allow-Methods':'GET, POST, OPTIONS','X-Content-Type-Options':'nosniff'}, body:JSON.stringify(body) });
 function method(event, expected) {
   if (event.httpMethod !== expected) throw new HttpError(405,'METHOD_NOT_ALLOWED');
   const headers = Object.fromEntries(Object.entries(event.headers || {}).map(([k,v])=>[k.toLowerCase(),v]));
   if (headers.origin) {
     let origin;
     try { origin = new URL(headers.origin); } catch { throw new HttpError(403,'FORBIDDEN'); }
-    if (origin.host !== headers.host || !['http:','https:'].includes(origin.protocol) || (origin.protocol !== 'https:' && !['localhost','127.0.0.1'].includes(origin.hostname))) throw new HttpError(403,'FORBIDDEN');
+    if (origin.origin !== 'https://localhost' && (origin.host !== headers.host || !['http:','https:'].includes(origin.protocol) || (origin.protocol !== 'https:' && !['localhost','127.0.0.1'].includes(origin.hostname)))) throw new HttpError(403,'FORBIDDEN');
   }
   return headers;
 }

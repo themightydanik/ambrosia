@@ -1,3 +1,4 @@
+import {downloadBlob} from '../download.js';
 import { exportUserData } from "../account-management.js";
 import { t } from "../i18n.js";
 import { copy as syncCopy } from "../sync/copy.js";
@@ -157,7 +158,7 @@ export function openSource(source) {
     if (entry) window.openEntryModal(entry.id);
   }
 }
-function download(context, type) {
+async function download(context, type) {
   if (!confirm(v("exportWarning"))) return;
   const body =
     type === "md"
@@ -165,21 +166,8 @@ function download(context, type) {
       : type === "csv"
         ? contextCSV(context)
         : JSON.stringify(context, null, 2);
-  const url = URL.createObjectURL(
-    new Blob([body], {
-      type:
-        type === "json"
-          ? "application/json"
-          : type === "csv"
-            ? "text/csv"
-            : "text/markdown",
-    }),
-  );
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "ambrosia-context." + type;
-  a.click();
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  try { await downloadBlob(new Blob([body],{type:type==='json'?'application/json':type==='csv'?'text/csv':'text/markdown'}),'ambrosia-context.'+type); }
+  catch { alert(v('error')); }
 }
 function contextPanel(s, c) {
   const context = prepareContext(data(), c.config),

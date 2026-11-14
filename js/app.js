@@ -1,3 +1,5 @@
+import {isAndroid} from './platform.js';
+import {initializeNativeBilling} from './billing/client.js';
 import './companion/ui.js';
 import { renderOnboarding } from './screens/onboarding.js';
 import { registerScreen } from './navigation.js';
@@ -82,7 +84,8 @@ window.addEventListener('journal-changed', event => {
 document.addEventListener('DOMContentLoaded', async () => {
   loadState();
   await initializeSync();
-  if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(() => {});
+  void initializeNativeBilling().catch(()=>{});
+  if (!isAndroid() && 'serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(() => {});
   applyLang();
 
   // Navigate to correct screen after brief delay to avoid race conditions

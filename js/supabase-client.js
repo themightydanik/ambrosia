@@ -1,7 +1,8 @@
+import { apiFetch } from './platform.js';
 let clientPromise;
 export async function getSupabaseClient() {
   if (!clientPromise) clientPromise = (async () => {
-    const res = await fetch('/api/supabase-config', { cache: 'no-store', signal: AbortSignal.timeout(10000) });
+    const res = await apiFetch('/api/supabase-config', { cache: 'no-store', signal: AbortSignal.timeout(10000) });
     if (!res.ok) throw new Error('Supabase configuration unavailable');
     const { url, publishableKey } = await res.json();
     if (!url || !publishableKey) return null;

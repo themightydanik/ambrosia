@@ -12,3 +12,14 @@ node_modules/
 
 # Vercel
 .vercel/
+
+# Generated native project/assets and signing material
+/native-dist/
+/android/
+/capacitor.config.json
+*.jks
+*.keystore
+*.p12
+*.aab
+*.apk
+.netlify/
