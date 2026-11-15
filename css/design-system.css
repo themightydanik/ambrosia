@@ -1,0 +1,294 @@
+/* cyrillic-ext */
+@font-face {
+  font-family: "Nunito Sans";
+  font-style: normal;
+  font-weight: 400 800;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url(../assets/fonts/nunito-sans-cyrillic-ext.woff2) format("woff2");
+  unicode-range:
+    U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: "Nunito Sans";
+  font-style: normal;
+  font-weight: 400 800;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url(../assets/fonts/nunito-sans-cyrillic.woff2) format("woff2");
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* latin-ext */
+@font-face {
+  font-family: "Nunito Sans";
+  font-style: normal;
+  font-weight: 400 800;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url(../assets/fonts/nunito-sans-latin-ext.woff2) format("woff2");
+  unicode-range:
+    U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304,
+    U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB,
+    U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: "Nunito Sans";
+  font-style: normal;
+  font-weight: 400 800;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url(../assets/fonts/nunito-sans-latin.woff2) format("woff2");
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+    U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212,
+    U+2215, U+FEFF, U+FFFD;
+}
+/* Ambrosia 3 foundations are opt-in; legacy destinations retain their existing layout/theme. */
+:root {
+  --a3-canvas: #f5f4ff;
+  --a3-surface: #ffffff;
+  --a3-tint: #e8e2ff;
+  --a3-text: #202039;
+  --a3-muted: #625b77;
+  --a3-iris: #5737d6;
+  --a3-primary: #5737d6;
+  --a3-on-primary: #ffffff;
+  --a3-secondary: #007d77;
+  --a3-apricot: #ffb85c;
+  --a3-aqua: #65e0c1;
+  --a3-rose: #f271a5;
+  --a3-ink: #202039;
+  --a3-border: #837995;
+  --a3-danger: #a52043;
+  --a3-radius: 20px;
+  --a3-control-radius: 14px;
+  --a3-font: "Nunito Sans", system-ui, sans-serif;
+  --a3-gap: 16px;
+}
+:root[data-a3-theme="dark"] {
+  --a3-canvas: #19152d;
+  --a3-surface: #29213d;
+  --a3-tint: #362750;
+  --a3-text: #f5f1ff;
+  --a3-muted: #c5bdd7;
+  --a3-primary: #b8a4ff;
+  --a3-on-primary: #202039;
+  --a3-secondary: #65e0c1;
+  --a3-border: #8e80a8;
+  --a3-danger: #ffb2c4;
+}
+.a3-screen {
+  font-family: var(--a3-font);
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--a3-text);
+  font-variant-numeric: tabular-nums;
+  color-scheme: light;
+}
+:root[data-a3-theme="dark"] .a3-screen {
+  color-scheme: dark;
+}
+.a3-screen h1 {
+  font: 800 28px/1.16 var(--a3-font);
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+.a3-screen h2 {
+  font: 700 20px/1.4 var(--a3-font);
+}
+.a3-button,
+.a3-auth .btn-primary,
+.a3-auth .btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-width: 48px;
+  min-height: 48px;
+  padding: 13px 18px;
+  border-radius: var(--a3-control-radius);
+  border: 1.5px solid transparent;
+  font: 700 16px/1.375 var(--a3-font);
+  letter-spacing: 0;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: none;
+  transition:
+    transform 140ms ease-out,
+    background-color 140ms ease-out;
+}
+.a3-button span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.a3-button svg {
+  flex: none;
+  width: 22px;
+  height: 22px;
+}
+.a3-button--primary,
+.a3-auth .btn-primary {
+  background: var(--a3-primary);
+  color: var(--a3-on-primary);
+}
+.a3-button--secondary {
+  background: var(--a3-surface);
+  color: var(--a3-secondary);
+  border-color: var(--a3-border);
+}
+.a3-button--text,
+.a3-auth .btn-ghost {
+  color: var(--a3-secondary);
+  background: transparent;
+  padding-inline: 8px;
+}
+.a3-button--text:hover,
+.a3-auth .btn-ghost:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.a3-button--icon {
+  width: 48px;
+  height: 48px;
+  padding: 12px;
+  border-color: var(--a3-border);
+  background: var(--a3-surface);
+  color: var(--a3-text);
+  border-radius: 50%;
+}
+.a3-button--icon span {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+.a3-button:active:not(:disabled),
+.a3-auth button:active:not(:disabled) {
+  transform: scale(0.98);
+}
+.a3-button:disabled,
+.a3-auth button:disabled {
+  opacity: 1;
+  background: var(--a3-tint);
+  color: var(--a3-muted);
+  border-color: var(--a3-border);
+  cursor: wait;
+}
+.a3-screen :is(button, input, select, a):focus-visible {
+  outline: 3px solid var(--a3-primary);
+  outline-offset: 4px;
+  box-shadow: 0 0 0 2px var(--a3-canvas);
+}
+.a3-screen h1:focus {
+  outline: none;
+}
+.a3-badge {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  line-height: 1.5;
+  padding: 6px 10px;
+  border-radius: 8px;
+  color: var(--a3-on-primary);
+  background: var(--a3-primary);
+}
+.a3-badge--apricot {
+  color: var(--a3-ink);
+  background: var(--a3-apricot);
+}
+.a3-badge--aqua {
+  color: var(--a3-ink);
+  background: var(--a3-aqua);
+}
+.a3-illustration {
+  position: relative;
+  margin: 0;
+  width: 100%;
+  aspect-ratio: 4/3;
+  isolation: isolate;
+}
+.a3-illustration img {
+  display: block;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  z-index: 1;
+}
+.a3-illustration img[hidden] {
+  display: none;
+}
+.a3-illustration::before {
+  content: "";
+  position: absolute;
+  inset: 15% 8%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, #d8c6ff66, transparent 70%);
+  z-index: 0;
+}
+.a3-auth {
+  padding: 20px;
+  border: 1.5px solid var(--a3-border);
+  border-radius: var(--a3-radius);
+  background: var(--a3-surface);
+}
+.a3-auth input {
+  background: var(--a3-canvas);
+  color: var(--a3-text);
+  border: 1.5px solid var(--a3-border);
+  border-radius: 12px;
+  min-height: 48px;
+  padding: 12px;
+  font: 400 16px/1.5 var(--a3-font);
+  width: 100%;
+}
+.a3-auth input::placeholder {
+  color: var(--a3-muted);
+  opacity: 1;
+}
+.a3-auth .settings-section-title {
+  color: var(--a3-text);
+  font-family: var(--a3-font);
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+.a3-auth .profile-edit-input {
+  margin: 0;
+}
+.a3-auth [role="status"] {
+  color: var(--a3-text);
+}
+@media (prefers-reduced-motion: reduce) {
+  .a3-screen,
+  .a3-screen * {
+    scroll-behavior: auto !important;
+    transition: none !important;
+    animation: none !important;
+  }
+  .a3-screen button:active {
+    transform: none !important;
+  }
+}
+.a3-auth [style*="opacity"] {
+  opacity: 1 !important;
+  color: var(--a3-muted);
+}
+
+.a3-auth .field-label {
+  display: grid;
+  gap: 6px;
+  color: var(--a3-text);
+  font: 600 14px/1.5 var(--a3-font);
+}
+
+.a3-badge--rose {
+  color: var(--a3-ink);
+  background: var(--a3-rose);
+}

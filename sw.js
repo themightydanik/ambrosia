@@ -1,9 +1,16 @@
-const CACHE = 'ambrosia-shell-v3-billing-1';
+const CACHE = 'ambrosia-shell-v3-ari-phase1-1';
 const SHELL = [
   "/",
   "/index.html",
   "/css/main.css",
   "/css/product.css",
+  "/css/design-system.css",
+  "/css/onboarding.css",
+  "/js/ui/ari-assets.js",
+  "/js/ui/components.js",
+  "/js/ui/illustration.js",
+  "/js/ui/theme.js",
+  "/js/onboarding/copy.js",
   "/js/account-access.js",
   "/js/platform.js",
   "/js/download.js",
@@ -55,6 +62,12 @@ self.addEventListener('activate', event => {
 });
 self.addEventListener('fetch', event => {
   const url = new URL(event.request.url);
+  const art=/^\/assets\/brand\/ari\/v1\/illustrations\/ill-[a-z0-9-]+\.png$/.test(url.pathname);
+  const font=/^\/assets\/fonts\/nunito-sans-[a-z-]+\.woff2$/.test(url.pathname);
+  if(event.request.method==='GET' && url.origin===self.location.origin && (art||font)){
+    // Cache only art/fonts actually requested by a visible screen, never all PNGs at install.
+    event.respondWith(caches.open(CACHE).then(async cache=>{const saved=await cache.match(event.request);if(saved)return saved;const response=await fetch(event.request);if(response.ok)await cache.put(event.request,response.clone());return response;}));return;
+  }
   if (event.request.method !== 'GET' || url.origin !== self.location.origin || !SHELL.includes(url.pathname)) return;
   event.respondWith(caches.open(CACHE).then(async cache => {
     // One version of the complete shell per worker; updates activate after old tabs close.

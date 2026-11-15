@@ -1,0 +1,223 @@
+/* Phase 1: a complete illustrated introduction, not a reskin of the rest of the app. */
+body.a3-active {
+  background: var(--a3-canvas);
+}
+body.a3-active #app {
+  background: var(--a3-canvas);
+}
+body.a3-active #app::before {
+  display: none;
+}
+#screen-onboarding.a3-screen {
+  padding: 0;
+  background: var(--a3-canvas);
+}
+.a3-onboarding-layout {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: calc(16px + env(safe-area-inset-top)) 16px
+    calc(20px + env(safe-area-inset-bottom));
+}
+.a3-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 48px;
+}
+.a3-wordmark {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+  color: var(--a3-text);
+}
+.a3-brand-icon {
+  display: grid;
+  place-items: center;
+  color: var(--a3-primary);
+  width: 28px;
+  height: 28px;
+}
+.a3-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.a3-language {
+  font: 800 13px/1.4 var(--a3-font);
+  padding: 8px;
+  min-width: 66px;
+  min-height: 48px;
+  background: var(--a3-surface);
+  color: var(--a3-text);
+  border: 1.5px solid var(--a3-border);
+  border-radius: 12px;
+}
+.a3-utility {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 48px;
+  margin-top: 6px;
+}
+.a3-small {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--a3-muted);
+}
+.a3-utility .a3-button {
+  font-size: 14px;
+}
+.a3-onboarding-main {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+.a3-onboarding-main > .a3-illustration {
+  height: clamp(190px, 31dvh, 290px);
+  aspect-ratio: auto;
+  margin: 2px 0 16px;
+}
+.a3-copy {
+  padding: 0 2px;
+}
+.a3-copy .a3-badge {
+  margin-bottom: 12px;
+}
+.a3-copy h1 {
+  margin-bottom: 12px;
+  max-width: 420px;
+}
+.a3-lead {
+  font-size: 16px;
+  line-height: 1.5;
+  font-weight: 400;
+  color: var(--a3-muted);
+  margin: 0;
+}
+.a3-footer {
+  display: grid;
+  gap: 16px;
+  padding-top: 28px;
+  margin-top: auto;
+}
+.a3-progress {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--a3-muted);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+.a3-progress-bars {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.a3-progress-bars span {
+  display: block;
+  width: 8px;
+  height: 8px;
+  background: var(--a3-border);
+  border-radius: 8px;
+}
+.a3-progress-bars span.active {
+  width: 28px;
+  background: var(--a3-primary);
+}
+.a3-onboarding-actions {
+  display: flex;
+  gap: 12px;
+}
+.a3-onboarding-actions > .a3-button--primary {
+  flex: 1;
+}
+.a3-onboarding-actions > .a3-button--secondary {
+  flex: 0 1 auto;
+}
+.a3-footnote {
+  font-size: 12px;
+  line-height: 1.5;
+  text-align: center;
+  font-weight: 600;
+  color: var(--a3-muted);
+  margin: 0;
+}
+.a3-choice-main > .a3-illustration {
+  height: clamp(160px, 26dvh, 240px);
+  margin-bottom: 12px;
+}
+.a3-choice-main .a3-auth {
+  margin-top: 20px;
+}
+.a3-choice-footer {
+  gap: 12px;
+}
+.a3-privacy {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--a3-muted);
+  padding: 8px 2px;
+  margin: 0;
+}
+.a3-privacy svg {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  margin-top: 1px;
+}
+@media (min-width: 375px) and (min-height: 760px) {
+  .a3-copy h1 {
+    font-size: 32px;
+    line-height: 1.16;
+  }
+  .a3-onboarding-main > .a3-illustration {
+    margin-bottom: 20px;
+  }
+}
+@media (max-width: 360px) {
+  .a3-onboarding-layout {
+    padding-inline: 16px;
+  }
+  .a3-wordmark {
+    font-size: 13px;
+    letter-spacing: 0.06em;
+  }
+  .a3-header {
+    gap: 8px;
+  }
+  .a3-header-actions {
+    gap: 6px;
+  }
+  .a3-button {
+    padding-inline: 12px;
+  }
+  .a3-onboarding-actions {
+    gap: 8px;
+  }
+}
+@media (max-height: 700px) {
+  .a3-onboarding-main > .a3-illustration {
+    height: 170px;
+    margin-bottom: 12px;
+  }
+  .a3-choice-main > .a3-illustration {
+    height: 145px;
+  }
+  .a3-footer {
+    padding-top: 20px;
+  }
+  .a3-onboarding-layout {
+    padding-top: max(8px, env(safe-area-inset-top));
+  }
+}

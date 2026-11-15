@@ -1,0 +1,141 @@
+const copy = {
+  en: {
+    preparing: "Preparing your device journal…",
+    eyebrow: "A little care, every day",
+    skip: "Skip",
+    back: "Back",
+    next: "Next",
+    choose: "Choose how to continue",
+    step: "Step {current} of 3",
+    language: "Language",
+    light: "Use light theme",
+    dark: "Use dark theme",
+    slides: [
+      {
+        tag: "YOUR EVERYDAY",
+        title: "Your ordinary days matter.",
+        body: "Four quick choices for wellbeing, mood, energy and sleep. Add a note only if you want.",
+      },
+      {
+        tag: "YOUR STORY",
+        title: "A clearer record of difficult days.",
+        body: "Add symptoms when they happen and group your recovery into an episode.",
+      },
+      {
+        tag: "YOUR CHOICE",
+        title: "Choose what you share.",
+        body: "Keep a record on this device, or use an account for cloud sync. Companion sends selected context for AI processing only after your confirmation.",
+      },
+    ],
+    footer: "A space to notice, without pressure.",
+    choiceTag: "WELCOME TO AMBROSIA",
+    choiceTitle: "Your journal. Your choice.",
+    choiceBody:
+      "Sign in or create an account for cloud sync. Or begin on this device — an account can wait.",
+    email: "Continue with email",
+    guest: "Continue on this device",
+    localHint:
+      "Your device journal stays separate. Signing in won’t merge it automatically.",
+    emailTitle: "Make yourself at home.",
+    emailBody: "Use your existing account, or create one with your email.",
+    continueAccount: "Continue to my journal",
+    signedTitle: "You’re signed in.",
+    signedBody:
+      "Your account is ready. Device-only records remain separate until you explicitly choose to merge them in Settings.",
+    noPressure: "Core tracking is free. No subscription needed.",
+    savedAccount: "ACCOUNT CONNECTED",
+  },
+  uk: {
+    preparing: "Готуємо щоденник пристрою…",
+    eyebrow: "Трохи турботи щодня",
+    skip: "Пропустити",
+    back: "Назад",
+    next: "Далі",
+    choose: "Вибрати спосіб продовження",
+    step: "Крок {current} із 3",
+    language: "Мова",
+    light: "Увімкнути світлу тему",
+    dark: "Увімкнути темну тему",
+    slides: [
+      {
+        tag: "ВАШІ БУДНІ",
+        title: "Звичайні дні теж важливі.",
+        body: "Чотири швидкі оцінки самопочуття, настрою, енергії та сну. Нотатка — лише за бажанням.",
+      },
+      {
+        tag: "ВАША ІСТОРІЯ",
+        title: "Зрозуміліша історія складних днів.",
+        body: "Додавайте симптоми, коли вони виникають, і об’єднуйте відновлення в епізод.",
+      },
+      {
+        tag: "ВАШ ВИБІР",
+        title: "Вибирайте, чим ділитися.",
+        body: "Зберігайте записи на пристрої або використовуйте акаунт для хмарної синхронізації. Companion надсилає вибраний контекст на AI-обробку лише після вашого підтвердження.",
+      },
+    ],
+    footer: "Простір для спостережень без тиску.",
+    choiceTag: "ВІТАЄМО В AMBROSIA",
+    choiceTitle: "Ваш щоденник. Ваш вибір.",
+    choiceBody:
+      "Увійдіть або створіть акаунт для хмарної синхронізації. Або почніть на цьому пристрої — акаунт може зачекати.",
+    email: "Продовжити з email",
+    guest: "Продовжити на цьому пристрої",
+    localHint:
+      "Щоденник пристрою зберігається окремо. Вхід не об’єднує записи автоматично.",
+    emailTitle: "Почувайтеся як удома.",
+    emailBody: "Увійдіть у свій акаунт або створіть новий за допомогою email.",
+    continueAccount: "Перейти до мого щоденника",
+    signedTitle: "Ви увійшли в акаунт.",
+    signedBody:
+      "Акаунт готовий. Записи пристрою залишаються окремими, доки ви явно не виберете об’єднання в Налаштуваннях.",
+    noPressure: "Основні записи безкоштовні. Підписка не потрібна.",
+    savedAccount: "АКАУНТ ПІДКЛЮЧЕНО",
+  },
+  ru: {
+    preparing: "Подготавливаем дневник устройства…",
+    eyebrow: "Немного заботы каждый день",
+    skip: "Пропустить",
+    back: "Назад",
+    next: "Далее",
+    choose: "Выбрать способ продолжения",
+    step: "Шаг {current} из 3",
+    language: "Язык",
+    light: "Включить светлую тему",
+    dark: "Включить тёмную тему",
+    slides: [
+      {
+        tag: "ВАШИ БУДНИ",
+        title: "Обычные дни тоже важны.",
+        body: "Четыре быстрые оценки самочувствия, настроения, энергии и сна. Заметка — только по желанию.",
+      },
+      {
+        tag: "ВАША ИСТОРИЯ",
+        title: "Понятнее история сложных дней.",
+        body: "Добавляйте симптомы, когда они возникают, и объединяйте восстановление в эпизод.",
+      },
+      {
+        tag: "ВАШ ВЫБОР",
+        title: "Выбирайте, чем делиться.",
+        body: "Храните записи на устройстве или используйте аккаунт для облачной синхронизации. Companion отправляет выбранный контекст на AI-обработку только после вашего подтверждения.",
+      },
+    ],
+    footer: "Пространство для наблюдений без давления.",
+    choiceTag: "ДОБРО ПОЖАЛОВАТЬ В AMBROSIA",
+    choiceTitle: "Ваш дневник. Ваш выбор.",
+    choiceBody:
+      "Войдите или создайте аккаунт для облачной синхронизации. Или начните на этом устройстве — аккаунт может подождать.",
+    email: "Продолжить с email",
+    guest: "Продолжить на этом устройстве",
+    localHint:
+      "Дневник устройства хранится отдельно. Вход не объединяет записи автоматически.",
+    emailTitle: "Чувствуйте себя как дома.",
+    emailBody: "Войдите в свой аккаунт или создайте новый с помощью email.",
+    continueAccount: "Перейти к моему дневнику",
+    signedTitle: "Вы вошли в аккаунт.",
+    signedBody:
+      "Аккаунт готов. Записи устройства остаются отдельными, пока вы явно не выберете объединение в Настройках.",
+    noPressure: "Основные записи бесплатны. Подписка не нужна.",
+    savedAccount: "АККАУНТ ПОДКЛЮЧЁН",
+  },
+};
+export const onboardingCopy = (lang) => copy[lang] || copy.en;

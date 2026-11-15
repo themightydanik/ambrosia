@@ -1,7 +1,7 @@
 import {isAndroid} from './platform.js';
 import {initializeNativeBilling} from './billing/client.js';
 import './companion/ui.js';
-import { renderOnboarding } from './screens/onboarding.js';
+import { renderOnboarding, setOnboardingReady } from './screens/onboarding.js';
 import { registerScreen } from './navigation.js';
 import './screens/checkin.js';
 import './screens/episode.js';
@@ -83,7 +83,11 @@ window.addEventListener('journal-changed', event => {
 // ─────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', async () => {
   loadState();
+  // The introduction can paint while the existing session/journal initialization runs.
+  // Account/guest continuation stays disabled until that initialization completes.
+  if (!state.onboardingDone) goTo('onboarding');
   await initializeSync();
+  setOnboardingReady();
   void initializeNativeBilling().catch(()=>{});
   if (!isAndroid() && 'serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(() => {});
   applyLang();
