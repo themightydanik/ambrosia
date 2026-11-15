@@ -39,7 +39,7 @@ Sources: [Ari canonical pack](https://github.com/themightydanik/ambrosia/release
 - Excluded source/reference archive: 11 unused poses + 2 opaque reference sheets, **13,988,287 bytes** (13.34 MiB). Kept under `source-assets/ari/v1/`; not copied into web/native runtime allowlists.
 - The four onboarding/account scenes total **3,037,832 bytes**. Initial scene alone: **1,740,070 bytes**; all others are requested only when their screen is shown. Returning users do not instantiate/download an Ari scene.
 - Self-hosted Nunito Sans variable WOFF2 subsets: **97,124 bytes**, with local OFL license. Unicode ranges load the relevant Latin/Cyrillic subsets; these font files are not PNG derivatives.
-- `npm run build` static production application bundle: **5,796,875 bytes** (5.53 MiB), including original runtime PNGs, fonts, JS, CSS and service worker. This is the unpacked web output, not wire-compressed traffic or an Android APK/AAB size. Netlify functions and native platform code are separate.
+- `npm run build` static production application bundle: **5,796,874 bytes** (5.53 MiB), including original runtime PNGs, fonts, JS, CSS and service worker. This is the unpacked web output, not wire-compressed traffic or an Android APK/AAB size. Netlify functions and native platform code are separate.
 
 ## Loading and distribution
 
