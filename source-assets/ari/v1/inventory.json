@@ -1,0 +1,370 @@
+{
+  "releases": [
+    "ari-assets-v1.0.0",
+    "ari-illustrations-v1.0.0"
+  ],
+  "assets": [
+    {
+      "file": "source-assets/ari/v1/characters/ari-celebrate.png",
+      "name": "ari-celebrate.png",
+      "bytes": 375783,
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "alpha": [
+        0,
+        253
+      ],
+      "sha256": "cc0e0e87fab20158eff07a8c3710586d2025d5e6d446b0795b0f49dd1029f2b2",
+      "assetId": 751406714,
+      "releaseUrl": "https://github.com/themightydanik/ambrosia/releases/download/ari-assets-v1.0.0/ari-celebrate.png",
+      "releaseDigest": "sha256:cc0e0e87fab20158eff07a8c3710586d2025d5e6d446b0795b0f49dd1029f2b2"
+    },
+    {
+      "file": "source-assets/ari/v1/characters/ari-explain.png",
+      "name": "ari-explain.png",
+      "bytes": 1314410,
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "alpha": [
+        0,
+        255
+      ],
+      "sha256": "4364a898a94b4b8d8dd84cf0f6197336cd58dc0567e072bd20d8c6d14c5dfd4e",
+      "assetId": 751406791,
+      "releaseUrl": "https://github.com/themightydanik/ambrosia/releases/download/ari-assets-v1.0.0/ari-explain.png",
+      "releaseDigest": "sha256:4364a898a94b4b8d8dd84cf0f6197336cd58dc0567e072bd20d8c6d14c5dfd4e"
+    },
+    {
+      "file": "source-assets/ari/v1/characters/ari-happy.png",
+      "name": "ari-happy.png",
+      "bytes": 1594562,
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "alpha": [
+        0,
+        255
+      ],
+      "sha256": "43c2e15c657a993f623c7875496e23af8bf619ac8c8f2baea40d93aeaf514989",
+      "assetId": 751406845,
+      "releaseUrl": "https://github.com/themightydanik/ambrosia/releases/download/ari-assets-v1.0.0/ari-happy.png",
+      "releaseDigest": "sha256:43c2e15c657a993f623c7875496e23af8bf619ac8c8f2baea40d93aeaf514989"
+    },
+    {
+      "file": "source-assets/ari/v1/characters/ari-listening.png",
+      "name": "ari-listening.png",
+      "bytes": 1202823,
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "alpha": [
+        0,
+        255
+      ],
+      "sha256": "2b1d8bc04a5e53865b7b475e4caa4cb1121ee47390c41476f47fa66bb241915c",
+      "assetId": 751419741,
+      "releaseUrl": "https://github.com/themightydanik/ambrosia/releases/download/ari-assets-v1.0.0/ari-listening.png",
+      "releaseDigest": "sha256:2b1d8bc04a5e53865b7b475e4caa4cb1121ee47390c41476f47fa66bb241915c"
+    },
+    {
+      "file": "source-assets/ari/v1/characters/ari-neutral.png",
+      "name": "ari-neutral.png",
+      "bytes": 1322587,
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "alpha": [
+        0,
+        255
+      ],
+      "sha256": "053a14a8df02fef3620f0701f6b5156ef7b3f91f2e340d4b89cab8200b25dcc8",
+      "assetId": 751406896,
+      "releaseUrl": "https://github.com/themightydanik/ambrosia/releases/download/ari-assets-v1.0.0/ari-neutral.png",
+      "releaseDigest": "sha256:053a14a8df02fef3620f0701f6b5156ef7b3f91f2e340d4b89cab8200b25dcc8"
+    },
+    {
+      "file": "source-assets/ari/v1/characters/ari-relax.png",
+      "name": "ari-relax.png",
+      "bytes": 1994948,
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGBA",
+      "alpha": [
+        0,
+        254
+      ],
+      "sha256": "fb63918579c6ca12c5943e5042784e98b31c428a134413ea24c8f93c9e5484be",
+      "assetId": 751406935,
+      "releaseUrl": "https://github.com/themightydanik/ambrosia/releases/download/ari-assets-v1.0.0/ari-relax.png",
+      "releaseDigest": "sha256:fb63918579c6ca12c5943e5042784e98b31c428a134413ea24c8f93c9e5484be"
+    },
+    {
+      "file": "source-assets/ari/v1/characters/ari-sleepy.png",
+      "name": "ari-sleepy.png",
+      "bytes": 1018187,
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "alpha": [
+        0,
+        255
+      ],
+      "sha256": "b20aeabd462712c77a1e5d967d5cab856f46fc7ffb09c7c3f56d8ab79d8fe275",
+      "assetId": 751407025,
+      "releaseUrl": "https://github.com/themightydanik/ambrosia/releases/download/ari-assets-v1.0.0/ari-sleepy.png",
+      "releaseDigest": "sha256:b20aeabd462712c77a1e5d967d5cab856f46fc7ffb09c7c3f56d8ab79d8fe275"
+    },
+    {
+      "file": "source-assets/ari/v1/characters/ari-supportive.png",
+      "name": "ari-supportive.png",
+      "bytes": 387868,
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "alpha": [
+        0,
+        253
+      ],
+      "sha256": "669797d4a269088ae01a21805b866754c9a8f4c6fa72bcf77c6e49952dd84b6f",
+      "assetId": 751407052,
+      "releaseUrl": "https://github.com/themightydanik/ambrosia/releases/download/ari-assets-v1.0.0/ari-supportive.png",
+      "releaseDigest": "sha256:669797d4a269088ae01a21805b866754c9a8f4c6fa72bcf77c6e49952dd84b6f"
+    },
+    {
+      "file": "source-assets/ari/v1/characters/ari-surprised.png",
+      "name": "ari-surprised.png",
+      "bytes": 347775,
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "alpha": [
+        0,
+        253
+      ],
+      "sha256": "cd45764f68cd72308a762e41ff6b77ac0fecce14dda39f1de4189c40e8c33839",
+      "assetId": 751407070,
+      "releaseUrl": "https://github.com/themightydanik/ambrosia/releases/download/ari-assets-v1.0.0/ari-surprised.png",
+      "releaseDigest": "sha256:cd45764f68cd72308a762e41ff6b77ac0fecce14dda39f1de4189c40e8c33839"
+    },
+    {
+      "file": "source-assets/ari/v1/characters/ari-thoughtful.png",
+      "name": "ari-thoughtful.png",
+      "bytes": 382367,
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "alpha": [
+        0,
+        253
+      ],
+      "sha256": "a27129358c4e45be0b22a7dafb607dc315beb481e5faac6d208bdf75355612da",
+      "assetId": 751407092,
+      "releaseUrl": "https://github.com/themightydanik/ambrosia/releases/download/ari-assets-v1.0.0/ari-thoughtful.png",
+      "releaseDigest": "sha256:a27129358c4e45be0b22a7dafb607dc315beb481e5faac6d208bdf75355612da"
+    },
+    {
+      "file": "source-assets/ari/v1/characters/ari-welcome.png",
+      "name": "ari-welcome.png",
+      "bytes": 409599,
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "alpha": [
+        0,
+        253
+      ],
+      "sha256": "49537f5c531ee9a3c4fd7aafd360b96409cc24105bab1474c5a123a7f2825891",
+      "assetId": 751407133,
+      "releaseUrl": "https://github.com/themightydanik/ambrosia/releases/download/ari-assets-v1.0.0/ari-welcome.png",
+      "releaseDigest": "sha256:49537f5c531ee9a3c4fd7aafd360b96409cc24105bab1474c5a123a7f2825891"
+    },
+    {
+      "file": "source-assets/ari/v1/references/Ari.-.reference.png",
+      "name": "Ari.-.reference.png",
+      "bytes": 1820514,
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGB",
+      "alpha": null,
+      "sha256": "5d09f0d8deee093bd2e8a8e31874243b366ba65f525b05f37df425fc940d39e6",
+      "assetId": 751424287,
+      "releaseUrl": "https://github.com/themightydanik/ambrosia/releases/download/ari-assets-v1.0.0/Ari.-.reference.png",
+      "releaseDigest": "sha256:5d09f0d8deee093bd2e8a8e31874243b366ba65f525b05f37df425fc940d39e6"
+    },
+    {
+      "file": "source-assets/ari/v1/references/Character.Sheet.v1.png",
+      "name": "Character.Sheet.v1.png",
+      "bytes": 1816864,
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGB",
+      "alpha": null,
+      "sha256": "018d1d77d7e2ec80d90b3a6466988d9c8310f28487f83bce7fbea67fc7e02f2c",
+      "assetId": 751424329,
+      "releaseUrl": "https://github.com/themightydanik/ambrosia/releases/download/ari-assets-v1.0.0/Character.Sheet.v1.png",
+      "releaseDigest": "sha256:018d1d77d7e2ec80d90b3a6466988d9c8310f28487f83bce7fbea67fc7e02f2c"
+    },
+    {
+      "file": "assets/brand/ari/v1/illustrations/ill-auth-welcome.png",
+      "name": "ill-auth-welcome.png",
+      "bytes": 474994,
+      "width": 1448,
+      "height": 1086,
+      "mode": "RGBA",
+      "alpha": [
+        0,
+        253
+      ],
+      "sha256": "f84bca09d8d96b1c707b79cb71000d2eadf52201b909ad274fb44546394e1ce9",
+      "assetId": 751697311,
+      "releaseUrl": "https://github.com/themightydanik/ambrosia/releases/download/ari-illustrations-v1.0.0/ill-auth-welcome.png",
+      "releaseDigest": "sha256:f84bca09d8d96b1c707b79cb71000d2eadf52201b909ad274fb44546394e1ce9"
+    },
+    {
+      "file": "assets/brand/ari/v1/illustrations/ill-companion-intro.png",
+      "name": "ill-companion-intro.png",
+      "bytes": 417310,
+      "width": 1586,
+      "height": 992,
+      "mode": "RGBA",
+      "alpha": [
+        0,
+        253
+      ],
+      "sha256": "5ffe386aa5a77297070effc94ff79ef0ec57001633813bde58b75374525c2a67",
+      "assetId": 751697411,
+      "releaseUrl": "https://github.com/themightydanik/ambrosia/releases/download/ari-illustrations-v1.0.0/ill-companion-intro.png",
+      "releaseDigest": "sha256:5ffe386aa5a77297070effc94ff79ef0ec57001633813bde58b75374525c2a67"
+    },
+    {
+      "file": "assets/brand/ari/v1/illustrations/ill-empty-chat.png",
+      "name": "ill-empty-chat.png",
+      "bytes": 354483,
+      "width": 1448,
+      "height": 1086,
+      "mode": "RGBA",
+      "alpha": [
+        0,
+        253
+      ],
+      "sha256": "ff2d46a283b5865ba5d65ec811967482a7c3244c49e3798b8a8ee7bccab63a8a",
+      "assetId": 751697443,
+      "releaseUrl": "https://github.com/themightydanik/ambrosia/releases/download/ari-illustrations-v1.0.0/ill-empty-chat.png",
+      "releaseDigest": "sha256:ff2d46a283b5865ba5d65ec811967482a7c3244c49e3798b8a8ee7bccab63a8a"
+    },
+    {
+      "file": "assets/brand/ari/v1/illustrations/ill-empty-episodes.png",
+      "name": "ill-empty-episodes.png",
+      "bytes": 358697,
+      "width": 1448,
+      "height": 1086,
+      "mode": "RGBA",
+      "alpha": [
+        0,
+        253
+      ],
+      "sha256": "2b579090cca69f52f77ae192b3d4725e8eaa5307bd388e49566a19c67c8d9ea4",
+      "assetId": 751697470,
+      "releaseUrl": "https://github.com/themightydanik/ambrosia/releases/download/ari-illustrations-v1.0.0/ill-empty-episodes.png",
+      "releaseDigest": "sha256:2b579090cca69f52f77ae192b3d4725e8eaa5307bd388e49566a19c67c8d9ea4"
+    },
+    {
+      "file": "assets/brand/ari/v1/illustrations/ill-empty-history.png",
+      "name": "ill-empty-history.png",
+      "bytes": 399114,
+      "width": 1448,
+      "height": 1086,
+      "mode": "RGBA",
+      "alpha": [
+        0,
+        253
+      ],
+      "sha256": "99def323ad8b87a755593edd471af2f9654b7e72ef0268c8d1e18f26622c3b42",
+      "assetId": 751697504,
+      "releaseUrl": "https://github.com/themightydanik/ambrosia/releases/download/ari-illustrations-v1.0.0/ill-empty-history.png",
+      "releaseDigest": "sha256:99def323ad8b87a755593edd471af2f9654b7e72ef0268c8d1e18f26622c3b42"
+    },
+    {
+      "file": "assets/brand/ari/v1/illustrations/ill-empty-insights.png",
+      "name": "ill-empty-insights.png",
+      "bytes": 333512,
+      "width": 1448,
+      "height": 1086,
+      "mode": "RGBA",
+      "alpha": [
+        0,
+        253
+      ],
+      "sha256": "1e5cf020ec72483f6ae1e63b86f5d2dc574f597eb4e582fd145d72ed221c26d9",
+      "assetId": 751697539,
+      "releaseUrl": "https://github.com/themightydanik/ambrosia/releases/download/ari-illustrations-v1.0.0/ill-empty-insights.png",
+      "releaseDigest": "sha256:1e5cf020ec72483f6ae1e63b86f5d2dc574f597eb4e582fd145d72ed221c26d9"
+    },
+    {
+      "file": "assets/brand/ari/v1/illustrations/ill-onboard-01.png",
+      "name": "ill-onboard-01.png",
+      "bytes": 1740070,
+      "width": 1448,
+      "height": 1086,
+      "mode": "RGBA",
+      "alpha": [
+        0,
+        255
+      ],
+      "sha256": "9e77ac6c05156954f83da0ffb846703c8389715c15ca72f4499c2b284f73a81b",
+      "assetId": 751697561,
+      "releaseUrl": "https://github.com/themightydanik/ambrosia/releases/download/ari-illustrations-v1.0.0/ill-onboard-01.png",
+      "releaseDigest": "sha256:9e77ac6c05156954f83da0ffb846703c8389715c15ca72f4499c2b284f73a81b"
+    },
+    {
+      "file": "assets/brand/ari/v1/illustrations/ill-onboard-02.png",
+      "name": "ill-onboard-02.png",
+      "bytes": 407867,
+      "width": 1448,
+      "height": 1086,
+      "mode": "RGBA",
+      "alpha": [
+        0,
+        253
+      ],
+      "sha256": "e0fb390ea788beb996585c2c76a269630c1e627a73fdec77a9d8870ce6ca51a7",
+      "assetId": 751697586,
+      "releaseUrl": "https://github.com/themightydanik/ambrosia/releases/download/ari-illustrations-v1.0.0/ill-onboard-02.png",
+      "releaseDigest": "sha256:e0fb390ea788beb996585c2c76a269630c1e627a73fdec77a9d8870ce6ca51a7"
+    },
+    {
+      "file": "assets/brand/ari/v1/illustrations/ill-onboard-03.png",
+      "name": "ill-onboard-03.png",
+      "bytes": 414901,
+      "width": 1448,
+      "height": 1086,
+      "mode": "RGBA",
+      "alpha": [
+        0,
+        253
+      ],
+      "sha256": "00a77b5a9c15db4257248279371a8cf6c7c936050daf96a8499f386a1159080a",
+      "assetId": 751697606,
+      "releaseUrl": "https://github.com/themightydanik/ambrosia/releases/download/ari-illustrations-v1.0.0/ill-onboard-03.png",
+      "releaseDigest": "sha256:00a77b5a9c15db4257248279371a8cf6c7c936050daf96a8499f386a1159080a"
+    },
+    {
+      "file": "assets/brand/ari/v1/illustrations/ill-premium.png",
+      "name": "ill-premium.png",
+      "bytes": 410666,
+      "width": 1586,
+      "height": 992,
+      "mode": "RGBA",
+      "alpha": [
+        0,
+        253
+      ],
+      "sha256": "35beb170fa623bcf53318c0f901495ca98c228386bfedc96ebfdd2b21a986251",
+      "assetId": 751697626,
+      "releaseUrl": "https://github.com/themightydanik/ambrosia/releases/download/ari-illustrations-v1.0.0/ill-premium.png",
+      "releaseDigest": "sha256:35beb170fa623bcf53318c0f901495ca98c228386bfedc96ebfdd2b21a986251"
+    }
+  ]
+}

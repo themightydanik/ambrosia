@@ -18,18 +18,7 @@ if (
     "NATIVE_API_ORIGIN must be the exact trusted HTTPS Netlify origin, with no path or trailing slash.",
   );
 const out = "native-dist";
-fs.rmSync(out, { recursive: true, force: true });
-fs.mkdirSync(out);
-for (const name of [
-  "index.html",
-  "manifest.json",
-  "css",
-  "js",
-  "assets",
-  "icons",
-])
-  if (fs.existsSync(name))
-    fs.cpSync(name, path.join(out, name), { recursive: true });
+require("./runtime-files.cjs").copyRuntime(out);
 // Bundle only the native bridge, never keys, secrets, server functions or node_modules.
 buildSync({
   entryPoints: ["native/sdk.js"],

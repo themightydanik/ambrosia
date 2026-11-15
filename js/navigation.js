@@ -15,7 +15,15 @@ export function goTo(screen) {
     s.classList.remove('active', 'slide-out');
   });
 
+  // Keep the existing destination fonts, but do not make the local-font welcome
+  // wait for an unrelated external Google Fonts stylesheet.
+  if(screen!=='onboarding' && !document.getElementById('legacy-fonts')){
+    const fonts=document.createElement('link');fonts.id='legacy-fonts';fonts.rel='stylesheet';
+    fonts.href='https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap';
+    document.head.append(fonts);
+  }
   state.screen = screen;
+  document.body.classList.toggle('a3-active',screen==='onboarding');
 
   // Activate target screen
   const next = document.getElementById('screen-' + screen);

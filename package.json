@@ -6,7 +6,9 @@
     "test:browser": "node tests/browser.cjs",
     "test:db": "bash tests/database.sh",
     "native:build": "node scripts/build-native.cjs",
-    "android:prepare": "npm run native:build && node scripts/prepare-android.cjs"
+    "android:prepare": "npm run native:build && node scripts/prepare-android.cjs",
+    "build": "node scripts/build-web.cjs",
+    "test:onboarding": "node tests/onboarding-browser.cjs"
   },
   "dependencies": {
     "@capacitor/android": "8.5.3",

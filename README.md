@@ -12,3 +12,5 @@ A mobile-first, offline-first daily wellness and symptom journal with optional S
 Automated checks run in GitHub Actions. Developer commands are `npm test`, `npm run test:browser` (Playwright/Chromium) and `npm run test:db` (Docker). Browser tests start their own static server and use test-only auth/transport fixtures. Database tests use an isolated PostgreSQL container, never production credentials. The owner does not need to install these tools.
 
 Google Play Premium billing and Android internal builds: [owner dashboard setup, required credentials and acceptance checklist](docs/premium-billing.md). Migration **006** follows 001–005; web subscriptions remain server-verified and native checkout is Android-only.
+
+Ambrosia 3.0 Phase 1: [Ari onboarding, PNG inventory, build sizes and verification](docs/ambrosia-3/phase1/README.md). Build the allowlisted static app with `npm run build`.
