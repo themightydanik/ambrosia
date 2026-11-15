@@ -1,7 +1,10 @@
+import { loadAuthSettings, accountsRequired } from './auth/config.js';
+import { initializeNativeOAuth } from './auth/google.js';
+import './auth/recovery.js';
 import {isAndroid} from './platform.js';
 import {initializeNativeBilling} from './billing/client.js';
 import './companion/ui.js';
-import { renderOnboarding, setOnboardingReady } from './screens/onboarding.js';
+import { renderOnboarding, setOnboardingReady, showAccountChoice } from './screens/onboarding.js';
 import { registerScreen } from './navigation.js';
 import './screens/checkin.js';
 import './screens/episode.js';
@@ -86,15 +89,24 @@ document.addEventListener('DOMContentLoaded', async () => {
   // The introduction can paint while the existing session/journal initialization runs.
   // Account/guest continuation stays disabled until that initialization completes.
   if (!state.onboardingDone) goTo('onboarding');
+  const authConfiguration = loadAuthSettings();
   await initializeSync();
+  await authConfiguration;
   setOnboardingReady();
+  void initializeNativeOAuth().catch(() => {});
   void initializeNativeBilling().catch(()=>{});
   if (!isAndroid() && 'serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(() => {});
   applyLang();
 
   // Navigate to correct screen after brief delay to avoid race conditions
 setTimeout(() => {
-  if (!state.onboardingDone) {
+  if (state.recoveringPassword) {
+    goTo('settings');
+  } else if ((accountsRequired() && !state.accountId && state.onboardingDone) ||
+             sessionStorage.getItem('ambrosia_oauth_return') === '1') {
+    sessionStorage.removeItem('ambrosia_oauth_return');
+    showAccountChoice();
+  }  else if (!state.onboardingDone) {
     goTo('onboarding');
   } else {
     goTo(state.screen || 'home');

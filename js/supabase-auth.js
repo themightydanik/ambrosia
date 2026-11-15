@@ -1,3 +1,5 @@
+import { invalidateAuthIntent, authTransition } from './auth/coordination.js';
+import { renderGoogleControls } from './auth/controls.js';
 import {field} from './wellness/dom.js';
 import {authRedirect} from './platform.js';
 import { renderAccountManagement, renderRecovery, sendPasswordReset } from './account-management.js';
@@ -53,9 +55,10 @@ export async function renderCloudAccount(lang = 'en', root = document.getElement
     login.disabled = signup.disabled = true; status.textContent = '';
     try {
       const credentials = { email: email.value.trim(), password: password.value };
-      const result = mode === 'signup'
+      invalidateAuthIntent();
+      const result = await authTransition(async () => mode === 'signup'
         ? await supabase.auth.signUp({ ...credentials, options: { emailRedirectTo: await authRedirect() } })
-        : await supabase.auth.signInWithPassword(credentials);
+        : await supabase.auth.signInWithPassword(credentials));
       if (result.error) throw result.error;
       password.value = '';
       if (result.data.session) { switchAccount(result.data.session.user); await renderCloudAccount(lang, root); }
@@ -68,4 +71,5 @@ export async function renderCloudAccount(lang = 'en', root = document.getElement
   const reset=document.createElement('button');reset.type='button';reset.className='btn-ghost';reset.textContent=security.reset;
   reset.onclick=async()=>{if(!email.reportValidity())return;reset.disabled=true;try{await sendPasswordReset(email.value.trim(),supabase,await authRedirect());status.textContent=security.resetSent;}catch{status.textContent=security.error;}finally{reset.disabled=false;}};
   form.append(field(t.email,email),field(t.password,password),login,signup,reset); root.append(form);
+  void renderGoogleControls(root,lang);
 }

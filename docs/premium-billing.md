@@ -1,5 +1,7 @@
 # Google Play Premium — owner setup and internal testing
 
+> **Owner decision update:** the mandatory-account/subscription target supersedes the optional freemium proposal below. See [sequential PR A/B/C migration and disabled rollout](account-migration/PR_A.md). This document does not authorize enabling the new policy; A alone preserves current access and billing.
+
 This change implements billing code; it does **not** create products, charge customers, apply production SQL, merge, release to Google Play or validate a real purchase. The owner must complete the dashboards below. No invented production identifiers, prices, currencies, trials or credentials are in the repository. Issue #15 remains open until real internal-track validation is complete.
 
 ## Architecture and supported versions

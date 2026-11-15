@@ -221,3 +221,39 @@ body.a3-active #app::before {
     padding-top: max(8px, env(safe-area-inset-top));
   }
 }
+/* Auth staging uses the same controls and safe-area layout as onboarding. */
+.a3-google {
+  display: grid;
+  gap: 12px;
+  margin-top: 20px;
+}
+.a3-google:empty {
+  display: none;
+}
+.a3-auth > [data-google-status] {
+  margin: 12px 0;
+}
+#screen-device-recovery.a3-screen {
+  padding: 0;
+  background: var(--a3-canvas);
+}
+#screen-device-recovery .a3-onboarding-layout {
+  gap: 24px;
+  padding-top: calc(40px + env(safe-area-inset-top));
+}
+.auth-device-review {
+  text-align: start;
+  margin-block: 16px;
+}
+.auth-device-review summary {
+  cursor: pointer;
+  min-height: 44px;
+  padding: 8px 0;
+}
+.auth-device-review pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  max-height: 40vh;
+  overflow: auto;
+  font-size: 12px;
+}

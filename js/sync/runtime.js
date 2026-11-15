@@ -1,3 +1,5 @@
+import { deviceReview } from '../auth/recovery.js';
+import { invalidateAuthIntent, authTransition, committingOAuthFor } from '../auth/coordination.js';
 import {downloadBlob} from '../download.js';
 import { clearAccess, refreshAccess } from '../account-access.js';
 import { state, setPersistence } from '../state.js';
@@ -54,6 +56,7 @@ export function switchAccount(user) {
     return;
   }
   const accountChanged = !!store;
+  if (accountChanged && !committingOAuthFor(user?.id)) invalidateAuthIntent();
   generation++; engine = null; draft = null; clearAccess(); status('switching');
   // Clear memory before reading another partition; failures must never leave the previous account visible.
   state.accountId = user?.id || null;
@@ -98,6 +101,11 @@ export async function initializeSync() {
     try { cached = JSON.parse(localStorage.getItem('ambrosia_sync_last_account') || 'null'); } catch { /* fail closed */ }
     switchAccount(cached);
   } else await connectCloud();
+  window.addEventListener('google-session-committed', event => {
+    void client?.auth.getSession().then(({ data }) => {
+      if (data.session?.user.id === event.detail.userId) switchAccount(data.session.user);
+    }).catch(() => status('error'));
+  });
   window.addEventListener('online', () => { void refreshAccess(true); if (client && !localStorage.getItem('ambrosia_sync_logout_requested')) void engine?.run(); else void connectCloud(); });
   window.addEventListener('offline', () => { clearAccess();window.dispatchEvent(new Event('access-changed')); if (store?.user) status('offline'); });
   window.addEventListener('focus', () => { void engine?.run();void refreshAccess(); });
@@ -128,6 +136,7 @@ async function connectCloud() {
       }
       if (!subscribed) {
         client.auth.onAuthStateChange((event, session) => {
+          if (committingOAuthFor(session?.user?.id)) return;
           if(event === 'PASSWORD_RECOVERY') state.recoveringPassword = true;
           switchAccount(session?.user || null);
           if(event === 'PASSWORD_RECOVERY') queueMicrotask(() => window.dispatchEvent(new Event('password-recovery')));
@@ -144,15 +153,18 @@ async function connectCloud() {
   })().finally(() => { connecting = null; });
   return connecting;
 }
-export async function requestSignOut() {
-  // Hide cached records immediately even when the SDK/session endpoint is unavailable offline.
-  localStorage.setItem('ambrosia_sync_logout_requested','1');
+export function requestSignOut() {
+  invalidateAuthIntent();
+  // Hide immediately; only the SDK mutation waits for a concurrent auth commit.
+  localStorage.setItem('ambrosia_sync_logout_requested', '1');
   switchAccount(null);
-  if (client && navigator.onLine) {
-    const { error } = await client.auth.signOut({scope:'local'});
-    if (error) throw error;
-    localStorage.removeItem('ambrosia_sync_logout_requested');
-  }
+  return authTransition(async () => {
+    if (client && navigator.onLine) {
+      const { error } = await client.auth.signOut({ scope: 'local' });
+      if (error) throw error;
+      localStorage.removeItem('ambrosia_sync_logout_requested');
+    }
+  });
 }
 function button(panel, label, action) {
   const b = document.createElement('button'); b.type = 'button'; b.className = 'btn-ghost'; b.textContent = label;
@@ -168,6 +180,7 @@ function populate(panel) {
   panel.replaceChildren(); if (!store?.user) return;
   const labels = t();
   const text = document.createElement('p'); text.textContent = `${!writable ? labels.locked : labels[phase] || labels.error} · ${store.pending().length} ${labels.count}`; text.setAttribute('role','status'); panel.append(text);
+  panel.append(deviceReview(state.lang));
   if (writable) {
     button(panel, labels.retry, () => client ? engine?.run() : connectCloud());
     button(panel, labels.migration, async () => {

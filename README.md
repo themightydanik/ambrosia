@@ -14,3 +14,5 @@ Automated checks run in GitHub Actions. Developer commands are `npm test`, `npm 
 Google Play Premium billing and Android internal builds: [owner dashboard setup, required credentials and acceptance checklist](docs/premium-billing.md). Migration **006** follows 001–005; web subscriptions remain server-verified and native checkout is Android-only.
 
 Ambrosia 3.0 Phase 1: [Ari onboarding, PNG inventory, build sizes and verification](docs/ambrosia-3/phase1/README.md). Build the allowlisted static app with `npm run build`.
+
+Mandatory-account migration, PR A only: [Google PKCE, owner configuration, security gates and rollback](docs/account-migration/PR_A.md). Google and mandatory navigation are disabled by default; server subscription enforcement and the new paywall await separate B/C reviews.

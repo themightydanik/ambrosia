@@ -44,7 +44,13 @@ fs.writeFileSync(
 );
 fs.writeFileSync(
   path.join(out, "native-config.json"),
-  JSON.stringify({ apiOrigin: origin }),
+  JSON.stringify({
+    apiOrigin: origin,
+    authCallback:
+      require("./app-links.cjs").nativeCallback(
+        process.env.NATIVE_AUTH_CALLBACK_URL,
+      )?.href || null,
+  }),
 );
 fs.writeFileSync(
   "capacitor.config.json",

@@ -62,3 +62,9 @@
 
 [functions."billing-reconcile"]
   schedule = "* * * * *"
+
+[[redirects]]
+  from = "/api/auth-config"
+  to = "/.netlify/functions/auth-config"
+  status = 200
+  force = true

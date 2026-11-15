@@ -2,6 +2,7 @@ const fs = require("node:fs");
 const path = require("node:path");
 const runtimeFiles = [
   "index.html",
+  "auth",
   "css",
   "js",
   "assets",

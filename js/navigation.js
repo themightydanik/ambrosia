@@ -1,3 +1,4 @@
+import { accountsRequired } from './auth/config.js';
 import {v} from './wellness/copy.js';
 import { state } from './state.js';
 import { applyLang } from './i18n.js';
@@ -9,6 +10,11 @@ export function registerScreen(name, renderFn) {
 }
 
 export function goTo(screen) {
+  if (accountsRequired() && !state.accountId && !['onboarding', 'device-recovery'].includes(screen) && !state.recoveringPassword) {
+    screen = 'onboarding';
+    window.dispatchEvent(new Event('auth-required'));
+  }
+
   // Remove active from ALL screens first
   const allScreens = document.querySelectorAll('.screen');
   allScreens.forEach(s => {
@@ -23,7 +29,7 @@ export function goTo(screen) {
     document.head.append(fonts);
   }
   state.screen = screen;
-  document.body.classList.toggle('a3-active',screen==='onboarding');
+  document.body.classList.toggle('a3-active',['onboarding','device-recovery'].includes(screen));
 
   // Activate target screen
   const next = document.getElementById('screen-' + screen);
@@ -36,7 +42,7 @@ export function goTo(screen) {
   updateNav(screen);
 
   const nav = document.getElementById('bottom-nav');
-  const hideNav = screen === 'onboarding' || screen === 'log' || screen === 'upgrade' || screen === 'checkin' || screen === 'episode';
+  const hideNav = screen === 'device-recovery' || screen === 'onboarding' || screen === 'log' || screen === 'upgrade' || screen === 'checkin' || screen === 'episode';
   if (nav) nav.classList.toggle('visible', !hideNav);
 
   if (_renderers[screen]) {
