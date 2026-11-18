@@ -292,3 +292,115 @@
   color: var(--a3-ink);
   background: var(--a3-rose);
 }
+
+/* Ambrosia 3 Home: scoped to avoid changing journal forms or account flows. */
+.a3-home {
+  background: var(--a3-canvas);
+  color: var(--a3-text);
+  padding-inline: 16px;
+  padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px));
+}
+.a3-home .home-head {
+  padding: 12px 0 18px;
+}
+.a3-home .brand-line {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font: 800 14px/1.4 var(--a3-font);
+  letter-spacing: .1em;
+  color: var(--a3-text);
+}
+.a3-home .brand-line .avatar-button {
+  margin-left: auto;
+  min-width: 48px;
+  min-height: 48px;
+}
+.a3-home .eyebrow {
+  color: var(--a3-muted);
+  font: 700 12px/1.5 var(--a3-font);
+  letter-spacing: .045em;
+}
+.a3-home .home-head h1 {
+  margin: 8px 0 0;
+  color: var(--a3-text);
+}
+.a3-home .checkin-hero {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  padding: 24px 20px;
+  border: 1px solid var(--a3-border);
+  border-radius: 24px;
+  background: linear-gradient(140deg, var(--a3-tint), var(--a3-surface) 76%);
+  color: var(--a3-text);
+  box-shadow: 0 10px 28px #2020390d;
+}
+.a3-home .checkin-hero h2 {
+  position: relative;
+  max-width: 78%;
+  margin: 6px 0 8px;
+  color: var(--a3-text);
+}
+.a3-home .checkin-hero .muted {
+  max-width: 78%;
+  color: var(--a3-muted);
+}
+.a3-home .hero-orbit {
+  position: absolute;
+  right: 18px;
+  top: 26px;
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 20px;
+  background: var(--a3-surface);
+  color: var(--a3-primary);
+  opacity: .85;
+}
+.a3-home .hero-orbit svg { width: 32px; height: 32px; }
+.a3-home #home-checkin { width: 100%; margin-top: 18px; }
+.a3-home .action-pair {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 14px 0 20px;
+}
+.a3-home .action-pair > .a3-button { flex: 1 1 140px; }
+.a3-home .wellness-card,
+.a3-home .baseline-note,
+.a3-home .recent-section {
+  border: 1px solid var(--a3-border);
+  border-radius: 20px;
+  background: var(--a3-surface);
+  color: var(--a3-text);
+  padding: 16px;
+  margin-bottom: 14px;
+  box-shadow: 0 8px 24px #2020390a;
+}
+.a3-home .section-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.a3-home .section-line h2,
+.a3-home .baseline-note h3 { color: var(--a3-text); }
+.a3-home .muted,
+.a3-home .page-footnote,
+.a3-home .empty-message { color: var(--a3-muted); }
+.a3-home .metric-row {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+.a3-home .metric-row > div { min-width: 0; text-align: center; }
+.a3-home .metric-row strong { color: var(--a3-text); font: 800 23px/1.3 var(--a3-font); }
+.a3-home .metric-row span { color: var(--a3-muted); overflow-wrap: anywhere; }
+@media (max-width: 350px) {
+  .a3-home .metric-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .a3-home .checkin-hero h2,
+  .a3-home .checkin-hero .muted { max-width: 100%; }
+  .a3-home .hero-orbit { position: static; margin-left: auto; }
+}
