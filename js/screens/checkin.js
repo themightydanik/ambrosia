@@ -4,6 +4,7 @@ import { makeCheckin, localDay, DIMENSIONS } from "../wellness/model.js";
 import { saveWellness, recordVersion } from "../sync/runtime.js";
 import { el, button, field } from "../wellness/dom.js";
 import { v, locale } from "../wellness/copy.js";
+import { icon } from "../ui/components.js";
 export function openCheckin(day = localDay()) {
   state.checkinDay = day;
   goTo("checkin");
@@ -24,6 +25,7 @@ export function renderCheckin() {
       button("← " + v("back"), () => goTo("home")),
       el("p", { class: "eyebrow" }, v("checkin")),
       el("h1", {}, v("checkin")),
+      el("div", { class: "a3-checkin-emblem", "aria-hidden": "true" }, icon("heart-pulse")),
     ),
   );
   const form = el("form", { class: "wellness-form a3-form" }),
