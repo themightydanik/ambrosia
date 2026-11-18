@@ -489,3 +489,155 @@
   .a3-checkin .scale-field,.a3-log .log-step.active {padding:12px;}
   .a3-checkin .scale-choices {gap:4px;}
 }
+
+/* History constellation: decorative atmosphere never covers interactive data. */
+.a3-history,.a3-episode-editor {
+  position:relative;isolation:isolate;overflow-x:clip;
+  padding:18px 16px calc(100px + env(safe-area-inset-bottom,0px));
+  background:var(--a3-canvas);color:var(--a3-text);
+}
+.a3-history::before,.a3-episode-editor::before {
+  content:"";position:absolute;inset:0 0 auto;z-index:-1;height:470px;
+  pointer-events:none;
+  background:
+    radial-gradient(ellipse 68% 48% at 88% 8%,#65e0c15c,transparent 72%),
+    radial-gradient(ellipse 90% 58% at 10% 0%,#a58bff66,transparent 73%),
+    radial-gradient(ellipse 50% 32% at 55% 52%,#ffb85c29,transparent 76%);
+}
+.a3-history::after {
+  content:"";position:absolute;top:18px;right:18px;z-index:-1;
+  width:140px;height:140px;pointer-events:none;opacity:.24;
+  background-image:radial-gradient(circle,var(--a3-primary) 1px,transparent 1.5px);
+  background-size:18px 18px;
+  mask-image:radial-gradient(circle,#000,transparent 75%);
+}
+.a3-history .a3-history-head {
+  padding:12px 4px 18px;
+}
+.a3-history .a3-history-head h1 {
+  margin:6px 0 0;font-size:32px;color:var(--a3-text);
+}
+.a3-history .eyebrow,.a3-episode-editor .eyebrow {
+  font:800 12px/1.5 var(--a3-font);letter-spacing:.09em;
+  text-transform:uppercase;color:var(--a3-secondary);
+}
+.a3-history .a3-history-tabs {
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:5px;padding:5px;margin:0 0 18px;
+  border:1px solid var(--a3-border);border-radius:18px;
+  background:var(--a3-surface);box-shadow:0 8px 28px #20203912;
+}
+.a3-history .a3-history-tabs button {
+  min-width:0;min-height:48px;padding:8px 4px;
+  border:1px solid transparent;border-radius:13px;
+  color:var(--a3-muted);font:800 14px/1.3 var(--a3-font);
+}
+.a3-history .a3-history-tabs button[aria-selected="true"] {
+  color:var(--a3-on-primary);background:var(--a3-primary);
+  box-shadow:0 4px 14px #5737d63b;
+}
+.a3-history :is(.wellness-card,.day-detail) {
+  padding:18px;margin:0 0 16px;
+  border:1px solid var(--a3-border);border-radius:24px;
+  background:var(--a3-surface);color:var(--a3-text);
+  box-shadow:0 12px 32px #20203912;
+}
+.a3-history .a3-calendar {
+  background:
+    radial-gradient(circle at 95% 0%,#65e0c126,transparent 45%),
+    var(--a3-surface);
+}
+.a3-history .section-line {
+  display:flex;align-items:center;justify-content:space-between;gap:8px;
+}
+.a3-history .section-line h2 {
+  color:var(--a3-text);text-align:center;font:800 20px/1.3 var(--a3-font);
+}
+.a3-history .a3-calendar .section-line button {
+  flex:none;display:grid;place-items:center;
+  width:48px;height:48px;border:1px solid var(--a3-border);
+  border-radius:15px;background:var(--a3-canvas);color:var(--a3-primary);
+  font-size:26px;
+}
+.a3-history .calendar-grid {
+  display:grid;grid-template-columns:repeat(7,minmax(0,1fr));
+  gap:5px;margin-top:16px;
+}
+.a3-history .calendar-grid .weekday {
+  text-align:center;font:800 12px/1.5 var(--a3-font);
+  color:var(--a3-muted);
+}
+.a3-history .calendar-day {
+  position:relative;display:grid;place-items:center;
+  width:100%;min-width:0;min-height:43px;padding:4px 0;
+  border:1px solid transparent;border-radius:13px;
+  background:transparent;color:var(--a3-text);
+  font:800 14px/1.4 var(--a3-font);
+}
+.a3-history .calendar-day[data-observed="true"]::after {
+  content:"";position:absolute;bottom:3px;width:5px;height:5px;
+  border-radius:50%;background:var(--a3-secondary);
+}
+.a3-history .calendar-day.is-today {
+  border-color:var(--a3-secondary);
+}
+.a3-history .calendar-day.is-selected {
+  background:var(--a3-primary);color:var(--a3-on-primary);
+  box-shadow:0 4px 14px #5737d638;
+}
+.a3-history .calendar-day.is-selected::after {background:var(--a3-on-primary);}
+.a3-history .a3-insights-hero {
+  background:
+    radial-gradient(circle at 92% 4%,#ffb85c45,transparent 30%),
+    linear-gradient(155deg,var(--a3-tint),var(--a3-surface) 48%);
+}
+.a3-history .a3-insights-hero > h2 {font-size:27px;margin:4px 0 8px;}
+.a3-history .a3-insights-hero .section-line {
+  padding-top:18px;margin-top:18px;border-top:1px solid var(--a3-border);
+}
+.a3-history .a3-insights-hero .section-line strong {
+  color:var(--a3-primary);font:800 21px/1.2 var(--a3-font);
+}
+.a3-history .a3-episode-card {
+  position:relative;overflow:hidden;
+  border-left:5px solid var(--a3-secondary);
+  background:linear-gradient(120deg,var(--a3-surface),var(--a3-tint));
+}
+.a3-history .a3-episode-card h2 {margin:6px 0;color:var(--a3-text);}
+.a3-history .filter-chips {
+  display:flex;gap:8px;overflow-x:auto;padding:6px 0 12px;
+  scrollbar-width:thin;
+}
+.a3-history .filter-chips button {
+  flex:none;min-height:44px;padding:8px 12px;
+  border:1px solid var(--a3-border);border-radius:999px;
+  background:var(--a3-surface);color:var(--a3-text);
+}
+.a3-history .filter-chips button[aria-pressed="true"] {
+  border-color:var(--a3-primary);background:var(--a3-tint);
+}
+.a3-history .muted,.a3-history .empty-message,
+.a3-episode-editor .muted {color:var(--a3-muted);}
+.a3-episode-editor .page-head {padding:12px 0 20px;}
+.a3-episode-editor .page-head h1 {color:var(--a3-text);}
+.a3-episode-editor .a3-episode-form {
+  padding:20px;border:1px solid var(--a3-border);border-radius:24px;
+  background:var(--a3-surface);box-shadow:0 12px 32px #20203912;
+}
+.a3-episode-editor .a3-episode-form :is(input,select,textarea) {
+  width:100%;max-width:100%;min-height:48px;padding:12px;
+  border:1px solid var(--a3-border);border-radius:13px;
+  background:var(--a3-canvas);color:var(--a3-text);
+  font:400 16px/1.5 var(--a3-font);
+}
+.a3-episode-editor .a3-episode-form .a3-button {width:100%;}
+@media(prefers-reduced-motion:no-preference) {
+  .a3-history .a3-history-tabs button[aria-selected="true"] {
+    transition:background .2s ease,box-shadow .2s ease;
+  }
+}
+@media(max-width:350px) {
+  .a3-history,.a3-episode-editor {padding-inline:12px;}
+  .a3-history .calendar-grid {gap:2px;}
+  .a3-history :is(.wellness-card,.day-detail) {padding:12px;}
+}
