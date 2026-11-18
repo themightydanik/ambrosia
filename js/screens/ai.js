@@ -206,7 +206,7 @@ export function initAI() {
         ? "Специальность врача"
         : "Clinician specialty";
   const button = document.createElement("button");
-  button.className = "btn-primary";
+  button.className = "a3-button a3-button--primary";
   button.textContent = t.ai;
   button.onclick = () => runAI("doctor_visit");
   form.append(date, doctor, button);
@@ -215,7 +215,7 @@ export function initAI() {
 export function renderReportTools(root) {
   const details = el(
       "details",
-      { class: "report-tools" },
+      { class: "report-tools a3-report-tools" },
       el("summary", {}, v("reports")),
     ),
     body = el(
