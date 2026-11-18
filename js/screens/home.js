@@ -9,6 +9,7 @@ import { escapeHTML } from "../utils/escape.js";
 import { t } from "../i18n.js";
 import { SYMPTOM_COLORS, STATUS_COLORS } from "../data.js";
 import { registerScreen } from "../navigation.js";
+import { action, icon } from "../ui/components.js";
 
 // [entryCardHTML и все другие функции остаются без изменений]
 export function entryCardHTML(entry, updates = []) {
@@ -125,6 +126,7 @@ export function entryCardHTML(entry, updates = []) {
 export function renderHome() {
   const root = document.getElementById("screen-home");
   root.replaceChildren();
+  root.classList.add("a3-screen", "a3-home");
   const today = localDay(),
     checkin = state.checkins.find((c) => c.date === today),
     summary = statistics(state.checkins, state.entries, { end: today });
@@ -140,7 +142,7 @@ export function renderHome() {
       el(
         "div",
         { class: "brand-line" },
-        el("span", { class: "brand-mark" }, "✳"),
+        el("span", { class: "brand-mark", "aria-hidden": "true" }, "✳"),
         el("span", {}, "AMBROSIA"),
         button(state.profile.avatar || "🌿", () => goTo("settings"), {
           "aria-label": v("profile"),
@@ -154,9 +156,9 @@ export function renderHome() {
   const hero = el(
     "section",
     { class: "checkin-hero" },
-    el("div", { class: "hero-orbit", "aria-hidden": "true" }, "◕"),
+    el("div", { class: "hero-orbit", "aria-hidden": "true" }, icon("heart-pulse")),
     el("p", { class: "eyebrow" }, v("checkin")),
-    el("h2", {}, checkin ? v("checkinDone") : v("healthy")),
+    el("h2", {}, checkin ? v("checkinDone") : v("checkinNow")),
     el("p", { class: "muted" }, v("checkinSub")),
   );
   if (checkin)
@@ -175,8 +177,7 @@ export function renderHome() {
       ),
     );
   hero.append(
-    button(checkin ? v("edit") : v("checkinNow"), () => openCheckin(today), {
-      class: "btn-primary",
+    action(checkin ? v("edit") : v("checkinNow"), () => openCheckin(today), {
       id: "home-checkin",
     }),
   );
@@ -185,17 +186,17 @@ export function renderHome() {
     el(
       "div",
       { class: "action-pair" },
-      button(
-        "+ " + v("log"),
+      action(
+        v("log"),
         () => {
           state.logMode = "quick";
           goTo("log");
         },
-        { id: "ht-log" },
+        { id: "ht-log", variant: "secondary", leading: "plus-circle" },
       ),
-      button("✧ " + v("chatTitle"), () =>
-        window.startContextChat({ period: "7" }),
-      ),
+      action(v("chatTitle"), () => window.startContextChat({ period: "7" }), {
+        variant: "text", leading: "messages-square",
+      }),
     ),
   );
   const chart = el(
