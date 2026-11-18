@@ -398,24 +398,24 @@ export function renderCompanion() {
         : securityText(state.lang).unknown,
     ),
   );
-  root.append(el("p", { class: "chat-storage-note muted" }, v("chatStorage")));
+  const storageNote = el("p", { class: "chat-storage-note muted" }, v("chatStorage"));
+  root.append(storageNote);
   const status = el("p", {
     id: "chat-status",
     role: "status",
     class: "form-message",
   });
   root.append(status);
-  root.append(
-    button(
+  const refreshButton = button(
       "↻",
       safe(async () => {
         await refreshRemote();
         renderCompanion();
       }),
       { "aria-label": v("refresh"), class: "chat-refresh" },
-    ),
-  );
+    );
   if (!c) {
+    root.append(refreshButton);
     root.append(illustration("ill-companion-intro", { className: "a3-companion-art", eager: true }));
     root.append(
       button("+ " + v("newChat"), () => startContextChat({ period: "7" }), {
@@ -487,7 +487,15 @@ export function renderCompanion() {
         }),
       ),
     );
-    root.append(actions, contextPanel(s, c));
+    const management = el("details", { class: "a3-chat-management" },
+      el("summary", {}, v("conversations")),
+      actions,
+      storageNote,
+      refreshButton,
+    );
+    root.append(management);
+    const panel = contextPanel(s, c);
+    root.append(panel);
     const messages = el("section", {
       class: "chat-messages",
       id: "chat-messages",
@@ -529,6 +537,12 @@ export function renderCompanion() {
         bubble.append(button(v("retry"), () => send(c.id, m.content)));
       messages.append(bubble);
     }
+    if (!c.messages.length) {
+      messages.append(
+        illustration("ill-companion-intro", { className: "a3-companion-chat-welcome", eager: true }),
+        el("p", { class: "a3-companion-welcome-text" }, v("chatIntro")),
+      );
+    }
     root.append(messages);
     const suggestions = el("div", { class: "chat-suggestions" });
     for (const key of ["follow1", "follow2", "follow3"])
@@ -539,7 +553,6 @@ export function renderCompanion() {
           document.getElementById("chat-question")?.focus();
         }),
       );
-    root.append(suggestions);
     const text = el(
       "textarea",
       {
@@ -590,6 +603,7 @@ export function renderCompanion() {
       void send(c.id, text.value);
     };
     root.append(
+      suggestions,
       form,
       el("p", { class: "page-footnote" }, v("contextCloud")),
       el(
