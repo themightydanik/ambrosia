@@ -1,4 +1,4 @@
-const CACHE = 'ambrosia-shell-v3-ari-phase1-1';
+const CACHE = 'ambrosia-shell-v3-auth-a-1';
 const SHELL = [
   "/",
   "/index.html",
@@ -19,6 +19,14 @@ const SHELL = [
   "/js/billing/copy.js",
   "/js/account-management.js",
   "/js/app.js",
+  "/js/auth/config.js",
+  "/js/auth/coordination.js",
+  "/js/auth/pkce.js",
+  "/js/auth/google.js",
+  "/js/auth/controls.js",
+  "/js/auth/recovery.js",
+  "/js/auth/device-records.js",
+  "/js/auth/copy.js",
   "/js/cloud-import.js",
   "/js/cloud-restore.js",
   "/js/companion/store.js",

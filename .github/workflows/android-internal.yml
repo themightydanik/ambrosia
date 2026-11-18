@@ -39,6 +39,7 @@ jobs:
         env:
           GOOGLE_PLAY_APPLICATION_ID: ${{ vars.GOOGLE_PLAY_APPLICATION_ID }}
           NATIVE_API_ORIGIN: ${{ vars.NATIVE_API_ORIGIN }}
+          NATIVE_AUTH_CALLBACK_URL: ${{ vars.NATIVE_AUTH_CALLBACK_URL }}
           NATIVE_VERSION_CODE: ${{ inputs.version_code }}
           NATIVE_VERSION_NAME: ${{ inputs.version_name }}
         run: npm run android:prepare

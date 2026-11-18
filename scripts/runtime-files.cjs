@@ -4,6 +4,7 @@ const runtimeFiles = [
   "index.html",
   "privacy.html",
   "terms.html",
+  "auth",
   "css",
   "js",
   "assets",

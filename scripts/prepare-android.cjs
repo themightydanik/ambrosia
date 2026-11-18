@@ -14,6 +14,11 @@ if (!xml.includes("android:usesCleartextTraffic"))
     "<application",
     '<application android:usesCleartextTraffic="false"',
   );
+const callback = require("./app-links.cjs").nativeCallback(
+  process.env.NATIVE_AUTH_CALLBACK_URL,
+);
+// Regeneration is idempotent and limited to the exact owner-provided HTTPS callback.
+xml = require("./app-links.cjs").androidIntentFilter(xml, callback);
 fs.writeFileSync(manifest, xml);
 const file = "android/app/build.gradle";
 let gradle = fs.readFileSync(file, "utf8");

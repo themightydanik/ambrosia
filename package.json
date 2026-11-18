@@ -8,7 +8,8 @@
     "native:build": "node scripts/build-native.cjs",
     "android:prepare": "npm run native:build && node scripts/prepare-android.cjs",
     "build": "node scripts/build-web.cjs",
-    "test:onboarding": "node tests/onboarding-browser.cjs"
+    "test:onboarding": "node tests/onboarding-browser.cjs",
+    "test:auth": "node tests/auth-browser.cjs"
   },
   "dependencies": {
     "@capacitor/android": "8.5.3",

@@ -1,5 +1,7 @@
 # Onboarding, account and Premium journey
 
+> **Owner decision update:** the mandatory-account/subscription target supersedes the optional freemium proposal below. See [sequential PR A/B/C migration and disabled rollout](../account-migration/PR_A.md). This document does not authorize enabling the new policy; A alone preserves current access and billing.
+
 **Design proposal only.** The current app already has email/password, guest/device storage, explicit merge, protected billing and native store integration. It does **not** have Google OAuth or a three-slide illustrated onboarding. Preserve working flows; the design does not authorize configuring providers, modifying secrets or changing production.
 
 ## Three-slide onboarding

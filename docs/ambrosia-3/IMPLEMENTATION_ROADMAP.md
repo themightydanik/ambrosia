@@ -1,5 +1,7 @@
 # Implementation roadmap
 
+> **Owner decision update:** the mandatory-account/subscription target supersedes the optional freemium proposal below. See [sequential PR A/B/C migration and disabled rollout](../account-migration/PR_A.md). This document does not authorize enabling the new policy; A alone preserves current access and billing.
+
 This is a sequence of **future scoped PRs**, not permission to change production now. Retain static JS/Netlify/Supabase/Capacitor. Source baseline and uncertainty labels are in [the audit](COMPETITIVE_AUDIT.md). No schema migration, new framework, auth/billing rewrite or feature-parity tracker is justified by the visual work.
 
 ## Dependencies

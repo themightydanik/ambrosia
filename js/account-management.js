@@ -1,3 +1,4 @@
+import { authCopy } from './auth/copy.js';
 import {downloadBlob} from './download.js';
 import {billingCopy} from './billing/copy.js';
 import {authRedirect} from './platform.js';
@@ -37,6 +38,12 @@ export function renderAccountManagement(root,user,lang) {
   const details=document.createElement('details');const summary=document.createElement('summary');summary.textContent=t.delete;details.append(summary);section.append(details);
   const warning=document.createElement('p');warning.textContent=t.deleteWarning;details.append(warning);
   const billingWarning=document.createElement('p');billingWarning.textContent=billingCopy(state.lang).noRenew;details.append(billingWarning);
+  if (user.identities?.some(i => i.provider === 'google')) {
+    const help = document.createElement('p');
+    help.dataset.googleDeletionHelp = '';
+    help.textContent = authCopy(lang).deleteGoogleHelp;
+    details.append(help);
+  }
   const form=document.createElement('form');form.className='account-form';details.append(form);
   const password=document.createElement('input');password.type='password';password.required=true;password.maxLength=1024;password.autocomplete='current-password';password.placeholder=t.password;password.className='profile-edit-input';
   const confirmation=document.createElement('input');confirmation.required=true;confirmation.pattern='DELETE';confirmation.placeholder=t.deleteConfirm;confirmation.className='profile-edit-input';

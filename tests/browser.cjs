@@ -121,7 +121,7 @@ const wait = async (page, fn) => {const until=Date.now()+15000;while(Date.now()<
     }
     await wait(a.page,async()=>(await import('/js/sync/runtime.js')).syncStatus().phase==='synced'&&(await import('/js/sync/runtime.js')).syncStatus().pending===0);
     await b.ctx.setOffline(false);await wait(b.page,async()=>(await import('/js/sync/runtime.js')).syncStatus().phase==='conflict');
-    await b.page.evaluate(()=>window.goTo('settings'));await b.page.locator('[data-sync-panel] details summary').click();
+    await b.page.evaluate(()=>window.goTo('settings'));await b.page.locator('[data-sync-panel] details:not(.auth-device-review) summary').click();
     await b.page.getByRole('button',{name:'Use cloud version',exact:true}).click();await wait(b.page,async()=>(await import('/js/sync/runtime.js')).syncStatus().phase==='synced'&&(await import('/js/sync/runtime.js')).syncStatus().pending===0);
     assert.ok(await b.page.evaluate(()=>Object.values(JSON.parse(localStorage.getItem('ambrosia_sync_v2:aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa')).archives).length>0));
     console.log('PASS browser: simultaneous status updates retain both versions until explicit review');

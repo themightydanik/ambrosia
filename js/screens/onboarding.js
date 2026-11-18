@@ -1,3 +1,7 @@
+import { accountsRequired } from "../auth/config.js";
+import { authCopy } from "../auth/copy.js";
+import { hasDeviceJournal } from "../auth/recovery.js";
+import { renderGoogleControls } from "../auth/controls.js";
 import { state, markOnboardingDone, saveLang } from "../state.js";
 import { goTo } from "../navigation.js";
 import { el } from "../wellness/dom.js";
@@ -20,6 +24,31 @@ export function setOnboardingReady() {
   if (state.screen === "onboarding") renderOnboarding();
 }
 const copy = () => onboardingCopy(state.lang);
+export function showAccountChoice() {
+  mode = "choice";
+  goTo("onboarding");
+}
+window.addEventListener("google-session-committed", () => {
+  // A cold-start native callback may arrive while the intro is still painting.
+  mode = "choice";
+  if (state.screen === "onboarding") renderOnboarding();
+});
+window.addEventListener("auth-required", () => {
+  mode = "choice";
+});
+window.addEventListener("journal-changed", (event) => {
+  if (
+    ready &&
+    event.detail?.accountChanged &&
+    accountsRequired() &&
+    !state.accountId &&
+    !state.recoveringPassword
+  )
+    showAccountChoice();
+});
+window.addEventListener("auth-settings-changed", () => {
+  if (state.screen === "onboarding") renderOnboarding();
+});
 function show(next, { focus = true } = {}) {
   mode = next;
   renderOnboarding();
@@ -99,7 +128,13 @@ function slides() {
       { class: "a3-copy" },
       badge(s.tag, { accent: ["iris", "apricot", "aqua"][slide] }),
       el("h1", { id: "ob-title", tabindex: -1 }, s.title),
-      el("p", { class: "a3-lead" }, s.body),
+      el(
+        "p",
+        { class: "a3-lead" },
+        slide === 2 && accountsRequired()
+          ? authCopy(state.lang).requiredIntro
+          : s.body,
+      ),
     ),
   );
   const progress = el(
@@ -148,6 +183,8 @@ function slides() {
   ];
 }
 function accountChoice() {
+  const required = accountsRequired(),
+    a = authCopy(state.lang);
   const t = copy(),
     signed = !!state.accountId;
   const utility = el(
@@ -174,12 +211,20 @@ function accountChoice() {
           ? t.signedTitle
           : mode === "email"
             ? t.emailTitle
-            : t.choiceTitle,
+            : required
+              ? a.requiredTitle
+              : t.choiceTitle,
       ),
       el(
         "p",
         { class: "a3-lead" },
-        signed ? t.signedBody : mode === "email" ? t.emailBody : t.choiceBody,
+        signed
+          ? t.signedBody
+          : mode === "email"
+            ? t.emailBody
+            : required
+              ? a.requiredBody
+              : t.choiceBody,
       ),
     ),
   );
@@ -192,6 +237,13 @@ function accountChoice() {
     main.append(form);
     queueMicrotask(() => {
       if (form.isConnected) void renderCloudAccount(state.lang, form);
+    });
+  }
+  if (!signed && mode === "choice") {
+    const google = el("div", { class: "a3-google" });
+    main.append(google);
+    queueMicrotask(() => {
+      if (google.isConnected) void renderGoogleControls(google, state.lang);
     });
   }
   const buttons = signed
@@ -210,12 +262,19 @@ function accountChoice() {
               disabled: !ready,
             })
           : null,
-        action(t.guest, startApp, {
-          variant: "secondary",
-          trailing: "arrowRight",
-          id: "ob-guest",
-          disabled: !ready,
-        }),
+        !required
+          ? action(t.guest, startApp, {
+              variant: "secondary",
+              trailing: "arrowRight",
+              id: "ob-guest",
+              disabled: !ready,
+            })
+          : hasDeviceJournal()
+            ? action(a.recover, () => goTo("device-recovery"), {
+                variant: "secondary",
+                id: "auth-device-recovery",
+              })
+            : null,
       ];
   return [
     utility,
@@ -227,7 +286,11 @@ function accountChoice() {
       !ready
         ? el("p", { class: "a3-footnote", role: "status" }, t.preparing)
         : null,
-      el("p", { class: "a3-footnote" }, t.noPressure),
+      el(
+        "p",
+        { class: "a3-footnote" },
+        required ? a.requiredNote : t.noPressure,
+      ),
       !signed
         ? el("p", { class: "a3-privacy" }, icon("shield"), t.localHint)
         : null,
@@ -256,7 +319,7 @@ export function obNext() {
   else show("choice");
 }
 export function startApp() {
-  if (!ready) return;
+  if (!ready || (accountsRequired() && !state.accountId)) return;
   markOnboardingDone();
   goTo("home");
 }
