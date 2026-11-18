@@ -25,6 +25,7 @@ let _profileDraft, _profileVersion;
 // RENDER SETTINGS / PROFILE
 // ─────────────────────────────────────────────
 export function renderSettings() {
+  document.getElementById("screen-settings")?.classList.add("a3-screen", "a3-settings");
   const totalSyms = state.entries.reduce(
     (acc, e) => acc + e.symptoms.length,
     0,
@@ -56,8 +57,8 @@ function renderAccessBadge() {
     access = accountAccess();
   el.replaceChildren();
   const button = document.createElement("button");
-  button.className = "btn-ghost";
-  button.textContent = access ? t[access.state] : t.unknown;
+  button.className = "a3-settings-premium-link";
+  button.textContent = "✦ " + (access ? t[access.state] : t.unknown) + "  ›";
   button.onclick = () => goTo("upgrade");
   el.append(button);
 }

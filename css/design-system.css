@@ -1099,3 +1099,143 @@
   .a3-premium-screen {padding-inline:12px;}
   .a3-premium-screen .premium-hero {padding-inline:12px;}
 }
+
+/* Settings art direction: elegant profile identity, calm controls and clear account actions. */
+.a3-settings {
+  position:relative;isolation:isolate;overflow-x:clip;
+  padding:16px 16px calc(100px + env(safe-area-inset-bottom,0px));
+  background:var(--a3-canvas);color:var(--a3-text);
+}
+.a3-settings::before {
+  content:"";position:absolute;z-index:-1;inset:0 0 auto;height:540px;
+  pointer-events:none;background:
+    radial-gradient(ellipse 80% 45% at 96% 0%,#65e0c16b,transparent 76%),
+    radial-gradient(ellipse 80% 55% at 0% 4%,#a58bff80,transparent 78%),
+    radial-gradient(ellipse 45% 30% at 50% 52%,#ffb85c35,transparent 75%);
+}
+.a3-settings .screen-header {padding:10px 2px 20px;}
+.a3-settings .screen-title {
+  color:var(--a3-text);font:800 30px/1.2 var(--a3-font);
+  letter-spacing:-.035em;
+}
+.a3-settings #profile-section,.a3-settings #set-premium-badge {
+  padding:0!important;
+}
+.a3-settings .profile-display {
+  position:relative;overflow:hidden;text-align:center;
+  padding:24px 18px;margin:0 0 14px;
+  border:1px solid var(--a3-border);border-radius:26px;
+  background:
+    radial-gradient(ellipse at 90% 0%,#65e0c13c,transparent 45%),
+    linear-gradient(145deg,var(--a3-tint),var(--a3-surface) 75%);
+  box-shadow:0 14px 36px #5737d61c;
+}
+.a3-settings .profile-avatar {
+  display:grid;place-items:center;width:80px;height:80px;
+  margin:0 auto 12px;border-radius:26px;
+  border:1px solid #ffffff9c;
+  background:linear-gradient(145deg,#ffb85c99,#b9a5ffba);
+  box-shadow:0 10px 22px #5737d629;
+  font-size:38px;
+}
+.a3-settings .profile-name {
+  color:var(--a3-text);font:800 23px/1.3 var(--a3-font);
+  overflow-wrap:anywhere;
+}
+.a3-settings .profile-sub {
+  margin:5px 0 14px;color:var(--a3-muted);
+  font:600 14px/1.5 var(--a3-font);
+}
+.a3-settings .profile-edit-btn {
+  min-height:48px;padding:10px 16px;border:1px solid var(--a3-border);
+  border-radius:14px;background:var(--a3-surface);
+  color:var(--a3-primary);font:800 14px/1.4 var(--a3-font);
+}
+.a3-settings .a3-settings-premium-link {
+  display:block;width:100%;min-height:60px;
+  margin:0 0 16px;padding:14px 18px;text-align:left;
+  border:1px solid var(--a3-border);border-radius:18px;
+  background:linear-gradient(115deg,var(--a3-tint),var(--a3-surface));
+  color:var(--a3-primary);font:800 16px/1.4 var(--a3-font);
+  box-shadow:0 8px 24px #5737d618;
+}
+.a3-settings .stat-row {
+  display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:8px;margin:0 0 18px!important;
+}
+.a3-settings .stat-card {
+  min-width:0;padding:15px 6px;border:1px solid var(--a3-border);
+  border-radius:18px;background:var(--a3-surface);
+  box-shadow:0 5px 16px #2020390b;text-align:center;
+}
+.a3-settings .stat-num {
+  color:var(--a3-primary);font:800 24px/1.2 var(--a3-font);
+}
+.a3-settings .stat-lbl {
+  color:var(--a3-muted);font:700 11px/1.4 var(--a3-font);
+  overflow-wrap:anywhere;
+}
+.a3-settings .settings-section {
+  padding:18px;margin:14px 0;border:1px solid var(--a3-border);
+  border-radius:22px;background:var(--a3-surface);
+  box-shadow:0 8px 24px #2020390b;
+}
+.a3-settings .settings-section-title {
+  margin-bottom:12px;color:var(--a3-muted);
+  font:800 12px/1.5 var(--a3-font);
+  letter-spacing:.08em;
+}
+.a3-settings .lang-options {
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;
+}
+.a3-settings .lang-btn {
+  min-width:0;min-height:48px;padding:8px 4px;
+  border:1px solid var(--a3-border);border-radius:13px;
+  background:var(--a3-canvas);color:var(--a3-text);
+  font:700 12px/1.4 var(--a3-font);
+  overflow-wrap:anywhere;
+}
+.a3-settings .lang-btn.active {
+  background:var(--a3-primary);border-color:var(--a3-primary);
+  color:var(--a3-on-primary);box-shadow:0 5px 16px #5737d62e;
+}
+.a3-settings .setting-row {
+  display:flex;align-items:center;justify-content:space-between;
+  min-height:58px;padding:10px 2px;
+  border-bottom:1px solid var(--a3-border);
+  color:var(--a3-text);
+}
+.a3-settings .setting-row:last-child {border-bottom:0;}
+.a3-settings .setting-row-left {display:flex;align-items:center;gap:12px;}
+.a3-settings .setting-icon {
+  display:grid;place-items:center;width:42px;height:42px;
+  border-radius:13px;background:var(--a3-tint);font-size:20px;
+}
+.a3-settings .setting-label {
+  color:var(--a3-text);font:700 15px/1.4 var(--a3-font);
+}
+.a3-settings .profile-edit-form {
+  padding:18px;border:1px solid var(--a3-border);
+  border-radius:22px;background:var(--a3-surface);
+}
+.a3-settings .profile-edit-input,.a3-settings :is(input,select) {
+  max-width:100%;min-height:48px;padding:12px;
+  border:1px solid var(--a3-border);border-radius:13px;
+  background:var(--a3-canvas);color:var(--a3-text);
+  font:400 16px/1.5 var(--a3-font);
+}
+.a3-settings .avatar-option {
+  min-width:44px;min-height:44px;border:1px solid var(--a3-border);
+  border-radius:12px;background:var(--a3-canvas);
+}
+.a3-settings .avatar-option.selected {
+  border-color:var(--a3-primary);background:var(--a3-tint);
+}
+.a3-settings .profile-edit-actions {display:flex;gap:10px;flex-wrap:wrap;}
+.a3-settings .profile-edit-actions button {min-height:48px;border-radius:13px;}
+.a3-settings .page-footnote {color:var(--a3-muted);}
+@media(max-width:350px) {
+  .a3-settings {padding-inline:12px;}
+  .a3-settings .lang-options {gap:4px;}
+  .a3-settings .lang-btn {font-size:11px;}
+}
