@@ -10,6 +10,7 @@ import { t } from "../i18n.js";
 import { SYMPTOM_COLORS, STATUS_COLORS } from "../data.js";
 import { registerScreen } from "../navigation.js";
 import { action, icon } from "../ui/components.js";
+import { illustration } from "../ui/illustration.js";
 
 // [entryCardHTML и все другие функции остаются без изменений]
 export function entryCardHTML(entry, updates = []) {
@@ -157,6 +158,7 @@ export function renderHome() {
     "section",
     { class: "checkin-hero" },
     el("div", { class: "hero-orbit", "aria-hidden": "true" }, icon("heart-pulse")),
+    illustration("ill-auth-welcome", { className: "a3-home-ari", eager: true }),
     el("p", { class: "eyebrow" }, v("checkin")),
     el("h2", {}, checkin ? v("checkinDone") : v("checkinNow")),
     el("p", { class: "muted" }, v("checkinSub")),
@@ -201,7 +203,7 @@ export function renderHome() {
   );
   const chart = el(
     "section",
-    { class: "wellness-card" },
+    { class: "wellness-card a3-home-trend" },
     el(
       "div",
       { class: "section-line" },
@@ -237,7 +239,7 @@ export function renderHome() {
   root.append(chart);
   const base = el(
     "section",
-    { class: "baseline-note" },
+    { class: "baseline-note a3-home-baseline" },
     el("span", { "aria-hidden": "true" }, "⌁"),
     el(
       "div",
@@ -261,7 +263,7 @@ export function renderHome() {
   root.append(base);
   const recent = el(
     "section",
-    { class: "recent-section" },
+    { class: "recent-section a3-home-recent" },
     el(
       "div",
       { class: "section-line" },
@@ -283,7 +285,10 @@ export function renderHome() {
     .reverse();
   if (entries.length)
     list.innerHTML = entries.map((e) => entryCardHTML(e)).join("");
-  else list.append(el("p", { class: "empty-message" }, v("empty")));
+  else list.append(
+    illustration("ill-empty-history", { className: "a3-home-empty-art" }),
+    el("p", { class: "empty-message" }, v("empty")),
+  );
   recent.append(list);
   root.append(recent);
   root.append(el("p", { class: "page-footnote" }, v("privacy")));
