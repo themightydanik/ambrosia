@@ -11,6 +11,7 @@ export function openCheckin(day = localDay()) {
 export function renderCheckin() {
   const root = document.getElementById("screen-checkin");
   root.replaceChildren();
+  root.classList.add("a3-screen", "a3-checkin");
   const account = state.accountId,
     day = state.checkinDay || localDay(),
     old = state.checkins.find((c) => c.date === day);
@@ -19,13 +20,13 @@ export function renderCheckin() {
   root.append(
     el(
       "header",
-      { class: "page-head" },
+      { class: "page-head a3-form-header" },
       button("← " + v("back"), () => goTo("home")),
       el("p", { class: "eyebrow" }, v("checkin")),
       el("h1", {}, v("checkin")),
     ),
   );
-  const form = el("form", { class: "wellness-form" }),
+  const form = el("form", { class: "wellness-form a3-form" }),
     date = el("input", {
       type: "date",
       value: day,
@@ -41,10 +42,10 @@ export function renderCheckin() {
   for (const dimension of DIMENSIONS) {
     const group = el(
         "fieldset",
-        { class: "scale-field" },
+        { class: "scale-field a3-scale-field" },
         el("legend", {}, v(dimension)),
       ),
-      choices = el("div", { class: "scale-choices" });
+      choices = el("div", { class: "scale-choices a3-scale-choices" });
     for (let n = 1; n <= 5; n++) {
       const b = button(
         String(n),
@@ -58,6 +59,7 @@ export function renderCheckin() {
           "aria-label": v("scale" + n),
           "aria-pressed": String(values[dimension] === n),
           "data-value": n,
+          type: "button",
         },
       );
       choices.append(b);
@@ -82,14 +84,14 @@ export function renderCheckin() {
   form.append(
     el(
       "details",
-      { class: "optional-note" },
+      { class: "optional-note a3-optional-note" },
       el("summary", {}, v("note")),
       note,
     ),
     status,
     el(
       "button",
-      { type: "submit", class: "btn-primary", id: "checkin-save" },
+      { type: "submit", class: "a3-button a3-button--primary", id: "checkin-save" },
       v("save"),
     ),
   );
