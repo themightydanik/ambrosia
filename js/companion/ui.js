@@ -20,6 +20,7 @@ import {
 import { el, button, field } from "../wellness/dom.js";
 import { v } from "../wellness/copy.js";
 import { securityText } from "../security-copy.js";
+import { illustration } from "../ui/illustration.js";
 import { openCheckin } from "../screens/checkin.js";
 import { openEpisode } from "../screens/episode.js";
 import { renderReportTools, reportState } from "../screens/ai.js";
@@ -369,11 +370,12 @@ export function renderCompanion() {
   if (!root) return;
   const contextWasOpen = root.querySelector("#chat-context")?.open;
   root.replaceChildren();
+  document.getElementById("screen-ai")?.classList.add("a3-screen", "a3-companion");
   const c = s.get();
   root.append(
     el(
       "header",
-      { class: "page-head" },
+      { class: "page-head a3-companion-head" },
       el("p", { class: "eyebrow" }, v("chatTitle")),
       el("h1", {}, c ? c.title : v("chatIntro")),
     ),
@@ -414,6 +416,7 @@ export function renderCompanion() {
     ),
   );
   if (!c) {
+    root.append(illustration("ill-companion-intro", { className: "a3-companion-art", eager: true }));
     root.append(
       button("+ " + v("newChat"), () => startContextChat({ period: "7" }), {
         class: "btn-primary chat-new",
@@ -440,7 +443,10 @@ export function renderCompanion() {
         ),
       );
     if (!Object.keys(s.doc.conversations).length)
-      list.append(el("p", { class: "empty-message" }, v("chatIntro")));
+      list.append(
+        illustration("ill-empty-chat", { className: "a3-companion-empty-art" }),
+        el("p", { class: "empty-message" }, v("chatIntro")),
+      );
     root.append(list);
     root.append(contextPanel(s, { id: null, config: exportConfig })); // independent free context export
     // Export-only context changes use a real local draft conversation, preserving the selected fields.

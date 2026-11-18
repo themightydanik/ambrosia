@@ -641,3 +641,117 @@
   .a3-history .calendar-grid {gap:2px;}
   .a3-history :is(.wellness-card,.day-detail) {padding:12px;}
 }
+
+/* Ari Companion: original approved artwork + calm, luminous conversational surfaces. */
+.a3-companion {
+  position:relative;isolation:isolate;overflow-x:clip;
+  background:var(--a3-canvas);color:var(--a3-text);
+  padding:16px 16px calc(96px + env(safe-area-inset-bottom,0px));
+}
+.a3-companion::before {
+  content:"";position:absolute;z-index:-1;inset:0 0 auto;height:520px;
+  pointer-events:none;background:
+    radial-gradient(ellipse 65% 42% at 87% 8%,#65e0c16b,transparent 78%),
+    radial-gradient(ellipse 80% 50% at 8% 8%,#9b82ff77,transparent 78%),
+    radial-gradient(ellipse 50% 28% at 54% 50%,#ffb85c3d,transparent 75%);
+}
+.a3-companion #companion-content {min-width:0;}
+.a3-companion .a3-companion-head {padding:12px 4px 14px;}
+.a3-companion .a3-companion-head h1 {
+  font:800 30px/1.2 var(--a3-font);color:var(--a3-text);
+  overflow-wrap:anywhere;
+}
+.a3-companion .eyebrow {
+  color:var(--a3-secondary);font:800 12px/1.5 var(--a3-font);
+  text-transform:uppercase;letter-spacing:.1em;
+}
+.a3-companion .a3-companion-art {
+  max-width:380px;margin:4px auto 8px;
+  filter:drop-shadow(0 12px 26px #5737d62b);
+}
+.a3-companion .a3-companion-empty-art {
+  max-width:230px;margin:10px auto 4px;
+}
+.a3-companion .chat-quota,.a3-companion .chat-storage-note {
+  padding:10px 14px;margin:8px 0;
+  border-radius:14px;background:var(--a3-surface);
+  border:1px solid var(--a3-border);
+  color:var(--a3-muted);font:600 12px/1.5 var(--a3-font);
+  overflow-wrap:anywhere;
+}
+.a3-companion .chat-refresh {
+  min-width:48px;min-height:48px;border-radius:15px;
+  background:var(--a3-surface);border:1px solid var(--a3-border);
+  color:var(--a3-primary);font-size:24px;
+}
+.a3-companion .chat-new {
+  width:100%;min-height:54px;margin:12px 0 18px;
+  border:0;border-radius:16px;background:var(--a3-primary);
+  color:var(--a3-on-primary);font:800 16px/1.4 var(--a3-font);
+  box-shadow:0 10px 25px #5737d634;
+}
+.a3-companion :is(.conversation-list,.context-panel,.a3-report-tools) {
+  padding:18px;margin:14px 0;border:1px solid var(--a3-border);
+  border-radius:22px;background:var(--a3-surface);
+  box-shadow:0 10px 30px #20203910;
+}
+.a3-companion :is(.conversation-list,.context-panel,.a3-report-tools) :is(h2,summary) {
+  color:var(--a3-text);font:800 18px/1.4 var(--a3-font);
+}
+.a3-companion .conversation-item {
+  display:block;width:100%;min-height:50px;margin-top:8px;padding:12px;
+  text-align:left;border:1px solid var(--a3-border);
+  border-radius:14px;background:var(--a3-canvas);
+  color:var(--a3-text);font:700 15px/1.4 var(--a3-font);
+}
+.a3-companion .chat-actions,.a3-companion .chat-suggestions {
+  display:flex;gap:8px;flex-wrap:wrap;margin:12px 0;
+}
+.a3-companion .chat-actions button,.a3-companion .chat-suggestions button {
+  min-height:44px;padding:8px 12px;border:1px solid var(--a3-border);
+  border-radius:13px;background:var(--a3-surface);
+  color:var(--a3-text);font:700 13px/1.4 var(--a3-font);
+}
+.a3-companion .chat-messages {display:grid;gap:12px;padding:14px 0;}
+.a3-companion .chat-message {
+  max-width:92%;min-width:0;padding:14px 16px;
+  border:1px solid var(--a3-border);border-radius:20px;
+  background:var(--a3-surface);color:var(--a3-text);
+  overflow-wrap:anywhere;white-space:pre-wrap;
+  box-shadow:0 5px 16px #2020390a;
+}
+.a3-companion .chat-message.user {
+  justify-self:end;border-color:transparent;
+  background:var(--a3-primary);color:var(--a3-on-primary);
+  border-bottom-right-radius:6px;
+}
+.a3-companion .chat-message.assistant {
+  justify-self:start;border-bottom-left-radius:6px;
+  background:linear-gradient(135deg,var(--a3-surface),var(--a3-tint));
+}
+.a3-companion .chat-message small {display:block;margin-top:8px;opacity:.75;}
+.a3-companion .chat-composer {
+  display:grid;gap:10px;padding:12px;
+  border:1px solid var(--a3-border);border-radius:22px;
+  background:var(--a3-surface);box-shadow:0 10px 28px #20203912;
+}
+.a3-companion :is(textarea,input,select) {
+  max-width:100%;min-height:48px;padding:12px;
+  border:1px solid var(--a3-border);border-radius:13px;
+  background:var(--a3-canvas);color:var(--a3-text);
+  font:400 16px/1.5 var(--a3-font);
+}
+.a3-companion .chat-composer #chat-send {
+  min-height:48px;border:0;border-radius:14px;
+  background:var(--a3-primary);color:var(--a3-on-primary);
+  font:800 16px/1.4 var(--a3-font);
+}
+.a3-companion .context-panel :is(label,summary),.a3-companion .a3-report-tools :is(label,summary) {
+  color:var(--a3-text);
+}
+.a3-companion .a3-report-tools button {min-height:48px;margin:4px;}
+.a3-companion .page-footnote,.a3-companion .muted {color:var(--a3-muted);}
+@media(max-width:350px) {
+  .a3-companion {padding-inline:12px;}
+  .a3-companion .chat-message {max-width:98%;}
+}
