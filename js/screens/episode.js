@@ -12,6 +12,7 @@ export function openEpisode(id = null) {
 export function renderEpisode() {
   const root = document.getElementById("screen-episode");
   root.replaceChildren();
+  root.classList.add("a3-screen", "a3-episode-editor");
   const old = state.episodes.find((e) => e.id === state.selectedEpisode),
     version = old ? recordVersion(old.id) : 0;
   root.append(
@@ -59,14 +60,14 @@ export function renderEpisode() {
     message = el("p", { role: "status" }),
     form = el(
       "form",
-      { class: "wellness-form" },
+      { class: "wellness-form a3-episode-form" },
       field(v("episodeName"), title),
       field(v("start"), start),
       field(v("end"), end),
       field(v("status"), status),
       field(v("note"), notes),
       message,
-      el("button", { type: "submit", class: "btn-primary" }, v("save")),
+      el("button", { type: "submit", class: "a3-button a3-button--primary" }, v("save")),
     );
   form.onsubmit = (event) => {
     event.preventDefault();
