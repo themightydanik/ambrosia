@@ -26,6 +26,7 @@ export function initLog() {
   if (sliderEl) sliderEl.value = 5;
 
   const root=document.getElementById('screen-log');
+  root.classList.add('a3-screen', 'a3-log');
   root.querySelector('#log-modes')?.remove();const modes=el('div',{id:'log-modes',class:'segmented'},button(v('quick'),()=>setLogMode('quick'),{'data-mode':'quick'}),button(v('advanced'),()=>setLogMode('advanced'),{'data-mode':'advanced'}));root.querySelector('.log-header').after(modes);
   root.querySelector('#log-extra')?.remove();
   const extra=el('details',{id:'log-extra'},el('summary',{},v('details'))),start=el('input',{type:'date',id:'symptom-start',value:localDay()}),end=el('input',{type:'date',id:'symptom-end'}),episode=el('select',{id:'symptom-episode'},el('option',{value:''},v('noEpisode')));for(const e of state.episodes)episode.append(el('option',{value:e.id},e.title));extra.append(field(v('start'),start),field(v('end'),end),field(v('episode'),episode));root.querySelector('#log-notes').before(extra);

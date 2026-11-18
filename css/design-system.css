@@ -404,3 +404,88 @@
   .a3-home .checkin-hero .muted { max-width: 100%; }
   .a3-home .hero-orbit { position: static; margin-left: auto; }
 }
+
+/* Ambrosia 3: check-in and symptom-entry surfaces, scoped to existing screens. */
+.a3-checkin,.a3-log {
+  background:var(--a3-canvas);color:var(--a3-text);
+  font-family:var(--a3-font);padding:16px 16px calc(96px + env(safe-area-inset-bottom,0px));
+}
+.a3-checkin .page-head,.a3-log .log-header {
+  padding:8px 0 20px;color:var(--a3-text);
+}
+.a3-checkin .page-head h1,.a3-log .log-title {
+  font:800 28px/1.2 var(--a3-font);color:var(--a3-text);
+}
+.a3-checkin .wellness-form,.a3-log .log-step {
+  color:var(--a3-text);
+}
+.a3-checkin .scale-field,.a3-log .intensity-wrap,.a3-log .log-step.active {
+  min-width:0;margin:0 0 16px;padding:16px;
+  border:1px solid var(--a3-border);border-radius:20px;
+  background:var(--a3-surface);box-shadow:0 8px 24px #2020390a;
+}
+.a3-checkin .scale-field legend {
+  padding:0 8px;font:700 18px/1.4 var(--a3-font);color:var(--a3-text);
+}
+.a3-checkin .scale-choices {
+  display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;
+}
+.a3-checkin .scale-choices button {
+  min-width:0;min-height:48px;padding:8px 2px;border-radius:12px;
+  border:1.5px solid var(--a3-border);background:var(--a3-canvas);
+  color:var(--a3-text);font:800 17px/1.3 var(--a3-font);
+}
+.a3-checkin .scale-choices button[aria-pressed="true"] {
+  border-color:var(--a3-primary);background:var(--a3-primary);
+  color:var(--a3-on-primary);
+}
+.a3-checkin .scale-ends {
+  display:flex;justify-content:space-between;gap:8px;
+  margin-top:8px;color:var(--a3-muted);font-size:13px;
+}
+.a3-checkin :is(input,textarea),.a3-log :is(input,textarea,select) {
+  max-width:100%;min-height:48px;border:1.5px solid var(--a3-border);
+  border-radius:12px;background:var(--a3-surface);
+  color:var(--a3-text);font:400 16px/1.5 var(--a3-font);
+}
+.a3-checkin .optional-note {
+  padding:14px 16px;border:1px solid var(--a3-border);
+  border-radius:16px;background:var(--a3-surface);margin-bottom:16px;
+}
+.a3-checkin #checkin-save {width:100%;margin:8px 0 16px;}
+.a3-log .segmented {
+  display:flex;gap:8px;padding:6px;margin-bottom:16px;
+  border-radius:16px;background:var(--a3-tint);
+}
+.a3-log .segmented button {
+  flex:1;min-height:48px;border-radius:12px;border:1px solid transparent;
+  font:700 15px/1.4 var(--a3-font);color:var(--a3-text);
+}
+.a3-log .segmented button[aria-pressed="true"] {
+  background:var(--a3-surface);border-color:var(--a3-border);
+}
+.a3-log :is(.cat-btn,.sym-btn,.trig-btn) {
+  min-height:48px;border-radius:14px;border:1.5px solid var(--a3-border);
+  background:var(--a3-surface);color:var(--a3-text);
+  font-family:var(--a3-font);
+}
+.a3-log :is(.cat-btn,.sym-btn,.trig-btn).selected {
+  border-color:var(--a3-primary);background:var(--a3-tint);
+  color:var(--a3-text);
+}
+.a3-log :is(.btn-primary,#log-save-btn) {
+  min-height:48px;border-radius:14px;background:var(--a3-primary);
+  color:var(--a3-on-primary);font:700 16px/1.4 var(--a3-font);
+}
+.a3-log :is(.log-step-title,.intensity-value,.intensity-label,.cat-name) {
+  color:var(--a3-text);font-family:var(--a3-font);
+}
+.a3-log #log-extra {
+  padding:12px;border-radius:14px;border:1px solid var(--a3-border);
+  background:var(--a3-surface);
+}
+@media(max-width:350px) {
+  .a3-checkin,.a3-log {padding-inline:12px;}
+  .a3-checkin .scale-field,.a3-log .log-step.active {padding:12px;}
+  .a3-checkin .scale-choices {gap:4px;}
+}
