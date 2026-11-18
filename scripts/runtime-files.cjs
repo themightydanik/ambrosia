@@ -2,6 +2,8 @@ const fs = require("node:fs");
 const path = require("node:path");
 const runtimeFiles = [
   "index.html",
+  "privacy.html",
+  "terms.html",
   "auth",
   "css",
   "js",
