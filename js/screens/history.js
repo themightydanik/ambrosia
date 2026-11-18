@@ -19,17 +19,18 @@ let month;
 export function renderHistory() {
   const root = document.getElementById("screen-history");
   root.replaceChildren();
+  root.classList.add("a3-screen", "a3-history");
   const tab = state.historyTab || "calendar";
   root.append(
     el(
       "header",
-      { class: "page-head" },
+      { class: "page-head a3-history-head" },
       el("p", { class: "eyebrow" }, v("history")),
       el("h1", {}, v(tab)),
     ),
   );
   const tabs = el("div", {
-    class: "segmented",
+    class: "segmented a3-history-tabs",
     role: "tablist",
     "aria-label": v("history"),
   });
@@ -57,7 +58,7 @@ export function renderHistory() {
   month = month || today.slice(0, 7);
   const first = new Date(month + "-01T12:00"),
     count = new Date(first.getFullYear(), first.getMonth() + 1, 0).getDate();
-  const calendar = el("section", { class: "wellness-card calendar-card" }),
+  const calendar = el("section", { class: "wellness-card calendar-card a3-calendar" }),
     head = el(
       "div",
       { class: "section-line" },
@@ -134,7 +135,7 @@ export function renderHistory() {
   const day = state.historyDay,
     detail = el(
       "section",
-      { class: "day-detail" },
+      { class: "day-detail a3-history-detail" },
       el(
         "div",
         { class: "section-line" },
@@ -219,7 +220,7 @@ function renderInsights(root) {
     summary = statistics(state.checkins, state.entries, { end }),
     weekly = el(
       "section",
-      { class: "wellness-card" },
+      { class: "wellness-card a3-insights-hero" },
       el("p", { class: "eyebrow" }, v("week")),
       el("h2", {}, summary.observedDays + "/7 " + v("observed")),
       el("p", { class: "muted" }, v("missing")),
@@ -270,7 +271,7 @@ function renderInsights(root) {
   root.append(weekly);
   const longer = el(
     "section",
-    { class: "wellness-card" },
+    { class: "wellness-card a3-longitudinal" },
     el("h2", {}, v("longitudinal")),
   );
   if (isPremium()) {
@@ -325,7 +326,7 @@ function renderEpisodes(root) {
   )) {
     const card = el(
       "section",
-      { class: "wellness-card" },
+      { class: "wellness-card a3-episode-card" },
       el("p", { class: "eyebrow" }, v(e.status)),
       el("h2", {}, e.title),
       el(
