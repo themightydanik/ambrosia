@@ -13,6 +13,7 @@ import {
   episodeEntries,
 } from "../wellness/model.js";
 import { trendChart } from "../wellness/charts.js";
+import { illustration } from "../ui/illustration.js";
 import { openCheckin } from "./checkin.js";
 import { openEpisode } from "./episode.js";
 let month;
@@ -199,6 +200,7 @@ export function renderHistory() {
     list.innerHTML = entries.map((e) => entryCardHTML(e)).join("");
   else
     list.append(
+      illustration("ill-empty-history", { className: "a3-history-empty-art" }),
       el("p", { class: "empty-message" }, day ? v("dayEmpty") : v("empty")),
     );
   detail.append(list);
@@ -268,6 +270,8 @@ function renderInsights(root) {
       window.startContextChat({ period: "7", endDate: end }),
     ),
   );
+  if (summary.observedDays === 0 && summary.symptomEntries === 0)
+    weekly.prepend(illustration("ill-empty-insights", { className: "a3-insights-empty-art" }));
   root.append(weekly);
   const longer = el(
     "section",
@@ -320,7 +324,12 @@ function renderEpisodes(root) {
     }),
   );
   if (!state.episodes.length)
-    root.append(el("p", { class: "empty-message" }, v("episodeHint")));
+    root.append(
+      el("section", { class: "wellness-card a3-episodes-empty" },
+        illustration("ill-empty-episodes", { className: "a3-episodes-empty-art" }),
+        el("p", { class: "empty-message" }, v("episodeHint")),
+      ),
+    );
   for (const e of [...state.episodes].sort((a, b) =>
     b.startDate.localeCompare(a.startDate),
   )) {

@@ -1,4 +1,5 @@
 import { securityText } from "../security-copy.js";
+import { illustration } from "../ui/illustration.js";
 import { state } from "../state.js";
 import { registerScreen, goTo } from "../navigation.js";
 import { accountAccess, refreshAccess } from "../account-access.js";
@@ -116,11 +117,13 @@ export function renderUpgrade() {
     access = accountAccess(),
     native = isAndroid();
   root.replaceChildren();
+  document.getElementById("screen-upgrade")?.classList.add("a3-screen", "a3-premium-screen");
   root.append(
     el(
       "section",
       { class: "premium-hero" },
       el("span", { class: "eyebrow" }, "AMBROSIA PREMIUM"),
+      illustration("ill-premium", { className: "a3-premium-ari", eager: true }),
       el("h1", {}, t.title),
       el("p", {}, t.intro),
     ),
@@ -174,7 +177,7 @@ export function renderUpgrade() {
     root.append(
       el(
         "section",
-        { class: "wellness-card" },
+        { class: "wellness-card a3-premium-benefit-card" },
         el("h2", {}, title),
         el(
           "ul",
